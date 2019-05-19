@@ -1,0 +1,30 @@
+/** General **/
+
+.close {
+    transition: all .3s !important;
+}
+.close:hover {
+    transform: rotate(360deg) !important;
+    cursor: pointer !important;
+}
+.text-shadow {
+    text-shadow: 1px 2px 2px black;
+}
+.hide {
+    display: none;
+}
+a, a:hover {
+    text-decoration: none !important;
+    color: white;
+}
+.text-black {
+    color: black !important;
+}
+
+/** Notifications **/
+
+#container-notifications {
+    position: fixed;
+    bottom: 0;
+    right: 0;
+}

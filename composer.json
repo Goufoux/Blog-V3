@@ -1,0 +1,27 @@
+{
+    "name": "33689/blog",
+    "description": "Blog Project",
+    "authors": [
+        {
+            "name": "Genarkys",
+            "email": "quentin.roussel@genarkys.fr"
+        }
+    ],
+    "require": {
+        "twig/twig": "^2.10"
+    },
+    "autoload": {
+        "psr-4": {
+            "App\\": "App\\",
+            "App\\Frontend\\": "App\\Frontend",
+            "App\\Backend\\": "App\\Backend",
+            "Core\\": "lib\\Core",
+            "Config\\": "lib\\Config",
+            "Service\\": "lib\\Service",
+            "Entity\\": "lib\\Entity",
+            "Manager\\": "lib\\Manager",
+            "Module\\": "lib\\Module",
+            "Form\\": "lib\\Form"
+        }
+    }
+}
