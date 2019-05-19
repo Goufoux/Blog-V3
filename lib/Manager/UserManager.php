@@ -47,8 +47,6 @@ class UserManager extends Manager
                 throw new \PDOException($this->errorCode($req));
             }
 
-            
-            // var_dump($res);
             $res = $req->fetch();
             
             $user = new User($res, true);

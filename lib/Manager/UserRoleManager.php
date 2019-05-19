@@ -26,10 +26,7 @@ class UserRoleManager extends Manager
             foreach ($res as $key => $userRole) {
                 $res[$key] = new UserRole($userRole, true);
             }
-            // var_dump($res);
-
-            // exit;
-            // $userRoles = new UserRole($res, true);
+            
             return $res;
 
         } catch(\PDOException $e) {

@@ -1,5 +1,9 @@
 <?php
 
+/**
+ * @author Genarkys <quentin.roussel@genarkys.fr>
+ */
+
 namespace Core;
 
 class Modules

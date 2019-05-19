@@ -27,10 +27,6 @@ class Ajax extends Core
             return;
         }
 
-
-        // echo 'e';
-        // return;
-
         $methodArgs = new \ReflectionMethod($controller, $view);
         $methodArgs = $methodArgs->getParameters();
         
