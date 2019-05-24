@@ -28,15 +28,14 @@ class Mail
 
         try {
             
-        $this->phpMailer->setFrom('test@genarkys.fr', 'PHP');
+        $this->phpMailer->setFrom('contact@genarkys.fr', 'Blog');
         $this->phpMailer->addAddress($destinataire);
 
         $this->phpMailer->isHTML(true);
         $this->phpMailer->CharSet = 'UTF-8';
         $this->phpMailer->Subject = $sujet;
         $this->phpMailer->Body = $this->tempate($content);
-        // var_dump($this);
-        // exit;
+        
         if(!$this->phpMailer->send()) {
             throw new Exception($this->phpMailer->ErrorInfo);
         }

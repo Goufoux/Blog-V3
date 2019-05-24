@@ -73,15 +73,11 @@ class Database
         }
 
         if($this->isConnected() === false) {
-            // $mail = new Mail;
-            // $mail->send("quentin.roussel@genarkys.fr", "Erreur fatale.", "Des informations sont manquantes dans le production.ini consulter les logs.");
             $logger->setLogs("La connexion avec la base de donnée n'a pas été tentée car il manque des informations essentielles.");
             return false;
         }
         
         $connecting_string = $driver.':host='.$host.';dbname='.$dbName;
-        // var_dump($connecting_string);
-        // exit;
         try
         {
             $this->bdd = new \PDO($connecting_string, $user, $password, array(

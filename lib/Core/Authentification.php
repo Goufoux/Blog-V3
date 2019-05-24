@@ -65,8 +65,6 @@ class Authentification
     private function setAuthentificated() :Authentification
     {
         if(isset($_SESSION['user'])) {
-            // $this->setType();
-            // $this->setRole();
             $this->authentificated = true;
         } else {
             $this->authentificated = false;

@@ -44,9 +44,7 @@ abstract class Config
     protected function run()
     {
         if(!$this->setConfigPath()) {
-            $mail = new Mail;
-            $mail->send("quentin.roussel@genarkys.fr", "Fichier de configuration introuvable.", "Le fichier n'a pas été trouvé. (".$this->name.")");
-            die("Une erreur fatale est survenue, nous allons corriger cela le plus rapidement possible.");
+           die($this->getError()['error']);
         }
     }
 
@@ -73,11 +71,12 @@ abstract class Config
             return false;
         }
         $file = parse_ini_file($this->getConfigPath());
-        if($file)
-        if(isset($file[$data])) {
-            return $file[$data];
-        } else {
-            return null;
+        if($file) {
+            if(isset($file[$data])) {
+                return $file[$data];
+            } else {
+                return null;
+            }
         }
     }
 

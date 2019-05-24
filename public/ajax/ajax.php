@@ -1,4 +1,5 @@
 <?php
+    date_default_timezone_get("Europe/Paris");
     use Module\AjaxCore;
     
     if(empty($_GET)) {
