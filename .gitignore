@@ -1,0 +1,6 @@
+/config/
+/node_modules/
+/vendor/
+/logs/
+/public/cache/
+/public/assets/scss/.sass-cache/
