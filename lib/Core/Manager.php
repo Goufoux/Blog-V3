@@ -18,7 +18,7 @@ abstract class Manager
 
     public function successRequest($request)
     {
-        if($request->errorCode() != '00000') {
+        if ($request->errorCode() != '00000') {
             return false;
         }
         return true;

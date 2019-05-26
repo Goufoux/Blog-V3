@@ -28,8 +28,8 @@ class Logger
     {
         $data = array(
             'code' => $code ?? 400,
-            'message' => $message ?? NULL,
-            'fichier' => $file ?? NULL,
+            'message' => $message ?? null,
+            'fichier' => $file ?? null,
             'ligne' => $line ?? 0
         );
         $manager = new Managers($this->bdd);
@@ -39,9 +39,9 @@ class Logger
         }
     }
 
-    public function setLogs(string $str) 
+    public function setLogs(string $str)
     {
-        if($this->successLoading) {
+        if ($this->successLoading) {
             $handle = fopen($this->file, 'a+');
             fwrite($handle, $str.self::SAUT);
             fclose($handle);
@@ -52,15 +52,15 @@ class Logger
     {
         $logsDir = __DIR__.'/../../logs/';
         $logsfile = $logsDir.'logs.txt';
-        if(!is_dir($logsDir)) {
+        if (!is_dir($logsDir)) {
             if (!mkdir($logsDir)) {
                 echo "Impossible de créer le dossier de logs";
                 exit;
             }
         }
-        if(!file_exists($logsfile)) {
+        if (!file_exists($logsfile)) {
             $handle = fopen($logsfile, 'w+');
-            if(!$handle) {
+            if (!$handle) {
                 echo "impossible de créer le fichier de logs";
                 exit;
             }

@@ -69,7 +69,7 @@ class Notifications
      * @param string $icon
      * @return Notifications
      */
-    public function add($message, $type = 'info', $icon = null) :Notifications
+    public function add($message, $type = 'info', $icon = null): Notifications
     {
         if($icon !== null) {
             $message = "<i class=\"$icon\"></i> $message";

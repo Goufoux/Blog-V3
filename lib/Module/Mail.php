@@ -21,31 +21,31 @@ class Mail
 
     public function send(string $destinataire = '', string $sujet = '', string $content = '')
     {
-        if(empty($destinataire) || empty($content)) {
+        if (empty($destinataire) || empty($content)) {
             $this->setError('Destinataire ou contenu vide');
             return false;
         }
 
         try {
-            
-        $this->phpMailer->setFrom('contact@genarkys.fr', 'Blog');
-        $this->phpMailer->addAddress($destinataire);
+            $this->phpMailer->setFrom('contact@genarkys.fr', 'Blog');
+            $this->phpMailer->addAddress($destinataire);
 
-        $this->phpMailer->isHTML(true);
-        $this->phpMailer->CharSet = 'UTF-8';
-        $this->phpMailer->Subject = $sujet;
-        $this->phpMailer->Body = $this->tempate($content);
+            $this->phpMailer->isHTML(true);
+            $this->phpMailer->CharSet = 'UTF-8';
+            $this->phpMailer->Subject = $sujet;
+            $this->phpMailer->Body = $this->tempate($content);
         
-        if(!$this->phpMailer->send()) {
-            throw new Exception($this->phpMailer->ErrorInfo);
-        }
-        return true;
-        } catch(Exception $e) {
+            if (!$this->phpMailer->send()) {
+                throw new Exception($this->phpMailer->ErrorInfo);
+            }
+
+            return true;
+        } catch (Exception $e) {
             $logger = new Logger;
             $logger->setLogs($e->getMessage());
+
             return false;
         }
-
     }
 
     public function init()
@@ -59,7 +59,7 @@ class Mail
             $this->phpMailer->Password = "Awfzeu1996$";
             $this->phpMailer->SMTPSecure = 'tls';
             $this->phpMailer->Port = 587;
-        } catch(\Exception $e) {
+        } catch (\Exception $e) {
             $logger = new Logger;
             $logger->setLogs('Error at Module\\Mail : ' . $this->phpMailer->ErrorInfo);
         }
@@ -71,20 +71,23 @@ class Mail
         $this->phpMailer = $phpMailer;
     }
 
-    public function tempate($str) {
+    public function tempate($str)
+    {
         $body = "<h1>Genarkys</h1><p>%s</p>";
         $body = sprintf($body, $str);
+
         return $body;
     }
 
-    public function getError() :?string
+    public function getError(): ?string
     {
         return $this->error;
     }
 
-    public function setError(string $error) :Mail
+    public function setError(string $error): Mail
     {
         $this->error = $error;
+
         return $this;
     }
 }

@@ -9,7 +9,6 @@ namespace Module;
 use Core\Core;
 use Core\Managers;
 
-
 class AjaxCore extends Core
 {
     protected $action;
@@ -27,20 +26,20 @@ class AjaxCore extends Core
         $this->action = $action;
         $this->autoload = $options['autoload'] ?? true;
         $this->instance = $options['instance'] ?? false;
-        $this->manager = New Managers($this->getDatabase()->bdd());
+        $this->manager = new Managers($this->getDatabase()->bdd());
         $this->run($this->instance, $this->autoload);
     }
 
     public function run(bool $instance = false, $autoLoad = true)
     {
-        if(in_array($this->action, ["notifications"])) {
+        if (in_array($this->action, ["notifications"])) {
             $instance = true;
         }
         $class = '\\Module\\'.ucfirst($this->action);
-        if(class_exists($class)) {
-            if($instance) {
+        if (class_exists($class)) {
+            if ($instance) {
                 $class = new $class;
-                if($autoLoad) {
+                if ($autoLoad) {
                     $this->content = $class->display();
                     return;
                 }
@@ -48,7 +47,7 @@ class AjaxCore extends Core
                 return;
             }
             $module = new $class($this->manager);
-            if($autoLoad) {
+            if ($autoLoad) {
                 $this->content = $module->getTemplate();
                 return;
             }

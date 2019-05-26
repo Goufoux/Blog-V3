@@ -30,9 +30,10 @@ class Route
         $this->run();
     }
 
-    public function run() {
+    public function run()
+    {
         /* setModule */
-        if(empty($this->getRequest())) {
+        if (empty($this->getRequest())) {
             $this->setModule('public');
             $this->setControllerDir('IndexController\\');
             $this->setController('IndexController');
@@ -43,17 +44,17 @@ class Route
         $this->setModule($this->getRequest()[0]);
         
         /* setController */
-        if(empty($this->getRequest()[$this->getControllerPos()])) {
+        if (empty($this->getRequest()[$this->getControllerPos()])) {
             $this->setControllerDir('IndexController\\');
             $this->setController('IndexController');
             $this->setView('index');
             return;
         }
         $j = 1;
-        if($this->getIndexAccess()) {
+        if ($this->getIndexAccess()) {
             $j = 0;
             $controllerDir = '';
-            for($i = $this->getControllerPos(); $i < (count($this->getRequest())-$j); $i++) {
+            for ($i = $this->getControllerPos(); $i < (count($this->getRequest())-$j); $i++) {
                 $controllerDir .= ucfirst($this->getRequest()[$i]).'Controller\\';
             }
             $this->setControllerDir($controllerDir);
@@ -61,7 +62,7 @@ class Route
             $this->setController(ucfirst($this->getRequest()[$x]).'Controller');
 
             /* setView */
-            if($this->getIndexAccess()) {
+            if ($this->getIndexAccess()) {
                 $this->setView('index');
                 return;
             }
@@ -70,15 +71,14 @@ class Route
             $view = end($tempRequest);
             $param = explode('?', $view);
             $this->setView($param[0]);
-            if(!empty($param[1])) {
+            if (!empty($param[1])) {
                 $this->setParam($param[1]);
             }
-        }
-        else {
+        } else {
             $request = new Request;
             $temp = explode('/', $request->getRequestUri());
             $tempCountRequest = count($temp);
-            switch($tempCountRequest) {
+            switch ($tempCountRequest) {
                 case 1:
                     echo 'error';
                         break;
@@ -89,43 +89,42 @@ class Route
                     $view = end($tempRequest);
                     $param = explode('?', $view);
                     $this->setView($param[0]);
-                    if(!empty($param[1])) {
+                    if (!empty($param[1])) {
                         $this->setParam($param[1]);
                     }
                         break;
                 case 3:
-                    if($this->getControllerPos()) {
+                    if ($this->getControllerPos()) {
                         $this->setController('IndexController');
                         $this->setControllerDir('IndexController\\');
                         $tempRequest = $this->getRequest();
                         $view = end($tempRequest);
                         $view = explode('?', $view);
                         $view = MyArray::clearArray($view, '');
-                        if(preg_match("#=#", $view[0])) {
+                        if (preg_match("#=#", $view[0])) {
                             $this->setView('index');
                             $this->setParam($view[0]);
-                        } else {    
+                        } else {
                             $this->setView($view[0]);
-                            if(!empty($view[1])) {
+                            if (!empty($view[1])) {
                                 $this->setParam($view[1]);
                             }
                         }
-                    }
-                    else {
+                    } else {
                         $this->setController(ucfirst($temp[1]).'Controller');
                         $this->setControllerDir(ucfirst($temp[1]).'Controller\\');
                         $tempRequest = $this->getRequest();
                         $view = end($tempRequest);
                         $param = explode('?', $view);
                         $this->setView($param[0]);
-                        if(!empty($param[1])) {
+                        if (!empty($param[1])) {
                             $this->setParam($param[1]);
                         }
                     }
                         break;
                 default:
                     $controllerDir = '';
-                    for($i = $this->getControllerPos(); $i < (count($this->getRequest())-$j); $i++) {
+                    for ($i = $this->getControllerPos(); $i < (count($this->getRequest())-$j); $i++) {
                         $controllerDir .= ucfirst($this->getRequest()[$i]).'Controller\\';
                     }
                     $this->setControllerDir($controllerDir);
@@ -135,13 +134,12 @@ class Route
                     $view = end($tempRequest);
                     $param = explode('?', $view);
                     $this->setView($param[0]);
-                    if(!empty($param[1])) {
+                    if (!empty($param[1])) {
                         $this->setParam($param[1]);
                     }
                         break;
             }
         }
-
     }
 
     public function setParam(string $param)
@@ -153,10 +151,9 @@ class Route
     public function setIndexAccess($request)
     {
         $char = substr($request, -1);
-        if($char === '/') {
+        if ($char === '/') {
             $this->indexAccess = true;
-        }
-        else {
+        } else {
             $this->indexAccess = false;
         }
     }
@@ -185,8 +182,8 @@ class Route
 
     public function getRequest(?string $key = null)
     {
-        if($key !== null) {
-            if(!isset($this->request[$key])) {
+        if ($key !== null) {
+            if (!isset($this->request[$key])) {
                 return null;
             }
             return $this->request[$key];
@@ -211,7 +208,7 @@ class Route
 
     public function setModule(string $module)
     {
-        switch($module) {
+        switch ($module) {
             case 'public':
                 $this->module = 'Frontend';
                 $this->setControllerPos(1);
