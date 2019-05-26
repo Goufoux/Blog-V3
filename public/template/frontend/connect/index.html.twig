@@ -1,0 +1,31 @@
+{% extends "frontend/base.html.twig" %}
+
+{% block body %}
+    <div>
+        <h1>Connexion</h1>
+    </div>
+    <div>
+        <form action="#" method="POST">
+            <div>
+                <label for="email">Email</label>
+                <input type="text" name="email" id="email"
+                {% if request.hasPost('email') %}
+                    value="{{ request.getPost('email') }}"
+                {% endif %}>
+                {% if form.hasError('email') %}
+                    <span class="badge badge-danger">{{ form.getErrors('email') }}</span>
+                {% endif %}
+            </div>
+            <div>
+                <label for="password">Password</label>
+                <input type="password" name="password" id="password">
+                {% if form.hasError('password') %}
+                    <span class="badge badge-danger">{{ form.getErrors('password') }}</span>
+                {% endif %}
+            </div>
+            <div>
+                <button type="submit">Valdier</button>
+            </div>
+        </form>
+    </div>
+{% endblock %}

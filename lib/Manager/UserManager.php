@@ -58,30 +58,30 @@ class UserManager extends Manager
         }
     }
 
-    public function connect(User $user)
+    public function connect(string $email, string $password)
     {
         $req = $this->bdd->prepare('SELECT user.*, userRole.* FROM user
-                                    INNER JOIN userRole ON userRole.userRole_user = user.user_id
+                                    LEFT JOIN userRole ON userRole.userRole_user = user.user_id
                                     WHERE user_email = :email');
         $req->setFetchMode(\PDO::FETCH_CLASS | \PDO::FETCH_PROPS_LATE, '\Entity\\User');
-        $req->bindValue(':email', $user->getEmail() ,\PDO::PARAM_STR);
         try {
+            $req->bindValue(':email', $email,\PDO::PARAM_STR);
             $req->execute();
             
             if (!$this->successRequest($req)) {
                 throw new \PDOException($this->errorCode($req));
             }
 
-            $res = $req->fetch();
+            $user = $req->fetch();
             
-            if (!$res) {
+            if ($user === false) {
                 throw new \PDOException("Identifiant incorrects");
             }
-
-            if (!password_verify($user->getPassword(), $res['user_password'])) {
+            if (!password_verify($password, $user['user_password'])) {
                 throw new \PDOException("Identifiants incorrects");
             }
-            $user = new User($res, true);
+
+            $user = new User($user, true);
             return $user;
 
         } catch(\PDOException $e) {
