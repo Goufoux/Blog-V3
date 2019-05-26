@@ -26,24 +26,24 @@ abstract class Core
         $this->setLogger();
     }
 
-    public function logger() :Logger
+    public function logger(): Logger
     {
         return $this->logger;
     }
 
-    public function setLogger() :self
+    public function setLogger(): self
     {
         $this->logger = new Logger($this->getDatabase()->bdd());
 
         return $this;
     }
 
-    public function getDatabase() :Database
+    public function getDatabase(): Database
     {
         return $this->database;
     }
 
-    public function user() :Authentification
+    public function user(): Authentification
     {
         return $this->user;
     }
@@ -56,25 +56,26 @@ abstract class Core
     abstract public function run();
 
     
-    private function setUser() :Core
+    private function setUser(): Core
     {
         $this->user = new Authentification();
+        
         return $this;
     }
 
-    private function setDatabase() :Core
+    private function setDatabase(): Core
     {
         $this->database = new Database($this->config);
+
         return $this;
     }
 
     private function setConfig()
     {
         $request = new Request;
-        if($request->getServerAddr() == '::1') {
+        $this->config = new Production;
+        if ($request->getServerAddr() == '::1') {
             $this->config = new Developpement;
-        } else {
-            $this->config = new Production;
         }
     }
 }

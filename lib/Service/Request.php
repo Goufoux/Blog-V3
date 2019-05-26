@@ -37,17 +37,17 @@ class Request
         $this->setHttpReferer();
     }
 
-    public function hasData($key = false) :bool
+    public function hasData($key = false): bool
     {
-        if($key !== false) {
-            if(isset($_GET[$key])) {
+        if ($key !== false) {
+            if (isset($_GET[$key])) {
                 return true;
             } else {
                 return false;
             }
         }
 
-        if(empty($_GET)) {
+        if (empty($_GET)) {
             return false;
         } else {
             return true;
@@ -56,27 +56,27 @@ class Request
 
     public function getAllData(bool $setEmpty = true, array $ignore = [])
     {
-        if(!$this->hasData()) {
+        if (!$this->hasData()) {
             return null;
         }
 
         $array = array();
 
-        foreach($_GET as $key => $value) {
-            if($setEmpty) {
-                if(empty($value)) {
+        foreach ($_GET as $key => $value) {
+            if ($setEmpty) {
+                if (empty($value)) {
                     continue;
                 }
             }
-            if(!empty($ignore)) {
+            if (!empty($ignore)) {
                 $isIgnored = false;
-                foreach($ignore as $name) {
-                    if($name == $key) {
+                foreach ($ignore as $name) {
+                    if ($name == $key) {
                         $isIgnored = true;
                         continue;
                     }
                 }
-                if($isIgnored) {
+                if ($isIgnored) {
                     continue;
                 }
             }
@@ -86,17 +86,17 @@ class Request
         return $array;
     }
 
-    public function getAllPost($setEmpty = true) 
+    public function getAllPost($setEmpty = true)
     {
-        if(!$this->hasPost()) {
+        if (!$this->hasPost()) {
             return null;
         }
 
         $array = array();
 
-        foreach($_POST as $key => $value) {
-            if($setEmpty) {
-                if(empty($value)) {
+        foreach ($_POST as $key => $value) {
+            if ($setEmpty) {
+                if (empty($value)) {
                     continue;
                 }
             }
@@ -110,13 +110,14 @@ class Request
         return $array;
     }
 
-    public function getData(string $key = null) {
-        if(!$this->hasData()) {
+    public function getData(string $key = null)
+    {
+        if (!$this->hasData()) {
             return null;
         }
 
-        if($key != null) {
-            if(!isset($_GET[$key]) || empty($_GET[$key])) {
+        if ($key != null) {
+            if (!isset($_GET[$key]) || empty($_GET[$key])) {
                 return null;
             } else {
                 return htmlspecialchars($_GET[$key]);
@@ -128,15 +129,15 @@ class Request
 
     public function hasPost($key = false)
     {
-        if($key !== false) {
-            if(isset($_POST[$key])) {
+        if ($key !== false) {
+            if (isset($_POST[$key])) {
                 return true;
             } else {
                 return false;
             }
         }
 
-        if(empty($_POST)) {
+        if (empty($_POST)) {
             return false;
         } else {
             return true;
@@ -145,12 +146,12 @@ class Request
 
     public function getPost(string $key = null)
     {
-        if(!$this->hasPost()) {
+        if (!$this->hasPost()) {
             return null;
         }
 
-        if($key != null) {
-            if(!isset($_POST[$key]) || empty($_POST[$key])) {
+        if ($key != null) {
+            if (!isset($_POST[$key]) || empty($_POST[$key])) {
                 return null;
             } else {
                 return htmlspecialchars($_POST[$key]);

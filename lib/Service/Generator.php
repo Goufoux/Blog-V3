@@ -11,7 +11,7 @@ class Generator
         $temp = array();
 
         for ($i = 0; $i < $max; $i++) {
-            if(rand(0,1)) {
+            if (rand(0, 1)) {
                 $temp[] = rand(0, 9);
             } else {
                 $temp[] = self::LETTERS[rand(0, count(self::LETTERS))];

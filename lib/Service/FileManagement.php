@@ -134,7 +134,7 @@ class FileManagement
 
     /**
      * Get the value of error
-     */ 
+     */
     public function getError()
     {
         return $this->error;
@@ -144,7 +144,7 @@ class FileManagement
      * Set the value of error
      *
      * @return  self
-     */ 
+     */
     private function setError($error)
     {
         $this->error = $error;
@@ -154,7 +154,7 @@ class FileManagement
 
     /**
      * Get the value of filename
-     */ 
+     */
     public function getFilename()
     {
         return $this->filename;
@@ -164,7 +164,7 @@ class FileManagement
      * Set the value of filename
      *
      * @return  self
-     */ 
+     */
     public function setFilename($filename)
     {
         $this->filename = $filename;

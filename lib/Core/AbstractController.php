@@ -35,11 +35,12 @@ abstract class AbstractController
     public function setBaseLink(Route $route)
     {
         $request = $route->getRequest();
-        if(!$route->getIndexAccess()) {
+        if (!$route->getIndexAccess()) {
             array_pop($request);
         }
         $temp = implode('/', $request);
         $this->base_link = '/'.$temp.'/';
+
         return $this;
     }
 
@@ -47,12 +48,13 @@ abstract class AbstractController
     {
         $this->setPath($path);
         $data = array();
-        foreach($array as $key => $val) {
+        foreach ($array as $key => $val) {
             $data[$key] = $val;
         }
         $data['app'] = $this->app;
         $data['request'] = $this->request;
         $data['base_url'] = $this->base_link;
+
         return $this->twig->render($this->getPath(), $data);
     }
 
@@ -75,25 +77,24 @@ abstract class AbstractController
     {
         $route = new Route();
         $this->setBaseLink($route);
-        if($path === null) {
-            if(count($route->getRequest()) <= 2) {
+        if ($path === null) {
+            if (count($route->getRequest()) <= 2) {
                 $module = strtolower($route->getModule());
                 $controller = explode("Controller", $route->getController())[0];
                 $controller[0] = strtolower($controller[0]);
                 $view = explode("?", $route->getView());
                 $path = $module.'/'.$controller.'/'.$view[0].'.html.twig';
             } else {
-                $chgt = false;
                 $request = $route->getRequest();
                 $adminKey = array_search('admin', $request);
-                if($adminKey !== false) {
+                if ($adminKey !== false) {
                     $request[$adminKey] = 'backend';
                 }
                 $view = end($request);
                 $view = explode("?", $view);
                 $request[count($request)-1] = $view[0];
                 $temp = implode('/', $request);
-                if($route->getIndexAccess()) {
+                if ($route->getIndexAccess()) {
                     $path = $temp.'/index.html.twig';
                 } else {
                     $path = $temp.'.html.twig';
@@ -102,8 +103,8 @@ abstract class AbstractController
         }
         
         $logger = new Logger;
-        if(!file_exists(__DIR__.'/../../public/template/'.$path)) {
-            if($this->isDev()) {
+        if (!file_exists(__DIR__.'/../../public/template/'.$path)) {
+            if ($this->isDev()) {
                 $this->notifications->addDanger("Template not found : " . $path);
             } else {
                 $this->notifications->addDanger("Une erreur est survenue, page non trouvée");
@@ -114,11 +115,11 @@ abstract class AbstractController
         $this->path = $path;
     }
 
-    public function isDev() {
-        if($this->app->config()->isDev()) {
+    public function isDev()
+    {
+        if ($this->app->config()->isDev()) {
             return true;
-        } else {
-            return false;
         }
+        return false;
     }
 }

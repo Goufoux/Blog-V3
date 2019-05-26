@@ -16,16 +16,16 @@ class Managers extends Manager
     public function getManagerOf($module)
     {
         $module = ucfirst($module);
-        if(!isset($this->managers[$module])) {
+        if (!isset($this->managers[$module])) {
             $manager = 'Manager\\'.$module.'Manager';
-            try
-            {
-                if(!class_exists($manager)) {
+            try {
+                if (!class_exists($manager)) {
                     throw new \Exception("Le manager {".$manager."} n'existe pas");
                 }
-                if(!$this->managers[$module] = new $manager($this->bdd))
+                if (!$this->managers[$module] = new $manager($this->bdd)) {
                     throw new \Exception("Impossible d'instancier la classe " . $manager);
-            } catch(\Exception $e) {
+                }
+            } catch (\Exception $e) {
                 $notif = Notifications::getInstance();
                 $notif->addWarning($e->getMessage());
                 $response = new Response;
@@ -42,7 +42,7 @@ class Managers extends Manager
         $response = new Response;
         $notif = new Notifications;
 
-        if(!class_exists($entity)) {
+        if (!class_exists($entity)) {
             $notif->addDanger("Entité non trouvée : " . $entity);
             $response->referer();
         }
@@ -67,7 +67,7 @@ class Managers extends Manager
                     default:
                         break;
                 }
-            }   
+            }
         }
         
         try {
@@ -78,18 +78,15 @@ class Managers extends Manager
                 throw new \PDOException($this->errorCode($req));
             }
             $res = $req->fetchAll();
-            foreach($res as $key => $data) {
+            foreach ($res as $key => $data) {
                 $res[$key] = new $entity($data, true);
             }
     
             return $res;
-
         } catch (\PDOException $e) {
             $notif->addDanger($e->getMessage());
             return false;
         }
-
-
     }
 
     /**
@@ -105,12 +102,12 @@ class Managers extends Manager
     {
         $entity = "\Entity\\".ucfirst($table);
 
-        if(empty($table) || empty($data)) {
+        if (empty($table) || empty($data)) {
             return null;
         }
         
         $prefix = '';
-        if($autoPrefix) {
+        if ($autoPrefix) {
             $prefix = $table.'_';
         }
 
@@ -120,7 +117,6 @@ class Managers extends Manager
                 switch ($key) {
                     case 'WHERE':
                         $sql .= ' AND ' . $flag;
-                        // echo $sql;
                             break;
                     case 'LIMIT':
                         if (!is_int($flag)) {
@@ -139,7 +135,7 @@ class Managers extends Manager
         $req->bindValue(':'.$prefix.$by, $data);
         try {
             $req->execute();
-            if(!$this->successRequest($req)) {
+            if (!$this->successRequest($req)) {
                 throw new \PDOException($this->errorCode($req));
             }
             
@@ -161,7 +157,7 @@ class Managers extends Manager
 
 
             return $res;
-        } catch(\PDOException $e) {
+        } catch (\PDOException $e) {
             $this->setError($e->getMessage());
             return false;
         }
@@ -169,11 +165,11 @@ class Managers extends Manager
 
     public function update(string $table, array $data, bool $autoPrefix = true)
     {
-        if(empty($table) || empty($data)) {
+        if (empty($table) || empty($data)) {
             return null;
         }
         $prefix = '';
-        if($autoPrefix) {
+        if ($autoPrefix) {
             $prefix = $table.'_';
         }
 
@@ -184,16 +180,16 @@ class Managers extends Manager
         $now = new \DateTime();
         $data['updated_at'] = $now->format('Y-m-d H:i:s');
 
-        if(!$id) {
+        if (!$id) {
             $this->setError("No key defined for update row");
             return false;
         }
 
         unset($data['id']);
 
-        foreach($data as $key => $value) {
+        foreach ($data as $key => $value) {
             $tempKey[] = $prefix.$key;
-            if($key === 'password') {
+            if ($key === 'password') {
                 $value = password_hash($value, PASSWORD_BCRYPT);
             }
             $tempValues[] = $value;
@@ -201,19 +197,19 @@ class Managers extends Manager
 
         $str = array();
 
-        for($i = 0; $i < count($tempKey); $i++) {
+        for ($i = 0; $i < count($tempKey); $i++) {
             $str []= $tempKey[$i] . ' = :' . $tempKey[$i];
         }
 
         $str = implode(', ', $str);
         $req = $this->bdd->prepare('UPDATE ' . $table . ' SET ' . $str . ' WHERE ' . $table.'_id = :id');
-        for($i = 0; $i < count($tempKey); $i++) {
+        for ($i = 0; $i < count($tempKey); $i++) {
             $req->bindValue(':'.$tempKey[$i], $tempValues[$i]);
         }
         $req->bindValue(':id', $id);
         try {
             $req->execute();
-            if(!$this->successRequest($req)) {
+            if (!$this->successRequest($req)) {
                 throw new \PDOException($this->errorCode($req));
             }
             return true;
@@ -225,16 +221,16 @@ class Managers extends Manager
 
     public function add(string $table, array $data, $tablePrefixe = true)
     {
-        if(empty($table)) {
+        if (empty($table)) {
             return false;
         }
 
-        if(empty($data)) {
+        if (empty($data)) {
             return null;
         }
 
         $prefix = '';
-        if($tablePrefixe) {
+        if ($tablePrefixe) {
             $prefix = $table.'_';
         }
 
@@ -246,8 +242,8 @@ class Managers extends Manager
         $bindKey = array();
         $bindValue = array();
         
-        foreach($data as $key => $value) {
-            if($key === 'password') {
+        foreach ($data as $key => $value) {
+            if ($key === 'password') {
                 $value = password_hash($value, PASSWORD_BCRYPT);
             }
             $insert []= $prefix.$key;
@@ -262,30 +258,29 @@ class Managers extends Manager
         $sql = 'INSERT INTO ' . $table . '('.$SQLinsert.') VALUES('.$values.')';
         
         $req = $this->bdd->prepare($sql);
-        if(count($bindValue) <= 0) {
+        if (count($bindValue) <= 0) {
             return null;
         }
 
-        for($i = 0; $i < count($bindValue); $i++) {
+        for ($i = 0; $i < count($bindValue); $i++) {
             $req->bindValue(':'.$bindKey[$i], $bindValue[$i]);
         }
         try {
             $req->execute();
-            if(!$this->successRequest($req)) {
+            if (!$this->successRequest($req)) {
                 throw new \PDOException($this->errorCode($req));
             }
             return true;
-        } catch(\PDOException $e) {
+        } catch (\PDOException $e) {
             $this->setError($e->getMessage());
             return false;
         }
-        
     }
 
     public function remove(string $table, string $column = 'id', $value, $autoPrefix = true)
     {
         $prefix = '';
-        if($autoPrefix) {
+        if ($autoPrefix) {
             $prefix = $table.'_';
         }
         $sql = 'DELETE FROM ' . $table . ' WHERE ' . $prefix.$column . ' = :' . $column;
@@ -293,11 +288,11 @@ class Managers extends Manager
         $req->bindValue(':'.$column, $value);
         try {
             $req->execute();
-            if(!$this->successRequest($req)) {
+            if (!$this->successRequest($req)) {
                 throw new \PDOException($this->errorCode($req));
             }
             return true;
-        } catch(\PDOException $e) {
+        } catch (\PDOException $e) {
             $this->setError($e->getMessage());
             return false;
         }
@@ -309,11 +304,11 @@ class Managers extends Manager
         $req = $this->bdd->prepare($sql);
         try {
             $req->execute();
-            if(!$this->successRequest($req)) {
+            if (!$this->successRequest($req)) {
                 throw new \PDOException($this->errorCode($req));
             }
             return true;
-        } catch(\PDOException $e) {
+        } catch (\PDOException $e) {
             $this->setError($e->getMessage());
             return false;
         }

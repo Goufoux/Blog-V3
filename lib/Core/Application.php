@@ -21,17 +21,17 @@ class Application extends Core
         $routeur = new Routeur($this);
         $response = new Response;
 
-        if($routeur->getRoute()->getModule() === 'Backend' && !$this->user()->isAuthentificated()) {
+        if ($routeur->getRoute()->getModule() === 'Backend' && !$this->user()->isAuthentificated()) {
             $response->connect();
             return;
         }
         
-        if($routeur->getRoute()->getModule() === 'Backend' && !($this->user()->hasRole('ROLE_SUPER_ADMIN') || $this->user()->hasRole('ROLE_ADMIN'))) {
+        if ($routeur->getRoute()->getModule() === 'Backend' && !($this->user()->hasRole('ROLE_SUPER_ADMIN') || $this->user()->hasRole('ROLE_ADMIN'))) {
             $response->disconnect();
             return;
         }
         
-        if($routeur->match()) {
+        if ($routeur->match()) {
             $page = new Page();
             $page->setController($routeur->getControllerClass());
             $page->generatePage($this, $routeur->getControllerMethod(), $routeur);

@@ -22,13 +22,13 @@ class Response
 
     /**
      * redirectTo(string $location)
-     * 
+     *
      * Redirection vers $location
      * @return void|false
      */
     public function redirectTo(string $location = ''): bool
     {
-        if(empty($location)) {
+        if (empty($location)) {
             return false;
         }
 
@@ -45,17 +45,16 @@ class Response
     {
         $request = new Request;
         $referer = $request->getHttpReferer();
-        if($referer == null) {
+        if ($referer == null) {
             header('Location: /');
-        } else {
-            header('Location: '.$referer);
         }
+        header('Location: '.$referer);
         exit;
     }
 
     public function errors(string $message = '', int $code = 0)
     {
-        if($code == 500) {
+        if ($code == 500) {
             header('Location: /error.html');
         }
         header('Location: /error');

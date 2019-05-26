@@ -74,35 +74,34 @@ class Convert
 
     public static function convertInputTimeToMin(string $string)
     {
-        if(empty($string)) {
+        if (empty($string)) {
             return null;
         }
 
         $time = explode(':', $string);
 
-        if(empty($time[0]) || empty($time[1])) {
+        if (empty($time[0]) || empty($time[1])) {
             return null;
         }
 
         $time = ($time[0] * 60) + $time[1];
-        return $time; 
+        return $time;
     }
 
     public static function convertMinToTime(int $min)
     {
-        if($min <= 0) {
+        if ($min <= 0) {
             return null;
         }
 
         $hours = floor($min / 60);
         $mins = ($min % 60);
-        if($hours < 10) {
+        if ($hours < 10) {
             $hours = '0'.$hours;
         }
-        if($mins < 10) {
+        if ($mins < 10) {
             $mins = '0'.$mins;
         }
         return $hours.':'.$mins;
     }
-
 }

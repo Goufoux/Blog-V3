@@ -19,13 +19,12 @@ class Authentification
         $this->setAuthentificated();
     }
 
-    public function isAuthentificated() :bool
+    public function isAuthentificated(): bool
     {
-        if($this->authentificated === true) {
+        if ($this->authentificated === true) {
             return true;
-        } else {
-            return false;
-        }
+        }    
+        return false;
     }
 
     public function getRole()
@@ -47,11 +46,6 @@ class Authentification
         }
     }
 
-    private function setRole()
-    { 
-        
-    }
-
     public function getUser()
     {
         return $this->user;
@@ -62,9 +56,9 @@ class Authentification
         $this->user = $user;
     }
 
-    private function setAuthentificated() :Authentification
+    private function setAuthentificated(): Authentification
     {
-        if(isset($_SESSION['user'])) {
+        if (isset($_SESSION['user'])) {
             $this->authentificated = true;
         } else {
             $this->authentificated = false;

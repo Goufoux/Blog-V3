@@ -9,7 +9,6 @@ namespace Core;
 use Module\Notifications;
 use Service\Response;
 
-
 class Page
 {
     protected $controller;
@@ -31,15 +30,14 @@ class Page
         }
         
         $controller = new $controller($app);
-        if(method_exists($controller, $action)) {
+        if (method_exists($controller, $action)) {
             echo $controller->$action();
-        }
-        else {
-            if(preg_match("#ico#", $action)) {
+        } else {
+            if (preg_match("#ico#", $action)) {
                 return;
             }
             $app->logger()->addLogs("Méthode not found : " . $action);
-            if($app->config()->isDev()) {
+            if ($app->config()->isDev()) {
                 $notif->addDanger("Méthode non trouvée : " . $action);
             } else {
                 $notif->addDanger("Une erreur est survenue. La page n'existe pas, ou plus.");

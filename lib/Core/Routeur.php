@@ -8,7 +8,6 @@ namespace Core;
 
 class Routeur
 {
-
     protected $route;
     protected $moduleDir;
     protected $controllerDir;
