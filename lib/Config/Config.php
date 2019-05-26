@@ -1,14 +1,6 @@
 <?php
 
-/**
- * @author Genarkys <quentin.roussel@genarkys.fr>
- */
-
 namespace Config;
-
-use Service\Response;
-use Module\Mail;
-
 
 abstract class Config
 {
@@ -25,15 +17,17 @@ abstract class Config
     private function setError(string $error, int $code = 0)
     {
         $this->error = ['error' => $error, 'code' => $code];
+        
         return $this;
     }
 
-    public function isDev() {
-        if($this->getName() === 'developpement') {
+    public function isDev()
+    {
+        if ($this->getName() === 'developpement') {
             return true;
-        } else {
-            return false;
         }
+
+        return false;
     }
 
     protected function setName(string $name)
@@ -43,8 +37,8 @@ abstract class Config
 
     protected function run()
     {
-        if(!$this->setConfigPath()) {
-           die($this->getError()['error']);
+        if (!$this->setConfigPath()) {
+            die($this->getError()['error']);
         }
     }
 
@@ -62,39 +56,38 @@ abstract class Config
             'dbName' => $this->readConfigFile('dbName') ?? null,
             'driver' => $this->readConfigFile('driver') ?? 'mysql'
         );
+
         return $dbParam;
     }
 
-    protected function readConfigFile($data) 
+    protected function readConfigFile($data)
     {
-        if(empty($this->getConfigPath())) {
+        if (empty($this->getConfigPath())) {
             return false;
         }
         $file = parse_ini_file($this->getConfigPath());
-        if($file) {
-            if(isset($file[$data])) {
+        if ($file) {
+            if (isset($file[$data])) {
                 return $file[$data];
-            } else {
-                return null;
             }
+            return null;
         }
     }
 
-    protected function getConfigPath() :string
+    protected function getConfigPath(): string
     {
         return $this->path;
     }
 
-    protected function setConfigPath() :bool
+    protected function setConfigPath(): bool
     {
-        $path = __DIR__.'/../../config/'.$this->name.'.ini';
-        if(!file_exists($path)) {
+        $path = __DIR__ . '/../../config/' . $this->name . '.ini';
+        if (!file_exists($path)) {
             $this->path = false;
             $this->setError("Fichier de configuration not found");
             return false;
-        } else {
-            $this->path = $path;
-            return true;
         }
+        $this->path = $path;
+        return true;
     }
 }

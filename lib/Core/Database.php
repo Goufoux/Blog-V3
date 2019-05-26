@@ -7,7 +7,6 @@
 namespace Core;
 
 use Module\Logger;
-use Module\Mail;
 
 class Database
 {
@@ -32,8 +31,8 @@ class Database
         $password = $this->getParams('password');
         $logger = new Logger;
 
-        if($host === null) {
-            if($this->isDevMode()) {
+        if ($host === null) {
+            if ($this->isDevMode()) {
                 $host = '127.0.0.1';
             } else {
                 $logger->setLogs("Host not found in production.ini.".Logger::SAUT);
@@ -41,8 +40,8 @@ class Database
             }
         }
 
-        if($driver === null) {
-            if($this->isDevMode()) {
+        if ($driver === null) {
+            if ($this->isDevMode()) {
                 $driver = 'mysql';
             } else {
                 $logger->setLogs("Driver not found in production.ini.".Logger::SAUT);
@@ -50,21 +49,21 @@ class Database
             }
         }
         
-        if($dbName === null) {
+        if ($dbName === null) {
             $logger->setLogs("DbName not found in " . (($this->devMode == true) ? 'developpement' : 'production') . ".ini.".Logger::SAUT);
             $this->setConnected(false);
         }
 
-        if($user === null) {
-            if($this->isDevMode()) {
+        if ($user === null) {
+            if ($this->isDevMode()) {
                 $user = 'root';
             } else {
-                $logger->setLogs("User not found in production.ini".Logger::SAUT);                    
+                $logger->setLogs("User not found in production.ini".Logger::SAUT);
                 $this->setConnected(false);
             }
         }
-        if($password === null) {
-            if($this->isDevMode()) {
+        if ($password === null) {
+            if ($this->isDevMode()) {
                 $password = '';
             } else {
                 $logger->setLogs("Password not found in production.ini".Logger::SAUT);
@@ -72,33 +71,31 @@ class Database
             }
         }
 
-        if($this->isConnected() === false) {
+        if ($this->isConnected() === false) {
             $logger->setLogs("La connexion avec la base de donnée n'a pas été tentée car il manque des informations essentielles.");
             return false;
         }
         
         $connecting_string = $driver.':host='.$host.';dbname='.$dbName;
-        try
-        {
+        try {
             $this->bdd = new \PDO($connecting_string, $user, $password, array(
                 \PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES \'UTF8\''
             ));
             $this->setConnected(true);
             $logger->setLogs("Connexion réussi avec la bdd");
-        }
-        catch(\PDOException $e)
-        {
+        } catch (\PDOException $e) {
             $this->setConnected(false);
             $logger->setLogs("Une erreur est survenue est la connexion avec la base de donnée n'a pas été établie. Détails:".Logger::SAUT.$e->getMessage());
             return false;
         }
     }
 
-    public function isConnected() {
-        if($this->connected !== null) {
-            if($this->connected) {
+    public function isConnected()
+    {
+        if ($this->connected !== null) {
+            if ($this->connected) {
                 return true;
-            } 
+            }
             return false;
         }
         return null;
@@ -106,11 +103,10 @@ class Database
 
     public function isDevMode() :bool
     {
-        if($this->devMode === true) {
+        if ($this->devMode === true) {
             return true;
-        } else {
-            return false;
         }
+        return false;
     }
 
     private function setConnected(bool $bool)
@@ -126,11 +122,10 @@ class Database
 
     public function setDevMode($mode)
     {
-        if($mode == 'production') {
+        if ($mode == 'production') {
             $this->devMode = false;
-        } else {
-            $this->devMode = true;
         }
+        $this->devMode = true;
     }
 
     public function setParams(array $param)
@@ -140,14 +135,13 @@ class Database
 
     protected function getParams(string $param = '')
     {
-        if(empty($param)) {
+        if (empty($param)) {
             return $this->params;
         }
 
-        if(isset($this->params[$param])) {
+        if (isset($this->params[$param])) {
             return $this->params[$param];
-        } else {
-            return null;
         }
+        return null;
     }
 }

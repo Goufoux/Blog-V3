@@ -1,4 +1,4 @@
-<?php 
+<?php
 
 /**
  * @author Genarkys <quentin.roussel@genarkys.fr>
@@ -10,7 +10,7 @@ class MyArray
 {
     public static function stringToArray(string $string = null, string $sep = '/') :array
     {
-        if($string === null) {
+        if ($string === null) {
             die('Error MyArray::stringToArray -> $string === null');
         }
 
@@ -21,20 +21,19 @@ class MyArray
 
     public static function clearArray(array $array, string $sep = '', bool $strictMode = true, bool $reIndex = true) :array
     {
-        foreach($array as $key => $val) {
-            if($strictMode) {
-                if($val === $sep) {
+        foreach ($array as $key => $val) {
+            if ($strictMode) {
+                if ($val === $sep) {
                     unset($array[$key]);
                 }
-            }
-            else {
-                if($val == $sep) {
+            } else {
+                if ($val == $sep) {
                     unset($array[$key]);
                 }
             }
         }
 
-        if($reIndex) {
+        if ($reIndex) {
             $array = array_values($array);
         }
 
@@ -46,7 +45,7 @@ class MyArray
         $key = 0;
         $array = array();
         $tempArray = explode($sep1, $string);
-        foreach($tempArray as $string) {
+        foreach ($tempArray as $string) {
             $temp = explode($sep2, $string);
             $array[($temp[0] ?? $key)] = ($temp[1] ?? null);
             $key++;
