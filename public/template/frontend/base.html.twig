@@ -27,6 +27,14 @@
                             </li>
                         {% endif %}
                         <li class="nav-item">
+                            <a href="/user/profil?id={{ app.user.getUser().getId() }}" class="nav-link {% if current == 'profil' %} active {% endif %}">Profil</a>
+                        </li>
+                        {% if current == 'profil' and app.user.getUser().getId() == user.getId() %}
+                            <li class="nav-item">
+                                <a href="/user/edit?id={{ app.user.getUser().getId() }}" class="nav-link">Modifier mes données</a>
+                            </li>
+                        {% endif %}
+                        <li class="nav-item">
                             <a href="/deconnect" class="nav-link">Déconnexion</a>
                         </li>
                     {% else %}
@@ -37,8 +45,10 @@
                 </ul>
             </div>
         </nav>
-        {% block body %}
-        {% endblock %}
+        <div class="container">
+            {% block body %}
+            {% endblock %}
+        </div>
         {% include "modules/notifications.html.twig" %}
     </body>
 </html>

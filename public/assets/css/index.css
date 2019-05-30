@@ -1,4 +1,11 @@
 /** General **/
+
+html {
+  height: 100%;
+}
+body {
+  height: 100%;
+}
 .close {
   transition: all .3s !important; }
 
@@ -24,5 +31,28 @@ a, a:hover {
   position: fixed;
   bottom: 0;
   right: 0; }
+  
+/** Icônes **/
+.ico {
+  opacity: 0.6;
+  transition: all .5s; }
 
-/*# sourceMappingURL=index.css.map */
+.ico-success:hover {
+  color: #46BA2C; }
+
+.ico-danger:hover {
+  color: #CD4949; }
+
+.ico-warning:hover {
+  color: #EA6E44; }
+
+.ico-info:hover {
+  color: #3171E0; }
+
+.ico:hover {
+  transform: scale(1.5, 1.5);
+  cursor: pointer;
+  opacity: 1; }
+
+.ico-rotate:hover {
+  transform: rotate(360deg); }

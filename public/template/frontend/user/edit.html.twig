@@ -1,0 +1,117 @@
+{% extends "frontend/base.html.twig" %}
+
+{% block body %}
+    <div class="row">
+        {% include "frontend/user/menu.html.twig" %}
+        <div class="col-12 p-3">
+            <h1>
+                <i class="fas fa-user-circle mr-2"></i>
+                {{ user.getName() ~ " " ~ user.getFirstName() }}
+            </h1>
+        </div>
+        <section class="col-xl-6 col-lg-10 col-12 bg-primary my-2 p-3">
+            <h1 class="text-secondary">Vos informations</h1>
+            <form action="?id={{ user.getId() }}&type=user_data" method="POST" class="col-12 p-3">
+                <div class="row">
+                    <div class="input-group mb-3">
+                        <div class="input-group-prepend">
+                            <label for="name" id="label-name" class="input-group-text">Nom</label>
+                        </div>
+                        <input type="text" aria-describedby="label-name" name="name" placeholder="Votre nom" id="name" class="form-control" required
+                        {% if request.hasPost('name') %}
+                            value="{{ request.getPost('name') }}"
+                        {% else %}
+                            value="{{ user.getName() }}"
+                        {% endif %}
+                        >
+                        {% if form.hasError('name') %}
+                            <div class="col-12">
+                                <span class="badge badge-danger">{{ form.getError('name') }}</span>
+                            </div>
+                        {% endif %}
+                    </div>
+                    <div class="input-group mb-3">
+                        <div class="input-group-prepend">
+                            <label for="first_name" id="label-first-name" class="input-group-text">Prénom</label>
+                        </div>
+                        <input type="text" name="first_name" aria-describedby="label-first-name" id="first_name" class="form-control" required
+                        {% if request.hasPost('first_name') %}
+                            value="{{ request.getPost('first_name') }}"
+                        {% else %}
+                            value="{{ user.getFirstName() }}"
+                        {% endif %}
+                        >
+                        {% if form.hasError('first_name') %}
+                            <div class="col-12">
+                                <span class="badge badge-danger">{{ form.getError('first_name') }}</span>
+                            </div>
+                        {% endif %}
+                    </div>
+                    <div class="input-group mb-3">
+                        <div class="input-group-prepend">
+                            <label for="email" id="label-email" class="input-group-text"><i class="fas fa-at"></i></label>
+                        </div>
+                        <input type="email" name="email" aria-describedby="label-email" id="email" class="form-control" required
+                        {% if request.hasPost('email') %}
+                            value="{{ request.getPost('email') }}"
+                        {% else %}
+                            value="{{ user.getEmail() }}"
+                        {% endif %}
+                        >
+                        {% if form.hasError('email') %}
+                            <div class="col-12">
+                                <span class="badge badge-danger">{{ form.getError('email') }}</span>
+                            </div>
+                        {% endif %}
+                    </div>
+                    <div class="form-group col-12 text-right">
+                        <input type="submit" value="Mettre à jour" class="btn btn-info">
+                    </div>
+                </div>
+            </form>
+        </section>
+        <section class="col-xl-6 col-lg-10 col-12 bg-primary my-2 p-3">
+            <h1 class="text-secondary">Données de connexion</h1>
+            <form action="?id={{ user.getId() }}&type=user_pass" method="POST" class="col-12 p-3">
+                <div class="form-row">
+                    <div class="input-group mb-3">
+                        <div class="input-group-prepend">
+                            <label for="password" id="label-password" class="input-group-text"><i class="fas fa-key"></i></label>
+                        </div>
+                        <input type="password" name="password" placeholder="Mot de passe actuel" aria-describedby="label-password" id="password" class="form-control" required>
+                        {% if form.hasError('password') %}
+                            <div class="col-12">
+                                <span class="badge badge-danger">{{ form.getErrors('password') }}</span>
+                            </div>
+                        {% endif %}
+                    </div>
+                    <div class="input-group mb-3">
+                        <div class="input-group-prepend">
+                            <label for="new_password" id="label-new-password" class="input-group-text"><i class="fas fa-key"></i></label>
+                        </div>
+                        <input type="password" name="new_password" placeholder="Nouveau mot de passe" aria-describedby="label-new-password" id="new_password" class="form-control" required>
+                        {% if form.hasError('new_password') %}
+                            <div class="col-12">
+                                <span class="badge badge-danger">{{ form.getErrors('new_password') }}</span>
+                            </div>
+                        {% endif %}
+                    </div>
+                    <div class="input-group mb-3">
+                        <div class="input-group-prepend">
+                            <label for="confirm_password" id="label-confirm-password" class="input-group-text"><i class="fas fa-key"></i></label>
+                        </div>
+                        <input type="password" name="confirm_password" placeholder="Confirmation" aria-describedby="label-confirm-password" id="confirm_password" class="form-control" required>
+                        {% if form.hasError('confirm_password') %}
+                            <div class="col-12">
+                                <span class="badge badge-danger">{{ form.getErrors('confirm_password') }}</span>
+                            </div>
+                        {% endif %}
+                    </div>
+                    <div class="form-group col-12 text-right">
+                        <input type="submit" value="Mettre à jour" class="btn btn-info">
+                    </div>
+                </div>
+            </form>
+        </section>
+    </div>
+{% endblock %}

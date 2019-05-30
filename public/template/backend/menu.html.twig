@@ -1,0 +1,23 @@
+<nav class="navbar-expand-lg navbar-dark bg-primary col-12">
+    <a class="navbar-brand col-12" href="/">Genarkys</a>
+    <button class="navbar-toggler d-lg-none" type="button" data-toggle="collapse" data-target="#collapsibleNavId" aria-controls="collapsibleNavId"
+        aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse col-12" id="collapsibleNavId">
+        <ul class="navbar-nav d-block col-12 mr-auto mt-2 mt-lg-0">
+            <li class="nav-item">
+                <a class="nav-link" href="/admin/users/">
+                    <i class="fas fa-user mr-2"></i>
+                    Gestion des utilisateurs
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="/user/profil?id={{ app.user.getUser().getId() }}" class="nav-link">
+                    <i class="fas fa-user-circle mr-2"></i>
+                    Mon compte
+                </a>
+            </li>
+        </ul>
+    </div>
+</nav>

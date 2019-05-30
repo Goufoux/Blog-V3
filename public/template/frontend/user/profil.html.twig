@@ -1,0 +1,36 @@
+{% extends "frontend/base.html.twig" %}
+
+{% block body %}
+    <div class="row">
+        {% include "frontend/user/menu.html.twig" %}
+        <div class="col-12 p-3">
+            <h1>
+                <i class="fas fa-user-circle mr-2"></i>
+                {{ user.getName() ~ " " ~ user.getFirstName() }}
+                {% if app.user.getUser().getId() == user.getId() %}
+                    <div class="float-right">
+                        <a href="/user/edit?id={{ user.getId() }}" class="btn btn-info">
+                            <i class="fas fa-pen"></i>
+                        </a>
+                    </div>
+                {% endif %}
+            </h1>
+        </div>
+        <div class="col-3">
+            <h2>Infos</h2>
+            <ul class="list-group col-12 p-0">
+                <li class="list-group-item" data-toggle="tooltip" title="Date de création">
+                    <i class="fas fa-calendar-alt mr-2"></i>
+                    {{ user.getCreatedAt()|date("d/m/y") }}
+                </li>
+                <li class="list-group-item" data-toggle="tooltip" title="Adresse email">
+                    <i class="fas fa-at mr-2"></i>
+                    {{ user.getEmail() }}
+                </li>
+            </ul>
+        </div>
+        <div class="col-9">
+            <h2>Posts (?)</h2>
+        </div>
+    </div>
+{% endblock %}

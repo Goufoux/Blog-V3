@@ -21,7 +21,6 @@ class ConnectManager extends Manager
             }
 
             $user = $req->fetch();
-            var_dump($user);
 
             if ($user === false) {
                 throw new \PDOException("No user with this email");

@@ -1,0 +1,15 @@
+.main-container {
+    height: 100%;
+}
+.main-row {
+    height: 100%;
+}
+
+.menu-col {
+    height: 100%;
+}
+@media all and (max-width: 992px) {
+    .main-row {
+        height: auto;
+    }
+}
