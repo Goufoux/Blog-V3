@@ -117,9 +117,6 @@ abstract class AbstractController
 
     public function isDev()
     {
-        if ($this->app->config()->isDev()) {
-            return true;
-        }
-        return false;
+        return ($this->app->config()->isDev() === true);
     }
 }

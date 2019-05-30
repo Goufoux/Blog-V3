@@ -103,10 +103,7 @@ class Database
 
     public function isDevMode() :bool
     {
-        if ($this->devMode === true) {
-            return true;
-        }
-        return false;
+        return ($this->devMode === true);
     }
 
     private function setConnected(bool $bool)
