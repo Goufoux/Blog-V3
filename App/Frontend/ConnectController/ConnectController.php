@@ -4,7 +4,6 @@ namespace App\Frontend\ConnectController;
 
 use Core\AbstractController;
 use Form\ConnectForm;
-use Entity\User;
 
 class ConnectController extends AbstractController
 {
