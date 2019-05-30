@@ -16,7 +16,7 @@ class Response
      */
     public function connect()
     {
-        header('Location: /connect/user');
+        header('Location: /connect/');
         return;
     }
 

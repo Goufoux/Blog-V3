@@ -58,7 +58,7 @@ abstract class Core
     
     private function setUser(): Core
     {
-        $this->user = new Authentification();
+        $this->user = new Authentification($this->database->bdd());
         
         return $this;
     }

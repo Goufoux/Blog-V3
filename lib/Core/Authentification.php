@@ -11,11 +11,13 @@ use Manager\UserRoleManager;
 class Authentification
 {
     protected $authentificated;
-    protected $role;
+    protected $roles;
     protected $user;
+    protected $manager;
 
-    public function __construct()
+    public function __construct($bdd)
     {
+        $this->manager = new Managers($bdd);
         $this->setAuthentificated();
     }
 
@@ -27,9 +29,25 @@ class Authentification
         return false;
     }
 
-    public function getRole()
+    public function getRoles()
     {
-        return $this->role;
+        return $this->roles;
+    }
+
+    public function setRoles()
+    {
+        $userRoleManager = $this->manager->getManagerOf("UserRole");
+        $roles = $userRoleManager->findByUser($this->user->getId());
+
+        foreach ($roles as $role) {
+            $this->roles[$role->getRole()->getName()] = [
+                'create' => $role->getRole()->getCreate(),
+                'update' => $role->getRole()->getUpdate(),
+                'delete' => $role->getRole()->getDelete()
+            ];
+        }
+        
+        return $this;
     }
 
     public function isAdmin()
@@ -39,7 +57,7 @@ class Authentification
 
     public function hasRole(string $role)
     {
-        if (empty($this->role[$role])) {
+        if (empty($this->roles[$role])) {
             return false;
         } else {
             return true;
@@ -56,13 +74,15 @@ class Authentification
         $this->user = $user;
     }
 
-    private function setAuthentificated(): Authentification
+    private function setAuthentificated()
     {
+        // var_dump($_SESSION['user']);
         if (isset($_SESSION['user'])) {
             $this->authentificated = true;
-        } else {
-            $this->authentificated = false;
+            $this->setUser($_SESSION['user']);
+            $this->setRoles();
+            // return;
         }
-        return $this;
+        // $this->authentificated = false;
     }
 }

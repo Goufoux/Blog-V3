@@ -10,4 +10,11 @@ class IndexController extends AbstractController
     {
         return $this->render();
     }
+
+    public function deconnect()
+    {
+        session_destroy();
+        $this->notifications->addSuccess("Vous avez était déconnecté.");
+        return $this->response->redirectTo("/");
+    }
 }
