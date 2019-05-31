@@ -19,8 +19,14 @@ class RegisterController extends AbstractController
                 if (!$emailExist) {
                     unset($datas['confirm_password'], $datas['cgu']);
                     if ($this->managers->add("user", $datas)) {
+                        $userId = $this->managers->getLastInsertId();
+                        $roleData = [
+                            'role' => 3,
+                            'user' => $userId
+                        ];
+                        $this->managers->add("userRole", $roleData);
                         $this->notifications->addSuccess("Votre compte a bien été créé");
-                        $this->response->redirectTo("/register/welcome");
+                        // $this->response->redirectTo("/register/welcome");
                     } else {
                         $this->notifications->default("500", $this->managers->getError(), "danger", true);
                     }

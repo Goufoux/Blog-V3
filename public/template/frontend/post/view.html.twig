@@ -1,0 +1,27 @@
+{% extends "frontend/base.html.twig" %}
+
+{% block body %}
+    <div class="container">
+        <div class="row">
+            <div class="post-container col-12">
+                <h1 class="post-title">{{ post.getTitle() }}</h1>
+                <p class="post-chapo">
+                    {{ post.getChapo()|raw }}
+                </p>
+                <p class="post-content">
+                    {{ post.getContent()|raw }}
+                </p>
+                <div class="post-infos">
+                    <span class="badge badge-primary p-2" data-toggle="tooltip" title="Publié le">
+                        <i class="fas fa-calendar mr-2"></i>
+                        {{ post.getCreatedAt()|date("d/m/y") }}
+                    </span>
+                    <a href="/user/profil?id={{ post.getUser().getId() }}" class="badge badge-primary p-2" data-toggle="tooltip" title="Auteur">
+                        <i class="fas fa-user-circle mr-2"></i>
+                        {{ post.getUser().getName() ~ " " ~ post.getUser().getFirstName() }}
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
