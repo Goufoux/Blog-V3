@@ -26,7 +26,7 @@ class RegisterController extends AbstractController
                         ];
                         $this->managers->add("userRole", $roleData);
                         $this->notifications->addSuccess("Votre compte a bien été créé");
-                        // $this->response->redirectTo("/register/welcome");
+                        $this->response->redirectTo("/register/welcome");
                     } else {
                         $this->notifications->default("500", $this->managers->getError(), "danger", true);
                     }
