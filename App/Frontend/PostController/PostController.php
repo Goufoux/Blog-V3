@@ -32,11 +32,11 @@ class PostController extends AbstractController
                     }
                 }
                 $datas['user'] = $this->app->user()->getUser()->getId();
-                if ($this->managers->add("post", $datas)) {
+                if ($this->manager->add("post", $datas)) {
                     $this->notifications->addSuccess("Post ajouté");
                     $this->response->referer();
                 } else {
-                    $this->notifications->default("500", $this->managers->getError(), "danger", true);
+                    $this->notifications->default("500", $this->manager->getError(), "danger", true);
                 }
             } else {
                 $this->notifications->addDanger("Formulaire invalide");
@@ -57,7 +57,7 @@ class PostController extends AbstractController
             $this->response->referer();
         }
 
-        $postManager = $this->managers->getManagerOf("Post");
+        $postManager = $this->manager->getManagerOf("Post");
         $post = $postManager->findById($postId);
 
         if (!$post) {
@@ -79,7 +79,7 @@ class PostController extends AbstractController
             $this->response->referer();
         }
 
-        $postManager = $this->managers->getManagerOf("Post");
+        $postManager = $this->manager->getManagerOf("Post");
         $post = $postManager->findById($postId);
 
         if (!$post) {
@@ -101,7 +101,7 @@ class PostController extends AbstractController
             $this->response->referer();
         }
 
-        $post = $this->managers->findBy("post", "id", $postId, true, true);
+        $post = $this->manager->findBy("post", "id", $postId, true, true);
 
         if (!$post) {
             $this->notifications->addWarning("Post non trouvé.");
@@ -113,10 +113,10 @@ class PostController extends AbstractController
             $this->response->referer();
         }
 
-        if ($this->managers->remove("post", "id", $postId)) {
+        if ($this->manager->remove("post", "id", $postId)) {
             $this->notifications->addSuccess("Post supprimé.");
         } else {
-            $this->notifications->default("500", $this->managers->getError(), "danger", true);
+            $this->notifications->default("500", $this->manager->getError(), "danger", true);
         }
         $this->response->referer();
     }

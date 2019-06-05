@@ -19,7 +19,7 @@ class UserController extends AbstractController
         $userManager = $this->manager->getManagerOf("User");
         $user = $userManager->findById($userId);
 
-        $posts = $this->managers->findBy("post", "user", $userId);
+        $posts = $this->manager->findBy("post", "user", $userId);
 
         if (!$user) {
             $this->notifications->addWarning("Utilisateur non trouvé");

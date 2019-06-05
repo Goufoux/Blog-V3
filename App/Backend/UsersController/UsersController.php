@@ -161,7 +161,7 @@ class UsersController extends AbstractController
             $this->response->referer();
         }
 
-        $posts = $this->managers->findBy("post", "user", $userId);
+        $posts = $this->manager->findBy("post", "user", $userId);
 
         return $this->render([
             'user' => $user,

@@ -20,10 +20,10 @@ class PostController extends AbstractController
             $this->response->referer();
         }
 
-        if ($this->managers->remove("post", "id", $postId)) {
+        if ($this->manager->remove("post", "id", $postId)) {
             $this->notifications->addSuccess("Post supprimé.");
         } else {
-            $this->notifications->default("500", $this->managers->getError(), "danger", true);
+            $this->notifications->default("500", $this->manager->getError(), "danger", true);
         }
         $this->response->referer();
     }
