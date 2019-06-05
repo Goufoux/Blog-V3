@@ -11,13 +11,10 @@
                             <i class="fas fa-at"></i>
                         </span>
                     </div>
-                    <input placeholder="Email" type="text" aria-describedby="label-email" class="form-control" name="email" id="email" required
-                    {% if request.hasPost('email') %}
-                        value="{{ request.getPost('email') }}"
-                    {% endif %}>
+                    <input placeholder="Email" type="text" aria-describedby="label-email" class="form-control" name="email" id="email" required value="{{ request.post('email')|default('') }}">
                     {% if form.hasError('email') %}
                     <div class="col-12">
-                        <span class="badge badge-danger">{{ form.getErrors('email') }}</span>
+                        <span class="badge badge-danger">{{ form.errors('email') }}</span>
                     </div>    
                     {% endif %}
                 </div>
@@ -30,7 +27,7 @@
                     <input placeholder="Password" class="form-control" aria-describedby="label-password" type="password" name="password" id="password">
                     {% if form.hasError('password') %}
                     <div class="col-12">
-                        <span class="badge badge-danger">{{ form.getErrors('password') }}</span>
+                        <span class="badge badge-danger">{{ form.errors('password') }}</span>
                     </div>
                     {% endif %}
                 </div>

@@ -16,7 +16,7 @@ class UserController extends AbstractController
             $this->response->referer();
         }
 
-        $userManager = $this->managers->getManagerOf("User");
+        $userManager = $this->manager->getManagerOf("User");
         $user = $userManager->findById($userId);
 
         if (!$user) {
@@ -39,7 +39,7 @@ class UserController extends AbstractController
             $this->response->referer();
         }
 
-        $userManager = $this->managers->getManagerOf("User");
+        $userManager = $this->manager->getManagerOf("User");
         $user = $userManager->findById($userId);
 
         if (!$user) {
@@ -47,7 +47,7 @@ class UserController extends AbstractController
             $this->response->referer();
         }
 
-        $form = new UserForm;
+        $form = new UserForm();
 
         if ($this->request->hasPost()) {
             $datas = $this->request->getAllPost();
@@ -57,11 +57,11 @@ class UserController extends AbstractController
                 $form->profilVerif($datas);
                 if ($form->isValid()) {
                     $datas['id'] = $userId;
-                    if ($this->managers->update("user", $datas)) {
+                    if ($this->manager->update("user", $datas)) {
                         $this->notifications->addSuccess("Données mise à jour");
                         $this->response->redirectTo("/user/profil?id=".$userId);
                     } else {
-                        $this->notifications->default("500", $this->managers->getError(), "danger", false);
+                        $this->notifications->default("500", $this->manager->getError(), "danger", false);
                     }
                 } else {
                     $this->notifications->addDanger("Formulaire invalid");
@@ -74,11 +74,11 @@ class UserController extends AbstractController
                         'id' => $userId,
                         'password' => $datas['new_password']
                     ];
-                    if ($this->managers->update("user", $datas)) {
+                    if ($this->manager->update("user", $datas)) {
                         $this->notifications->addSuccess("Données de connexion mise à jour");
                         $this->response->redirectTo("/user/profil?id=".$userId);
                     } else {
-                        $this->notifications->default("500", $this->managers->getError(), "danger", true);
+                        $this->notifications->default("500", $this->manager->getError(), "danger", true);
                     }
                 } else {
                     $this->notifications->addDanger("Formulaire invalid");

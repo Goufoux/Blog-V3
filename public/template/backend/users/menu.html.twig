@@ -13,14 +13,14 @@
             </li>
             {% if current == 'view' %}
                 <li class="nav-item">
-                    <a href="{{ base_url }}update?id={{ user.getId() }}" class="nav-link">
+                    <a href="{{ base_url }}update?id={{ user.id }}" class="nav-link">
                         Modifier
                     </a>
                 </li>
             {% endif %}
             {% if current == 'update' %}
                 <li class="nav-item">
-                    <a href="{{ base_url }}view?id={{ user.getId() }}" class="nav-link">
+                    <a href="{{ base_url }}view?id={{ user.id }}" class="nav-link">
                         Visualiser
                     </a>
                 </li>
