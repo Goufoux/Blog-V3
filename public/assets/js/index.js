@@ -16,4 +16,22 @@ $(document).ready(function() {
         });
     });
 
+    /* Delete image */
+    $('.delete-image').on('click', function() {
+        let key = $(this).attr('data-key');
+        $.ajax({
+            type: "GET",
+            url: "/post/deleteImage",
+            data: "post="+key,
+            success: function (data) {
+                if (data == 1) {
+                    $('.previsualisation-image').fadeOut('slow', function() {
+                        $('.previsualisation-image').remove();
+                    });
+                    $('#image_alt').val("");
+                }
+                notifications();
+            }
+        });
+    });
 });

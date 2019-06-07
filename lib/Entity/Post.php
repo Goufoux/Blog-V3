@@ -19,6 +19,15 @@ class Post extends Entity
     private $imageAlt;
     private $format;
 
+    /* Issers and hassers */
+
+    public function hasImage()
+    {
+        return (!empty($this->image));
+    }
+
+    /* Getters and setters */
+
     /**
      * Get the value of id
      */ 
