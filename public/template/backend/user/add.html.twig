@@ -13,40 +13,28 @@
             <div class="form-row">
                 <div class="form-group col-4">
                     <label for="name">Nom</label>
-                    <input type="text" name="name" placeholder="Nom" id="name" class="form-control"
-                    {% if request.hasPost('name') %}
-                        value="{{ request.getPost('name') }}"
-                    {% endif %}
-                    >
+                    <input type="text" name="name" placeholder="Nom" id="name" class="form-control" value="{{ request.post('name')|default('') }}">
                     {% if form.hasError('name') %}
                         <div class="col-12">
-                            <span class="badge badge-danger">{{ form.getErrors('name') }}</span>
+                            <span class="badge badge-danger">{{ form.errors('name') }}</span>
                         </div>
                     {% endif %}
                 </div>
                 <div class="form-group col-4">
                     <label for="first_name">Prénom</label>
-                    <input type="text" name="first_name" placeholder="Prénom" id="first_name" class="form-control"
-                    {% if request.hasPost('first_name') %}
-                        value="{{ request.getPost('first_name') }}"
-                    {% endif %}
-                    >
+                    <input type="text" name="first_name" placeholder="Prénom" id="first_name" class="form-control" value="{{ request.post('first_name')|default('') }}">
                     {% if form.hasError('first_name') %}
                         <div class="col-12">
-                            <span class="badge badge-danger">{{ form.getErrors('first_name') }}</span>
+                            <span class="badge badge-danger">{{ form.errors('first_name') }}</span>
                         </div>
                     {% endif %}
                 </div>
                 <div class="form-group col-4">
                     <label for="email">Email</label>
-                    <input type="email" name="email" placeholder="Email" id="email" class="form-control" autocomplete="off"
-                    {% if request.hasPost('email') %}
-                        value="{{ request.getPost('email') }}"
-                    {% endif %}
-                    >
+                    <input type="email" name="email" placeholder="Email" id="email" class="form-control" autocomplete="off" value="{{ request.post('email')|default('') }}">
                     {% if form.hasError('email') %}
                         <div class="col-12">
-                            <span class="badge badge-danger">{{ form.getErrors('email') }}</span>
+                            <span class="badge badge-danger">{{ form.errors('email') }}</span>
                         </div>
                     {% endif %}
                 </div>
@@ -55,7 +43,7 @@
                     <input type="password" name="password" id="password" placeholder="Mot de passe" class="form-control" autocomplete="off">
                     {% if form.hasError('password') %}
                         <div class="col-12">
-                            <span class="badge badge-danger">{{ form.getErrors('password') }}</span>
+                            <span class="badge badge-danger">{{ form.errors('password') }}</span>
                         </div>
                     {% endif %}
                 </div>
@@ -63,7 +51,7 @@
                     <label>
                         Attribution des rôles
                         {% if form.hasError('role') %}
-                            <span class="badge badge-danger">{{ form.getErrors('role') }}</span>
+                            <span class="badge badge-danger">{{ form.errors('role') }}</span>
                         {% endif %}
                     </label>
                     {% if roles is not empty %}
@@ -71,16 +59,12 @@
                     <div class="input-group">
                         <div class="input-group-prepend">
                             <div class="input-group-text">
-                                <input type="checkbox" name="role_{{ role.getId() }}" value="{{ role.getId() }}" id="role_{{ role.getId() }}"
-                                        {% if request.hasPost('role_'~role.getId()) %}
-                                            checked
-                                        {% endif %}
-                                        >
-                                    </div>
-                                </div>
-                                <label for="role_{{ role.getId() }}" class="form-control">{{ role.getName() }}</label>
+                                <input type="checkbox" name="role_{{ role.id }}" value="{{ role.id }}" id="role_{{ role.id }}" {{ request.hasPost('role_' ~ role.id ) ? 'checked' }}>
                             </div>
-                        {% endfor %}
+                        </div>
+                        <label for="role_{{ role.id }}" class="form-control">{{ role.name }}</label>
+                    </div>
+                    {% endfor %}
                     {% else %}
                         <button class="btn btn-warning">Aucun rôle</button>
                     {% endif %}

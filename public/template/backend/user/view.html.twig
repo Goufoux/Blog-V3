@@ -6,7 +6,7 @@
         <div class="col-12 p-3">
             <h1>
                 <i class="fas fa-user-circle mr-2"></i>
-                {{ user.getName() ~ " " ~ user.getFirstName() }}
+                {{ user.name ~ " " ~ user.firstName }}
             </h1>
         </div>
         <div class="col-3">
@@ -14,11 +14,11 @@
             <ul class="list-group col-12 p-0">
                 <li class="list-group-item" data-toggle="tooltip" title="Date de création">
                     <i class="fas fa-calendar-alt mr-2"></i>
-                    {{ user.getCreatedAt()|date("d/m/y") }}
+                    {{ user.createdAt|date("d/m/y") }}
                 </li>
                 <li class="list-group-item" data-toggle="tooltip" title="Adresse email">
                     <i class="fas fa-at mr-2"></i>
-                    {{ user.getEmail() }}
+                    {{ user.email }}
                 </li>
             </ul>
             <h2>Rôles</h2>
@@ -26,7 +26,7 @@
                 {% for role in userRoles %}
                     <li class="list-group-item">
                         <i class="fas fa-user-tag mr-2"></i>
-                        {{ role.getRole().getName() }}
+                        {{ role.role.name }}
                     </li>
                 {% endfor %}
             </ul>

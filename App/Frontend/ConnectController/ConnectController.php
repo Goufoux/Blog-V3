@@ -14,7 +14,7 @@ class ConnectController extends AbstractController
             $data = $this->request->getAllPost();
             $form->verif($data);
             if ($form->isValid()) {
-                $userManager = $this->managers->getManagerOf("user");
+                $userManager = $this->manager->getManagerOf("user");
                 if ($user = $userManager->connect($data['email'], $data['password'])) {
                     $_SESSION['user'] = $user;
                     $this->notifications->addSuccess("Bonjour " . $user->getFirstName());
