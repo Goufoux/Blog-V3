@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Backend\UsersController;
+namespace App\Backend\UserController;
 
 use Core\AbstractController;
 use Form\UserForm;
 
-class UsersController extends AbstractController
+class UserController extends AbstractController
 {
     public function index()
     {
