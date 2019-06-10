@@ -108,7 +108,7 @@ class UserController extends AbstractController
                         $this->notifications->addWarning("Rôle non trouvé.");
                         continue;
                     }
-                    if ($this->app->user()->hasRole($role->getName())) {
+                    if ($this->app->authentification()->hasRole($role->getName())) {
                         continue;
                     }
                     $roleData = [

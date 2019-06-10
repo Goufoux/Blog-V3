@@ -16,13 +16,14 @@ abstract class Core
     protected $config;
     protected $database;
     protected $user;
+    protected $authentification;
     protected $logger;
 
     public function __construct()
     {
         $this->setConfig();
         $this->setDatabase();
-        $this->setUser();
+        $this->setAuthentification();
         $this->setLogger();
     }
 
@@ -43,7 +44,12 @@ abstract class Core
         return $this->database;
     }
 
-    public function user(): Authentification
+    public function authentification()
+    {
+        return $this->authentification;
+    }
+
+    public function user()
     {
         return $this->user;
     }
@@ -55,10 +61,20 @@ abstract class Core
     
     abstract public function run();
 
-    
-    private function setUser(): Core
+    public function setAuthentification()
     {
-        $this->user = new Authentification($this->database->bdd());
+        $this->authentification = new Authentification($this->database->bdd());
+
+        if ($this->authentification->isAuthentificated()) {
+            $this->setUser($this->authentification->getUser());
+        }
+
+        return $this;
+    }
+    
+    private function setUser($user = null): Core
+    {
+        $this->user = $user;
         
         return $this;
     }

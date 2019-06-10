@@ -9,9 +9,9 @@ class UserForm extends Form
 {
     public function verif(array $datas, bool $new = false)
     {
-        $name = (isset($datas['name'])) ? true : false;
-        $first_name = (isset($datas['first_name'])) ? true : false;
-        $email = (isset($datas['email'])) ? true : false;
+        $name = isset($datas['name']);
+        $first_name = isset($datas['first_name']);
+        $email = isset($datas['email']);
         $role = false;
 
         if (!$name) {
@@ -47,9 +47,9 @@ class UserForm extends Form
 
     public function profilVerif(array $datas)
     {
-        $name = (isset($datas['name'])) ? true : false;
-        $first_name = (isset($datas['first_name'])) ? true : false;
-        $email = (isset($datas['email'])) ? true : false;
+        $name = isset($datas['name']);
+        $first_name = isset($datas['first_name']);
+        $email = isset($datas['email']);
 
         if (!$name) {
             $this->addErrors("name", "Champs invalide");
@@ -66,9 +66,9 @@ class UserForm extends Form
 
     public function updatePass(array $datas, User $user)
     {
-        $password = (isset($datas['password'])) ? true : false;
-        $new_password = (isset($datas['new_password'])) ? true : false;
-        $confirm_password = (isset($datas['confirm_password'])) ? true : false;
+        $password = isset($datas['password']);
+        $new_password = isset($datas['new_password']);
+        $confirm_password = isset($datas['confirm_password']);
 
         if (!$password) {
             $this->addErrors("password", "Champs obligatoire");

@@ -32,6 +32,10 @@ class UserController extends AbstractController
 
     public function edit()
     {
+        if (!$this->app->authentification()->isAuthentificated()) {
+            $this->response->redirectTo('/');
+        }
+
         $userId = $this->request->getData('id');
 
         if (!$userId) {
