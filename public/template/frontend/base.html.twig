@@ -20,18 +20,18 @@
             </button>
             <div class="collapse navbar-collapse" id="collapsibleNavId">
                 <ul class="navbar-nav mr-auto mt-2 mt-lg-0">
-                    {% if app.user.isAuthentificated() %}
-                        {% if app.user.hasRole('ROLE_SUPER_ADMIN') %}
+                    {% if app.authentification.isAuthentificated() %}
+                        {% if app.authentification.hasRole('ROLE_SUPER_ADMIN') %}
                             <li class="nav-item">
                                 <a href="/admin/" class="nav-link">Backend</a>
                             </li>
                         {% endif %}
                         <li class="nav-item">
-                            <a href="/user/profil?id={{ app.user.getUser().getId() }}" class="nav-link {% if current == 'profil' %} active {% endif %}">Profil</a>
+                            <a href="/user/profil?id={{ app.user.id }}" class="nav-link {% if current == 'profil' %} active {% endif %}">Profil</a>
                         </li>
-                        {% if current == 'profil' and app.user.getUser().getId() == user.getId() %}
+                        {% if current == 'profil' and app.user.id == user.id %}
                             <li class="nav-item">
-                                <a href="/user/edit?id={{ app.user.getUser().getId() }}" class="nav-link">Modifier mes données</a>
+                                <a href="/user/edit?id={{ app.user.id }}" class="nav-link">Modifier mes données</a>
                             </li>
                         {% endif %}
                         <li class="nav-item">

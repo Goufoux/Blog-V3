@@ -8,7 +8,7 @@ class ConnectForm extends Form
 {
     public function verif(array $datas)
     {
-        $email = (isset($datas['email'])) ? ($this->isEmail($datas['email'])) ? true : false : false;
+        $email = isset($datas['email']) ? ($this->isEmail($datas['email'])) ? true : false : false;
         if (!$email) {
             $this->addErrors("email", "Email invalid");
         }

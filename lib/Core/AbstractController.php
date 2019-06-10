@@ -15,7 +15,7 @@ abstract class AbstractController
 {
     protected $app;
     protected $twig;
-    protected $managers;
+    protected $manager;
     protected $notifications;
     protected $path;
     protected $base_link;
@@ -27,7 +27,7 @@ abstract class AbstractController
         $this->app = $app;
         $this->loadTwig();
         $this->notifications = Notifications::getInstance();
-        $this->managers = new Managers($app->getDatabase()->bdd());
+        $this->manager = new Managers($app->getDatabase()->bdd());
         $this->request = new Request;
         $this->response = new Response;
     }
