@@ -35,7 +35,7 @@
             <h2>Posts ({{ nb_posts }})</h2>
             {% if posts is not empty %}
                 {% for post in posts %}
-                    <div class="bg-secondary p-3">
+                    <div class="bg-secondary p-3 m-2">
                         <div class="row">
                             {% set class_row = "col-12" %}
                             {% if post.getFormat() == 1 %}
@@ -54,13 +54,16 @@
                                     {{ post.getChapo()|raw }}
                                 </p>
                             </div>
-                            <div class="col-12">
-                                {% if app.user.hasRole('ROLE_SUPER_ADMIN') %}
-                                    <a href="/admin/post/delete?id={{ post.getId() }}" class="btn btn-danger" data-toggle="tooltip" title="Supprimer ce post ?">
+                            {% if app.authentification.hasRole('ROLE_SUPER_ADMIN') %}
+                                <div class="col-12 mt-2">
+                                    <a href="/admin/post/delete?id={{ post.getId() }}" class="btn btn-danger btn-sm" data-toggle="tooltip" title="Supprimer ce post ?">
                                         <i class="fas fa-trash"></i>
                                     </a>
-                                {% endif %}
-                            </div>
+                                    <a href="/post/update?id={{ post.getId() }}" class="btn btn-info btn-sm" data-toggle="tooltip" title="Modifier ce post ?">
+                                        <i class="fas fa-pen"></i>
+                                    </a>
+                                </div>
+                            {% endif %}
                         </div>
                     </div>
                 {% endfor %}
