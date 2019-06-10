@@ -33,7 +33,7 @@ class Mail
             $this->phpMailer->isHTML(true);
             $this->phpMailer->CharSet = 'UTF-8';
             $this->phpMailer->Subject = $sujet;
-            $this->phpMailer->Body = $this->tempate($content);
+            $this->phpMailer->Body = $content;
         
             if (!$this->phpMailer->send()) {
                 throw new Exception($this->phpMailer->ErrorInfo);
@@ -55,8 +55,8 @@ class Mail
             $this->phpMailer->isSMTP();
             $this->phpMailer->Host = 'smtp.gmail.com';
             $this->phpMailer->SMTPAuth = true;
-            $this->phpMailer->Username = "deadworldcorp@gmail.com";
-            $this->phpMailer->Password = "Awfzeu1996$";
+            $this->phpMailer->Username = "quentin.oc.mail@gmail.com";
+            $this->phpMailer->Password = "Klest54$36rt";
             $this->phpMailer->SMTPSecure = 'tls';
             $this->phpMailer->Port = 587;
         } catch (\Exception $e) {
@@ -71,12 +71,23 @@ class Mail
         $this->phpMailer = $phpMailer;
     }
 
-    public function tempate($str)
+    public function template($str)
     {
         $body = "<h1>Genarkys</h1><p>%s</p>";
         $body = sprintf($body, $str);
 
         return $body;
+    }
+
+    public function templateForgotPassword($user)
+    {
+        $file = __DIR__."/../../public/template/mail/forgotpassword.html.twig";
+
+        ob_start();
+        require $file;
+        $page = ob_get_contents();
+        ob_end_clean();
+        return $page;
     }
 
     public function getError(): ?string
