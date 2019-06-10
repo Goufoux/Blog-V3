@@ -79,14 +79,14 @@ class Mail
         return $body;
     }
 
-    public function templateForgotPassword($user)
+    public function templateForgotPassword($user, $token)
     {
-        $file = __DIR__."/../../public/template/mail/forgotpassword.html.twig";
-
+        $file = __DIR__."/../../public/template/mail/forgotPassword.php";
         ob_start();
-        require $file;
+        include_once $file;
         $page = ob_get_contents();
         ob_end_clean();
+        ob_end_flush();
         return $page;
     }
 
