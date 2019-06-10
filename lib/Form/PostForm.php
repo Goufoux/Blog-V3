@@ -8,12 +8,12 @@ class PostForm extends Form
 {
     public function verifAdd(array $datas)
     {
-        $title = isset($datas['title']) ? true : false;
-        $chapo = isset($datas['chapo']) ? true : false;
-        $seo_title = isset($datas['seo_title']) ? true : false;
-        $seo_description = isset($datas['seo_description']) ? true : false;
-        $content = isset($datas['content']) ? true : false;
-        $image_alt = isset($datas['image_alt']) ? true : false;
+        $title = isset($datas['title']);
+        $chapo = isset($datas['chapo']);
+        $seo_title = isset($datas['seo_title']);
+        $seo_description = isset($datas['seo_description']);
+        $content = isset($datas['content']);
+        $image_alt = isset($datas['image_alt']);
 
         if (!$title) {
             $this->addErrors("title", "Champs obligatoire");
@@ -26,12 +26,12 @@ class PostForm extends Form
 
     public function verifUpdate(array $datas)
     {
-        $title = isset($datas['title']) ? true : false;
-        $chapo = isset($datas['chapo']) ? true : false;
-        $seo_title = isset($datas['seo_title']) ? true : false;
-        $seo_description = isset($datas['seo_description']) ? true : false;
-        $content = isset($datas['content']) ? true : false;
-        $image_alt = isset($datas['image_alt']) ? true : false;
+        $title = isset($datas['title']);
+        $chapo = isset($datas['chapo']);
+        $seo_title = isset($datas['seo_title']);
+        $seo_description = isset($datas['seo_description']);
+        $content = isset($datas['content']);
+        $image_alt = isset($datas['image_alt']);
 
         if (!$title) {
             $this->addErrors("title", "Champs obligatoire");

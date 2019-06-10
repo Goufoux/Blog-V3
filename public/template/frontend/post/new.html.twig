@@ -10,14 +10,10 @@
                         <div class="input-group-prepend">
                             <label for="title" class="input-group-text">Titre</label>
                         </div>
-                        <input type="text" name="title" placeholder="Titre" required id="title" class="form-control"
-                        {% if request.hasPost('title') %}
-                            value="{{ request.getPost('title') }}"
-                        {% endif %}
-                        >
+                        <input type="text" name="title" placeholder="Titre" required id="title" class="form-control" value="{{ request.post('title')|default('') }}">
                         {% if form.hasError('title') %}
                             <div class="col-12">
-                                <span class="badge badge-danger">{{ form.getErrors('title') }}</span>
+                                <span class="badge badge-danger">{{ form.errors('title') }}</span>
                             </div>
                         {% endif %}
                     </div>
@@ -25,56 +21,46 @@
                         <div class="input-group-prepend">
                             <label for="seo_title" class="input-group-text">SEO Titre</label>
                         </div>
-                        <input type="text" name="seo_title" placeholder="Titre pour le référencement" id="seo_title" class="form-control"
-                        {% if request.hasPost('seo_title') %}
-                            value="{{ request.getPost('seo_title') }}"
-                        {% endif %}
-                        >
+                        <input type="text" name="seo_title" placeholder="Titre pour le référencement" id="seo_title" class="form-control" value="{{ request.post('seo_title')|default('') }}">
                         {% if form.hasError('seo_title') %}
                             <div class="col-12">
-                                <span class="badge badge-danger">{{ form.getErrors('seo_title') }}</span>
+                                <span class="badge badge-danger">{{ form.errors('seo_title') }}</span>
                             </div>
                         {% endif %}
                     </div>
                     <div class="form-group col-6">
                         <label for="chapo">Chapô</label>
                         {% if request.hasPost('chapo') %}
-                            {% set chapo = request.getPost('chapo') %}
-                        {% else %}
-                            {% set chapo = "" %}
+                            {% set chapo = request.post('chapo')|default('') %}
                         {% endif %}
                         <textarea name="chapo" id="chapo" cols="30" rows="10" class="tinymce form-control">{{ chapo }}</textarea>
                         {% if form.hasError('chapo') %}
                             <div class="col-12">
-                                <span class="badge badge-danger">{{ form.getErrors('chapo') }}</span>
+                                <span class="badge badge-danger">{{ form.errors('chapo') }}</span>
                             </div>
                         {% endif %}
                     </div>
                     <div class="form-group col-6">
                         <label for="seo_description">SEO Description</label>
                         {% if request.hasPost('seo_description') %}
-                            {% set seo_description = request.getPost('seo_description') %}
-                        {% else %}
-                            {% set seo_description = "" %}
+                            {% set seo_description = request.post('seo_description')|default('') %}
                         {% endif %}
                         <textarea name="seo_description" id="seo_description" cols="30" rows="10" class="form-control">{{ seo_description }}</textarea>
                         {% if form.hasError('seo_description') %}
                             <div class="col-12">
-                                <span class="badge badge-danger">{{ form.getErrors('seo_description') }}</span>
+                                <span class="badge badge-danger">{{ form.errors('seo_description') }}</span>
                             </div>
                         {% endif %}
                     </div>
                     <div class="form-group col-12">
                         <label for="content">Contenu</label>
                         {% if request.hasPost('content') %}
-                            {% set content = request.getPost('content') %}
-                        {% else %}
-                            {% set content = "" %}
+                            {% set content = request.post('content')|default('') %}
                         {% endif %}
                         <textarea name="content" id="content" cols="30" rows="10" class="tinymce form-control">{{ content }}</textarea>
                         {% if form.hasError('content') %}
                             <div class="col-12">
-                                <span class="badge badge-danger">{{ form.getErrors('content') }}</span>
+                                <span class="badge badge-danger">{{ form.errors('content') }}</span>
                             </div>
                         {% endif %}
                     </div>
@@ -88,7 +74,7 @@
                         </div>
                         {% if form.hasError('image') %}
                             <div class="col-12">
-                                <span class="badge badge-danger">{{ form.getErrors('image') }}</span>
+                                <span class="badge badge-danger">{{ form.errors('image') }}</span>
                             </div>
                         {% endif %}
                     </div>
@@ -96,14 +82,10 @@
                         <div class="input-group-prepend">
                             <label for="image_alt" class="input-group-text">Balise alt Image</label>
                         </div>
-                        <input type="text" name="image_alt" placeholder="Balise alt de l'image" id="image_alt" class="form-control"
-                        {% if request.hasPost('image_alt') %}
-                            value="{{ request.getPost('image_alt') }}"
-                        {% endif %}
-                        >
+                        <input type="text" name="image_alt" placeholder="Balise alt de l'image" id="image_alt" class="form-control" value="{{ request.post('image_alt')|default('') }}">
                         {% if form.hasError('image_alt') %}
                             <div class="col-12">
-                                <span class="badge badge-danger">{{ form.getErrors('image_alt') }}</span>
+                                <span class="badge badge-danger">{{ form.errors('image_alt') }}</span>
                             </div>
                         {% endif %}
                     </div>

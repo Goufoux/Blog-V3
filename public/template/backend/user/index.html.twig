@@ -19,7 +19,7 @@
                     {% for user in users %}
                         <tr>
                             <td>{{ user.id }}</td>
-                            <td>{{ user.creatdAt()|date("d/m/y") }}</td>
+                            <td>{{ user.createdAt|date("d/m/y") }}</td>
                             <td>{{ user.email }}</td>
                             <td>
                                 <a href="{{ base_url }}view?id={{ user.id }}">

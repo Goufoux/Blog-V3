@@ -3,7 +3,40 @@
 {% block body %}
     <div class="container">
         <div class="row">
-            <h1>Mes posts</h1>
+            <h1 class="col-12">Mes posts</h1>
+            {% for post in posts %}
+                <div class="bg-secondary p-3 col-5 m-2">
+                    <div class="row">
+                        {% set class_row = "col-12" %}
+                        {% if post.hasImage %}
+                            {% set class_row = "col-xl-6 col-lg-6 col-md-6 col-12" %}
+                            <div class="col-xl-6 col-lg-6 col-md-6 col-12">
+                                <img src="/docs/img/{{ post.getImage() }}" alt="{{ post.getImageAlt() }}" class="img-fluid">
+                            </div>
+                        {% endif %}
+                        <div class="{{ class_row }} bg-info p-3">
+                            <h3>
+                                <a href="/post/view?id={{ post.getId() }}">
+                                    {{ post.getTitle() }}
+                                </a>
+                            </h3>
+                            <p>
+                                {{ post.getChapo()|raw }}
+                            </p>
+                        </div>
+                        {% if app.user.getUser().getId() == post.getUser() or app.user.hasRole('ROLE_SUPER_ADMIN') %}
+                            <div class="col-12 p-3">
+                                <a href="/post/delete?id={{ post.getId() }}" class="btn btn-danger btn-sm" data-toggle="tooltip" title="Supprimer ce post ?">
+                                    <i class="fas fa-trash"></i>
+                                </a>
+                                <a href="/post/update?id={{ post.getId() }}" class="btn btn-info btn-sm" data-toggle="tooltip" title="Modifier ce post ?">
+                                    <i class="fas fa-pen"></i>
+                                </a>
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+            {% endfor %}
         </div>
     </div>
 {% endblock %}

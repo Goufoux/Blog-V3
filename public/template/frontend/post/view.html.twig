@@ -4,21 +4,21 @@
     <div class="container">
         <div class="row">
             <div class="post-container col-12">
-                <h1 class="post-title">{{ post.getTitle() }}</h1>
+                <h1 class="post-title">{{ post.title }}</h1>
                 <p class="post-chapo">
-                    {{ post.getChapo()|raw }}
+                    {{ post.chapo|raw }}
                 </p>
                 <p class="post-content">
-                    {{ post.getContent()|raw }}
+                    {{ post.content|raw }}
                 </p>
                 <div class="post-infos">
                     <span class="badge badge-primary p-2" data-toggle="tooltip" title="Publié le">
                         <i class="fas fa-calendar mr-2"></i>
-                        {{ post.getCreatedAt()|date("d/m/y") }}
+                        {{ post.createdAt|date("d/m/y") }}
                     </span>
-                    <a href="/user/profil?id={{ post.getUser().getId() }}" class="badge badge-primary p-2" data-toggle="tooltip" title="Auteur">
+                    <a href="/user/profil?id={{ post.user.id }}" class="badge badge-primary p-2" data-toggle="tooltip" title="Auteur">
                         <i class="fas fa-user-circle mr-2"></i>
-                        {{ post.getUser().getName() ~ " " ~ post.getUser().getFirstName() }}
+                        {{ post.user.name ~ " " ~ post.user.firstName }}
                     </a>
                 </div>
             </div>

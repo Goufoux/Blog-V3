@@ -46,10 +46,14 @@ class PostManager extends Manager
                 throw new \PDOException($this->errorCode($req));
             }
 
-            $res = $req->fetch();
+            $posts = $req->fetchAll();
+
+            foreach ($posts as $key => $post) {
+                $posts[$key] = new Post($post, true);
+
+            }
             
-            $post = new Post($res, true);
-            return $post;
+            return $posts;
 
         } catch(\PDOException $e) {
             $this->setError($e->getMessage());

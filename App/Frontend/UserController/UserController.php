@@ -12,17 +12,22 @@ class UserController extends AbstractController
         $userId = $this->request->getData('id');
 
         if (!$userId) {
-            $this->notifications->default("500", "Aucun identifiant fourni", "danger", true);
+            $this->notifications->default('500', 'Aucun identifiant fourni', 'danger', true);
             $this->response->referer();
         }
 
-        $userManager = $this->manager->getManagerOf("User");
+        $userManager = $this->manager->getManagerOf('User');
         $user = $userManager->findById($userId);
 
-        $posts = $this->manager->findBy("post", "user", $userId);
+        if (!$user) {
+            $this->notifications->addWarning('L\'utilisateur n\'a pas été trouvé.');
+            $this->response->referer();
+        }
+
+        $posts = $this->manager->findBy('post', 'user', $userId);
 
         if (!$user) {
-            $this->notifications->addWarning("Utilisateur non trouvé");
+            $this->notifications->addWarning('Utilisateur non trouvé');
             $this->response->referer();
         }
 
@@ -43,15 +48,15 @@ class UserController extends AbstractController
         $userId = $this->request->getData('id');
 
         if (!$userId) {
-            $this->notifications->default("500", "Aucun identifiant fourni", "danger", true);
+            $this->notifications->default('500', 'Aucun identifiant fourni', 'danger', true);
             $this->response->referer();
         }
 
-        $userManager = $this->manager->getManagerOf("User");
+        $userManager = $this->manager->getManagerOf('User');
         $user = $userManager->findById($userId);
 
         if (!$user) {
-            $this->notifications->addWarning("Utilisateur non trouvé");
+            $this->notifications->addWarning('Utilisateur non trouvé');
             $this->response->referer();
         }
 
@@ -61,20 +66,20 @@ class UserController extends AbstractController
             $datas = $this->request->getAllPost();
             $type = $this->request->getData('type');
 
-            if ($type == "user_data") {
+            if ($type == 'user_data') {
                 $form->profilVerif($datas);
                 if ($form->isValid()) {
                     $datas['id'] = $userId;
-                    if ($this->manager->update("user", $datas)) {
-                        $this->notifications->addSuccess("Données mise à jour");
-                        $this->response->redirectTo("/user/profil?id=".$userId);
+                    if ($this->manager->update('user', $datas)) {
+                        $this->notifications->addSuccess('Données mise à jour');
+                        $this->response->redirectTo('/user/profil?id='.$userId);
                     } else {
-                        $this->notifications->default("500", $this->manager->getError(), "danger", false);
+                        $this->notifications->default('500', $this->manager->getError(), 'danger', false);
                     }
                 } else {
-                    $this->notifications->addDanger("Formulaire invalid");
+                    $this->notifications->addDanger('Formulaire invalid');
                 }
-            } else if ($type == "user_pass") {
+            } else if ($type == 'user_pass') {
                 $datas = $this->request->getAllPost();
                 $form->updatePass($datas, $user);
                 if ($form->isValid()) {
@@ -82,17 +87,17 @@ class UserController extends AbstractController
                         'id' => $userId,
                         'password' => $datas['new_password']
                     ];
-                    if ($this->manager->update("user", $datas)) {
-                        $this->notifications->addSuccess("Données de connexion mise à jour");
-                        $this->response->redirectTo("/user/profil?id=".$userId);
+                    if ($this->manager->update('user', $datas)) {
+                        $this->notifications->addSuccess('Données de connexion mise à jour');
+                        $this->response->redirectTo('/user/profil?id='.$userId);
                     } else {
-                        $this->notifications->default("500", $this->manager->getError(), "danger", true);
+                        $this->notifications->default('500', $this->manager->getError(), 'danger', true);
                     }
                 } else {
-                    $this->notifications->addDanger("Formulaire invalid");
+                    $this->notifications->addDanger('Formulaire invalid');
                 }
             } else {
-                $this->notifications->addDanger("Une erreur est survenue.");
+                $this->notifications->addDanger('Une erreur est survenue.');
                 $this->response->referer();
             }
         }

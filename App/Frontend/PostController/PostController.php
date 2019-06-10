@@ -10,7 +10,7 @@ class PostController extends AbstractController
 {
     public function new()
     {
-        if (!$this->app->user()->hasRole('ROLE_USER') && !$this->app->user()->hasRole('ROLE_SUPER_ADMIN')) {
+        if (!$this->app->authentification()->hasRole('ROLE_USER') && !$this->app->authentification()->hasRole('ROLE_SUPER_ADMIN')) {
             $this->notifications->addWarning('Zone réservée.');
             $this->response->referer();
         }
@@ -30,7 +30,7 @@ class PostController extends AbstractController
                         $form->addErrors('image', $fileManagement->getError());
                     }
                 }
-                $datas['user'] = $this->app->user()->getUser()->getId();
+                $datas['user'] = $this->app->user()->getId();
                 if ($this->manager->add('post', $datas)) {
                     $this->notifications->addSuccess('Post ajouté');
                     $this->response->referer();
@@ -98,7 +98,7 @@ class PostController extends AbstractController
     public function list()
     {
         $postManager = $this->manager->getManagerOf('post');
-        $posts = $postManager->findByUser($this->app->user()->getUser()->getId());
+        $posts = $postManager->findByUser($this->app->user()->getId());
 
         return $this->render([
             'title' => 'Mes posts',
@@ -182,7 +182,7 @@ class PostController extends AbstractController
 
             return true;
         }
-        $this->notifications->default("500", $this->manager->getError(), "danger", $this->isDev());
+        $this->notifications->default('500', $this->manager->getError(), 'danger', $this->isDev());
         return false;
     }
 }
