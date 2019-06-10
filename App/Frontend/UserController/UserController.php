@@ -19,6 +19,8 @@ class UserController extends AbstractController
         $userManager = $this->manager->getManagerOf("User");
         $user = $userManager->findById($userId);
 
+        $posts = $this->manager->findBy("post", "user", $userId);
+
         if (!$user) {
             $this->notifications->addWarning("Utilisateur non trouvé");
             $this->response->referer();
@@ -26,7 +28,9 @@ class UserController extends AbstractController
 
         return $this->render([
             'user' => $user,
-            'current' => 'profil'
+            'current' => 'profil',
+            'posts' => $posts,
+            'nb_posts' => count($posts)
         ]);
     }
 

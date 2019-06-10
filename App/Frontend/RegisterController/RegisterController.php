@@ -15,14 +15,20 @@ class RegisterController extends AbstractController
             $datas = $this->request->getAllPost();
             $form->verif($datas);
             if ($form->isValid()) {
-                $emailExist = $this->managers->findBy("user", "email", $datas['email'], true, true);
+                $emailExist = $this->manager->findBy("user", "email", $datas['email'], true, true);
                 if (!$emailExist) {
                     unset($datas['confirm_password'], $datas['cgu']);
-                    if ($this->managers->add("user", $datas)) {
+                    if ($this->manager->add("user", $datas)) {
+                        $userId = $this->manager->getLastInsertId();
+                        $roleData = [
+                            'role' => 3,
+                            'user' => $userId
+                        ];
+                        $this->manager->add("userRole", $roleData);
                         $this->notifications->addSuccess("Votre compte a bien été créé");
                         $this->response->redirectTo("/register/welcome");
                     } else {
-                        $this->notifications->default("500", $this->managers->getError(), "danger", true);
+                        $this->notifications->default("500", $this->manager->getError(), "danger", true);
                     }
                 } else {
                     $form->addErrors("email", "Cette adresse email existe déjà");

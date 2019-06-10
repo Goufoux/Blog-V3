@@ -161,10 +161,14 @@ class UserController extends AbstractController
             $this->response->referer();
         }
 
+        $posts = $this->manager->findBy("post", "user", $userId);
+
         return $this->render([
             'user' => $user,
             'userRoles' => $userRoles,
-            'current' => 'view'
+            'current' => 'view',
+            'posts' => $posts,
+            'nb_posts' => count($posts)
         ]);
     }
 

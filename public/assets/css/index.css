@@ -56,3 +56,15 @@ a, a:hover {
 
 .ico-rotate:hover {
   transform: rotate(360deg); }
+
+/** Images options **/
+img.delete-image {
+  opacity: 0.5;
+  border: solid 1px white;
+  transition: all .5s;
+}
+img.delete-image:hover {
+  border: solid 1px red;
+  cursor: pointer;
+  opacity: 1;
+}
