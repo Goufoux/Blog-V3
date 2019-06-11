@@ -6,10 +6,18 @@
     </button>
     <div class="collapse navbar-collapse col-12" id="collapsibleNavId">
         <ul class="navbar-nav d-block col-12 mr-auto mt-2 mt-lg-0">
+            {% if app.authentification.hasRole('ROLE_SUPER_ADMIN') or app.authentification.hasRole('ROLE_ADMIN') %}
             <li class="nav-item">
                 <a class="nav-link" href="/admin/user/">
                     <i class="fas fa-user mr-2"></i>
                     Gestion des utilisateurs
+                </a>
+            </li>
+            {% endif %}
+            <li class="nav-item">
+                <a href="/admin/comment/" class="nav-link">
+                    <i class="fas fa-comments mr-2"></i>
+                    Gestion des commentaires
                 </a>
             </li>
             <li class="nav-item">

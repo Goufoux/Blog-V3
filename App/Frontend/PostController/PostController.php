@@ -5,9 +5,21 @@ namespace App\Frontend\PostController;
 use Core\AbstractController;
 use Form\PostForm;
 use Service\FileManagement;
+use Form\CommentForm;
 
 class PostController extends AbstractController
 {
+    public function index()
+    {
+        $postManager = $this->manager->getManagerOf('Post');
+        $posts = $postManager->fetchAll();
+
+        return $this->render([
+            'title' => 'Liste des posts',
+            'posts' => $posts
+        ]);
+    }
+
     public function new()
     {
         if (!$this->app->authentification()->hasRole('ROLE_USER') && !$this->app->authentification()->hasRole('ROLE_SUPER_ADMIN')) {
@@ -123,8 +135,31 @@ class PostController extends AbstractController
             $this->response->referer();
         }
 
+        $commentManager = $this->manager->getManagerOf('comment');
+        $comments = $commentManager->findByPost($postId);
+
+        $form = new CommentForm();
+
+        if ($this->request->hasPost() && $this->app->authentification()->isAuthentificated()) {
+            $datas = $this->request->getAllPost();
+            $form->verif($datas);
+            if ($form->isValid()) {
+                $datas['user'] = $this->app->user()->getId();
+                $datas['post'] = $postId;
+                if ($this->manager->add('comment', $datas)) {
+                    $this->notifications->addSuccess('Votre commentaire a été envoyé et est en attente de validation.');
+                    $this->response->referer();
+                }
+                $this->notifications->default('500', $this->manager->getError(), 'danger', $this->isDev());
+            }
+            $this->notifications->addDanger('Formulaire invalide');
+
+        }
+
         return $this->render([
-            'post' => $post 
+            'post' => $post,
+            'form' => $form,
+            'comments' => $comments
         ]);
     }
 

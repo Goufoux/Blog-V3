@@ -1,0 +1,38 @@
+{% extends "backend/base.html.twig" %}
+
+{% block body %}
+    <div class="row">
+        {% include "backend/comment/menu.html.twig" %}
+        <h1 class="col-12">Liste des commentaires en attente de validation</h1>
+        {% if condition %}
+        {% for comment in comments %}
+            <div class="col">
+                <h2>Commentaire #{{ comment.id }}</h2>
+                <p>
+                    {{ comment.content|nl2br }}
+                </p>
+                <span class="badge badge-info" data-toggle="tooltip" title="Publié le">
+                    <i class="fas fa-calendar mr-2"></i>
+                    {{ comment.createdAt|date("d/m/y") }}
+                </span>
+                <a href="/user/profil?id={{ comment.user.id }}" class="badge badge-info" data-toggle="tooltip" title="Auteur">
+                    <i class="fas fa-user-circle mr-2"></i>
+                    {{ comment.user.firstName ~ ' ' ~ comment.user.name }}
+                </a>
+                <div>
+                    <a href="{{ base_url }}validate?id={{ comment.id }}" class="btn btn-success btn-sm" data-toggle="tooltip" title="Valider ce commentaire">
+                        <i class="fas fa-check"></i>
+                    </a>
+                    <a href="{{ base_url }}delete?id={{ comment.id }}" class="btn btn-danger btn-sm" data-toggle="tooltip" title="Supprimer ce commentaire">
+                        <i class="fas fa-times"></i>
+                    </a>
+                </div>
+            </div>
+        {% endfor %}
+        {% else %}
+            <div class="alert alert-info col-10 mx-auto" role="alert">
+                <strong>Aucun commentaire en attente de validation.</strong>
+            </div>        
+        {% endif %}
+    </div>
+{% endblock %}

@@ -22,7 +22,7 @@
             <div class="collapse navbar-collapse" id="collapsibleNavId">
                 <ul class="navbar-nav mr-auto mt-2 mt-lg-0">
                     {% if app.authentification.isAuthentificated() %}
-                        {% if app.authentification.hasRole('ROLE_SUPER_ADMIN') %}
+                        {% if app.authentification.hasRole('ROLE_SUPER_ADMIN') or app.authentification.hasRole('ROLE_ADMIN') or app.authentification.hasRole('ROLE_MODERATEUR') %}
                             <li class="nav-item">
                                 <a href="/admin/" class="nav-link">Backend</a>
                             </li>

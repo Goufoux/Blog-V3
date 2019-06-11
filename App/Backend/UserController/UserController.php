@@ -9,6 +9,11 @@ class UserController extends AbstractController
 {
     public function index()
     {
+        if (!$this->app->authentification()->hasRole('ROLE_SUPER_ADMIN') || !$this->app->authentification()->hasRole('ROLE_ADMIN')) {
+            $this->notifications->addWarning('Zone réservée.');
+            $this->response->referer();
+        }
+
         $users = $this->manager->fetchAll("user");
         
         return $this->render([
@@ -18,6 +23,11 @@ class UserController extends AbstractController
 
     public function add()
     {
+        if (!$this->app->authentification()->hasRole('ROLE_SUPER_ADMIN') || !$this->app->authentification()->hasRole('ROLE_ADMIN')) {
+            $this->notifications->addWarning('Zone réservée.');
+            $this->response->referer();
+        }
+
         $roles = $this->manager->fetchAll("role");
 
         $form = new UserForm;
@@ -70,6 +80,11 @@ class UserController extends AbstractController
 
     public function update()
     {
+        if (!$this->app->authentification()->hasRole('ROLE_SUPER_ADMIN') || !$this->app->authentification()->hasRole('ROLE_ADMIN')) {
+            $this->notifications->addWarning('Zone réservée.');
+            $this->response->referer();
+        }
+
         $userId = $this->request->getData('id');
 
         if (!$userId) {
@@ -86,6 +101,8 @@ class UserController extends AbstractController
         }
 
         $roles = $this->manager->fetchAll("role");
+
+        $userRole = $this->manager->findBy('userRole', 'user', $userId);
 
         $form = new UserForm;
 
@@ -136,6 +153,7 @@ class UserController extends AbstractController
         return $this->render([
             'user' => $user,
             'roles' => $roles,
+            'userRole' => $userRole,
             'current' => 'update',
             'form' => $form
         ]);
@@ -143,6 +161,11 @@ class UserController extends AbstractController
 
     public function view()
     {
+        if (!$this->app->authentification()->hasRole('ROLE_SUPER_ADMIN') || !$this->app->authentification()->hasRole('ROLE_ADMIN')) {
+            $this->notifications->addWarning('Zone réservée.');
+            $this->response->referer();
+        }
+        
         $userId = $this->request->getData('id');
 
         if (!$userId) {
@@ -174,6 +197,11 @@ class UserController extends AbstractController
 
     public function delete()
     {
+        if (!$this->app->authentification()->hasRole('ROLE_SUPER_ADMIN') || !$this->app->authentification()->hasRole('ROLE_ADMIN')) {
+            $this->notifications->addWarning('Zone réservée.');
+            $this->response->referer();
+        }
+        
         $userId = $this->request->getData('id');
 
         if (!$userId) {

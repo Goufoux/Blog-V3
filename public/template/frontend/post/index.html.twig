@@ -3,9 +3,9 @@
 {% block body %}
     <div class="container">
         <div class="row">
-            <h1 class="col-12">Mes posts</h1>
+            <h1 class="col-12">Liste des posts</h1>
             {% for post in posts %}
-                <div class="bg-secondary p-3 col-5 m-2">
+                <div class="bg-secondary p-3 col-12 m-2">
                     <div class="row">
                         {% set class_row = "col-12" %}
                         {% if post.hasImage %}
@@ -23,17 +23,19 @@
                             <p>
                                 {{ post.getChapo()|raw }}
                             </p>
+                            <ul class="list-group">
+                                <li class="list-group-item" data-toggle="tooltip" title="Auteur">
+                                    <i class="fas fa-user-circle mr-2"></i>
+                                    {{ post.user.firstName ~ ' ' ~ post.user.name }}
+                                </li>
+                                {% if post.updatedAt is not empty %}
+                                    <li class="list-group-item" data-toggle="tooltip" title="Date de dernière modification">
+                                        <i class="fas fa-calendar-alt mr-2"></i>
+                                        {{ post.updatedAt|date("d/m/y") }}
+                                    </li>
+                                {% endif %}
+                            </ul>
                         </div>
-                        {% if app.user.id == post.user or app.authentification.hasRole('ROLE_SUPER_ADMIN') %}
-                            <div class="col-12 p-3">
-                                <a href="/post/delete?id={{ post.getId() }}" class="btn btn-danger btn-sm" data-toggle="tooltip" title="Supprimer ce post ?">
-                                    <i class="fas fa-trash"></i>
-                                </a>
-                                <a href="/post/update?id={{ post.getId() }}" class="btn btn-info btn-sm" data-toggle="tooltip" title="Modifier ce post ?">
-                                    <i class="fas fa-pen"></i>
-                                </a>
-                            </div>
-                        {% endif %}
                     </div>
                 </div>
             {% endfor %}

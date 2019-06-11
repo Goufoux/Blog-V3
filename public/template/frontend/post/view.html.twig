@@ -16,12 +16,70 @@
                         <i class="fas fa-calendar mr-2"></i>
                         {{ post.createdAt|date("d/m/y") }}
                     </span>
+                    {% if post.updatedAt is not empty %}
+                        <span class="badge badge-primary p-2" data-toggle="tooltip" title="Date de dernière modification">
+                            <i class="fas fa-calendar-alt mr-2"></i>
+                            {{ post.updatedAt|date("d/m/y") }}
+                        </span>
+                    {% endif %}
                     <a href="/user/profil?id={{ post.user.id }}" class="badge badge-primary p-2" data-toggle="tooltip" title="Auteur">
                         <i class="fas fa-user-circle mr-2"></i>
                         {{ post.user.name ~ " " ~ post.user.firstName }}
                     </a>
                 </div>
             </div>
+            <div class="col-12 mt-3">
+                <button class="btn btn-info btn-tg-comment">Laisser un commentaire</button>
+                <form class="d-none form-comment" action="#" method="POST">
+                    <div class="form-row">
+                        <div class="form-group col-12">
+                            <label for="content">Commentaire</label>
+                            <textarea name="content" id="content" placeholder="Votre commentaire..." class="form-control" required></textarea>
+                            {% if form.hasError('content') %}
+                                <div>
+                                    <span class="badge badge-danger">{{ form.errors('content') }}</span>
+                                </div>
+                            {% endif %}
+                        </div>
+                        <div class="form-group col-12 text-right">
+                            <input type="submit" value="Envoyer" class="btn btn-success">
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="col-12 mt-2">
+                {% if comments is not empty %}
+                    <h3>Liste des commentaires</h3>
+                    {% for comment in comments %}
+                        <div class="alert alert-secondary" role="alert">
+                            <p>{{ comment.content|nl2br }}</p>
+                            <span class="badge badge-info p-2" data-toggle="tooltip" title="Date de publication">
+                                <i class="fas fa-calendar mr-2"></i>
+                                {{ comment.createdAt|date("d/m/y") }}
+                            </span>
+                            <a href="/user/profil?id={{ comment.user.id }}" class="badge badge-primary p-2" data-toggle="tooltip" title="Auteur">
+                                <i class="fas fa-user-circle mr-2"></i>
+                                {{ comment.user.name ~ " " ~ comment.user.firstName }}
+                            </a>
+                        </div>  
+                    {% endfor %}
+                {% else %}
+                    <div class="alert alert-info" role="alert">
+                        <strong>Aucun commentaire pour le moment</strong>
+                    </div>
+                {% endif %}
+            </div>
         </div>
     </div>
+    <script>
+        $(function() {
+            $('.btn-tg-comment').on('click', function() {
+                if ($('.form-comment').is(':visible')) {
+                    $('.form-comment').addClass('d-none');
+                } else {
+                    $('.form-comment').removeClass('d-none');
+                }
+            });
+        });
+    </script>
 {% endblock %}

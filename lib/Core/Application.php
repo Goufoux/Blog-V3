@@ -26,7 +26,9 @@ class Application extends Core
             return;
         }
         
-        if ($routeur->getRoute()->getModule() === 'Backend' && !($this->authentification()->hasRole('ROLE_SUPER_ADMIN') || $this->authentification()->hasRole('ROLE_ADMIN'))) {
+        if ($routeur->getRoute()->getModule() === 'Backend' && !($this->authentification()->hasRole('ROLE_SUPER_ADMIN')
+                                                                || $this->authentification()->hasRole('ROLE_ADMIN')
+                                                                || $this->authentification()->hasRole('ROLE_MODERATEUR'))) {
             $response->disconnect();
             return;
         }
