@@ -5,17 +5,17 @@
             {% if post.hasImage %}
                 {% set class_row = "col-xl-6 col-lg-6 col-md-6 col-12" %}
                 <div class="col-xl-6 col-lg-6 col-md-6 col-12">
-                    <img src="/docs/img/{{ post.getImage() }}" alt="{{ post.getImageAlt() }}" class="img-fluid">
+                    <img src="/docs/img/{{ post.image }}" alt="{{ post.postImageAlt }}" class="img-fluid">
                 </div>
             {% endif %}
             <div class="{{ class_row }} bg-info p-3">
                 <h3>
-                    <a href="/post/view?id={{ post.getId() }}">
+                    <a href="/post/view?id={{ post.id }}">
                         {{ post.getTitle() }}
                     </a>
                 </h3>
                 <p>
-                    {{ post.getChapo()|raw }}
+                    {{ post.chapo|raw }}
                 </p>
             </div>
             <div class="post-footer">
