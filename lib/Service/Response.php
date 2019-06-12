@@ -41,14 +41,14 @@ class Response
         header('Location: /deconnect');
     }
 
-    public function referer()
+    public function referer($args = '')
     {
         $request = new Request;
         $referer = $request->getHttpReferer();
         if ($referer == null) {
             header('Location: /');
         }
-        header('Location: '.$referer);
+        header('Location: '.$referer.$args);
         exit;
     }
 

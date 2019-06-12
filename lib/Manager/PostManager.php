@@ -32,10 +32,11 @@ class PostManager extends Manager
         }
     }
 
-    public function fetchAll()
+    public function fetchAll(array $flags)
     {
+        $sql = $this->flagsToSql($flags);
         $req = $this->bdd->prepare('SELECT post.*, user.* FROM post
-                                    INNER JOIN user ON user.user_id = post.post_user ORDER BY post_created_at DESC');
+                                    INNER JOIN user ON user.user_id = post.post_user ORDER BY post_created_at DESC '.$sql);
         $req->setFetchMode(\PDO::FETCH_CLASS | \PDO::FETCH_PROPS_LATE, '\Entity\\Post');
         try {
             $req->execute();

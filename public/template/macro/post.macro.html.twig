@@ -1,0 +1,29 @@
+{% macro view(post) %}
+    <div class="col-lg-5 col-md-5 col-10 mx-auto my-2">
+        <div class="row">
+            {% set class_row = "col-12" %}
+            {% if post.hasImage %}
+                {% set class_row = "col-xl-6 col-lg-6 col-md-6 col-12" %}
+                <div class="col-xl-6 col-lg-6 col-md-6 col-12">
+                    <img src="/docs/img/{{ post.getImage() }}" alt="{{ post.getImageAlt() }}" class="img-fluid">
+                </div>
+            {% endif %}
+            <div class="{{ class_row }} bg-info p-3">
+                <h3>
+                    <a href="/post/view?id={{ post.getId() }}">
+                        {{ post.getTitle() }}
+                    </a>
+                </h3>
+                <p>
+                    {{ post.getChapo()|raw }}
+                </p>
+            </div>
+            <div class="post-footer">
+                <span class="badge badge-primary p-2" data-toggle="tooltip" data>
+                    <i class="fas fa-user-circle mr-2"></i>
+                    {{ post.user.firstName ~ ' ' ~ post.user.name }}
+                </span>
+            </div>
+        </div>
+    </div>
+{% endmacro %}

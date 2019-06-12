@@ -8,20 +8,17 @@ abstract class Form
 
     public function isEmail($str)
     {
-        if (filter_var($str, FILTER_VALIDATE_EMAIL)) {
-            return true;
-        }
-        return false;
+        return filter_var($str, FILTER_VALIDATE_EMAIL);
     }
 
     public function isValid()
     {
-        return (isset($this->errors)) ? false : true;
+        return !isset($this->errors);
     }
 
     public function hasError($key)
     {
-        return (isset($this->errors[$key])) ? true : false;
+        return !empty($this->errors[$key]);
     }
 
     public function getErrors($key = null)

@@ -55,6 +55,16 @@ abstract class AbstractController
         $data['request'] = $this->request;
         $data['base_url'] = $this->base_link;
 
+        if (!empty($_SESSION['datas'])) {
+            $data['datas'] = $_SESSION['datas'];
+            unset($_SESSION['datas']);
+        }
+
+        if (!empty($_SESSION['form'])) {
+            $data['form'] = $_SESSION['form'];
+            unset($_SESSION['form']);
+        }
+
         return $this->twig->render($this->getPath(), $data);
     }
 

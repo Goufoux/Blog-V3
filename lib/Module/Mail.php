@@ -90,6 +90,17 @@ class Mail
         return $page;
     }
 
+    public function templateContactForm(array $datas)
+    {
+        $file = __DIR__."/../../public/template/mail/contact.php";
+        ob_start();
+        include_once $file;
+        $page = ob_get_contents();
+        ob_end_clean();
+        ob_end_flush();
+        return $page;
+    }
+
     public function getError(): ?string
     {
         return $this->error;
