@@ -179,7 +179,7 @@ class PostController extends AbstractController
             $this->response->referer();
         }
 
-        if ($post->getUser() != $this->app->user()->getUser()->getId()) {
+        if ($post->getUser() != $this->app->user()->getId() && !$this->app->authentification()->hasRole('ROLE_SUPER_ADMIN')) {
             $this->notifications->addDanger('Vous n\'avez pas l\'autorisation.');
             $this->response->referer();
         }

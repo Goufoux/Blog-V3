@@ -32,7 +32,7 @@ class PostManager extends Manager
         }
     }
 
-    public function fetchAll(array $flags)
+    public function fetchAll(array $flags = array())
     {
         $sql = $this->flagsToSql($flags);
         $req = $this->bdd->prepare('SELECT post.*, user.* FROM post

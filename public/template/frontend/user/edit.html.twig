@@ -19,7 +19,7 @@
                         </div>
                         <input type="text" aria-describedby="label-name" name="name" placeholder="Votre nom" id="name" class="form-control" required value="{{ request.post('name')|default(user.name) }}">
                         {% if form.hasError('name') %}
-                            <div class="col-12">
+                            <div class="form-errors">
                                 <span class="badge badge-danger">{{ form.errors('name') }}</span>
                             </div>
                         {% endif %}
@@ -30,7 +30,7 @@
                         </div>
                         <input type="text" name="first_name" aria-describedby="label-first-name" id="first_name" class="form-control" required value="{{ request.post('name')|default(user.firstName) }}">
                         {% if form.hasError('first_name') %}
-                            <div class="col-12">
+                            <div class="form-errors">
                                 <span class="badge badge-danger">{{ form.errors('first_name') }}</span>
                             </div>
                         {% endif %}
@@ -41,7 +41,7 @@
                         </div>
                         <input type="email" name="email" aria-describedby="label-email" id="email" class="form-control" required value="{{ request.post('name')|default(user.email) }}">
                         {% if form.hasError('email') %}
-                            <div class="col-12">
+                            <div class="form-errors">
                                 <span class="badge badge-danger">{{ form.errors('email') }}</span>
                             </div>
                         {% endif %}
@@ -62,7 +62,7 @@
                         </div>
                         <input type="password" name="password" placeholder="Mot de passe actuel" aria-describedby="label-password" id="password" class="form-control" required>
                         {% if form.hasError('password') %}
-                            <div class="col-12">
+                            <div class="form-errors">
                                 <span class="badge badge-danger">{{ form.errors('password') }}</span>
                             </div>
                         {% endif %}
@@ -73,7 +73,7 @@
                         </div>
                         <input type="password" name="new_password" placeholder="Nouveau mot de passe" aria-describedby="label-new-password" id="new_password" class="form-control" required>
                         {% if form.hasError('new_password') %}
-                            <div class="col-12">
+                            <div class="form-errors">
                                 <span class="badge badge-danger">{{ form.errors('new_password') }}</span>
                             </div>
                         {% endif %}
@@ -84,7 +84,7 @@
                         </div>
                         <input type="password" name="confirm_password" placeholder="Confirmation" aria-describedby="label-confirm-password" id="confirm_password" class="form-control" required>
                         {% if form.hasError('confirm_password') %}
-                            <div class="col-12">
+                            <div class="form-errors">
                                 <span class="badge badge-danger">{{ form.errors('confirm_password') }}</span>
                             </div>
                         {% endif %}

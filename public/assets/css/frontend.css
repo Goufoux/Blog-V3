@@ -1,13 +1,12 @@
-/** Post **/
-.post-container img {
-    width: 100%;
-    height: 100%;
-}
-
 /** Footer **/
 footer {
     width: 100%;
     max-width: 100%;
+    opacity: 0;
+}
+
+footer .social-link a {
+    color: white !important;
 }
 
 footer .social-link i {
@@ -15,6 +14,14 @@ footer .social-link i {
     animation-name: roule;
     margin-left: 10px;
 }
+
+@media all and (min-width: 500px) {
+    .footer-fix {
+        position: fixed;
+        bottom: 0;
+    }
+}
+
 
 @keyframes roule  {
     from {

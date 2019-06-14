@@ -1,43 +1,12 @@
 {% extends "frontend/base.html.twig" %}
+{% import "macro/post.macro.html.twig" as post_macro %}
 
 {% block body %}
     <div class="container">
         <div class="row">
             <h1 class="col-12">Liste des posts</h1>
             {% for post in posts %}
-                <div class="bg-secondary p-3 col-12 m-2">
-                    <div class="row">
-                        {% set class_row = "col-12" %}
-                        {% if post.hasImage %}
-                            {% set class_row = "col-xl-6 col-lg-6 col-md-6 col-12" %}
-                            <div class="col-xl-6 col-lg-6 col-md-6 col-12">
-                                <img src="/docs/img/{{ post.getImage() }}" alt="{{ post.getImageAlt() }}" class="img-fluid">
-                            </div>
-                        {% endif %}
-                        <div class="{{ class_row }} bg-info p-3">
-                            <h3>
-                                <a href="/post/view?id={{ post.getId() }}">
-                                    {{ post.getTitle() }}
-                                </a>
-                            </h3>
-                            <p>
-                                {{ post.getChapo()|raw }}
-                            </p>
-                            <ul class="list-group">
-                                <li class="list-group-item" data-toggle="tooltip" title="Auteur">
-                                    <i class="fas fa-user-circle mr-2"></i>
-                                    {{ post.user.firstName ~ ' ' ~ post.user.name }}
-                                </li>
-                                {% if post.updatedAt is not empty %}
-                                    <li class="list-group-item" data-toggle="tooltip" title="Date de dernière modification">
-                                        <i class="fas fa-calendar-alt mr-2"></i>
-                                        {{ post.updatedAt|date("d/m/y") }}
-                                    </li>
-                                {% endif %}
-                            </ul>
-                        </div>
-                    </div>
-                </div>
+                {{ post_macro.view(post) }}                                        
             {% endfor %}
         </div>
     </div>

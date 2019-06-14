@@ -4,20 +4,16 @@
     <div class="container">
         <div class="row">
             <h1 class="col-12 mt-3">Inscription</h1>
-            <form action="#" class="col-6 mx-auto" method="POST">
+            <form action="#" class="col-xl-6 col-md-10 col-12 mx-auto" method="POST">
                 <div class="form-row">
                     <div class="input-group mb-3">
                         <div class="input-group-prepend">
                             <label for="name" class="input-group-text">Nom</label>
                         </div>
-                        <input type="text" name="name" placeholder="Nom" id="name" class="form-control" required
-                        {% if request.hasPost('name') %}
-                            value="{{ request.getPost('name') }}"
-                        {% endif %}
-                        >
+                        <input type="text" name="name" placeholder="Nom" id="name" class="form-control" required value="{{ request.post('name')|default('') }}">
                         {% if form.hasError('name') %}
-                            <div class="col-12">
-                                <span class="badge badge-danger">{{ form.getErrors('name') }}</span>
+                            <div class="form-errors">
+                                <span class="badge badge-danger">{{ form.errors('name') }}</span>
                             </div>
                         {% endif %}
                     </div>
@@ -25,14 +21,10 @@
                         <div class="input-group-prepend">
                             <label for="first_name" class="input-group-text">Prénom</label>
                         </div>
-                        <input type="text" name="first_name" placeholder="Prénom" id="first_name" class="form-control" required
-                        {% if request.hasPost('first_name') %}
-                            value="{{ request.getPost('first_name') }}"
-                        {% endif %}
-                        >
+                        <input type="text" name="first_name" placeholder="Prénom" id="first_name" class="form-control" required value="{{ request.post('first_name')|default('') }}">
                         {% if form.hasError('first_name') %}
-                            <div class="col-12">
-                                <span class="badge badge-danger">{{ form.getErrors('first_name') }}</span>
+                            <div class="form-errors">
+                                <span class="badge badge-danger">{{ form.errors('first_name') }}</span>
                             </div>
                         {% endif %}
                     </div>
@@ -40,14 +32,10 @@
                         <div class="input-group-prepend">
                             <label for="email" class="input-group-text"><i class="fas fa-at"></i></label>
                         </div>
-                        <input type="email" name="email" placeholder="Email" id="email" class="form-control" autocomplete="off" required
-                        {% if request.hasPost('email') %}
-                            value="{{ request.getPost('email') }}"
-                        {% endif %}
-                        >
+                        <input type="email" name="email" placeholder="Email" id="email" class="form-control" autocomplete="off" required value="{{ request.post('email')|default('') }}">
                         {% if form.hasError('email') %}
-                            <div class="col-12">
-                                <span class="badge badge-danger">{{ form.getErrors('email') }}</span>
+                            <div class="form-errors">
+                                <span class="badge badge-danger">{{ form.errors('email') }}</span>
                             </div>
                         {% endif %}
                     </div>
@@ -57,8 +45,8 @@
                         </div>
                         <input type="password" name="password" placeholder="Mot de passe" id="password" class="form-control" autocomplete="off" required>
                         {% if form.hasError('password') %}
-                            <div class="col-12">
-                                <span class="badge badge-danger">{{ form.getErrors('password') }}</span>
+                            <div class="form-errors">
+                                <span class="badge badge-danger">{{ form.errors('password') }}</span>
                             </div>
                         {% endif %}
                     </div>
@@ -68,22 +56,10 @@
                         </div>
                         <input type="password" name="confirm_password" placeholder="Confirmation" id="confirm_password" class="form-control" required>
                         {% if form.hasError('confirm_password') %}
-                            <div class="col-12">
-                                <span class="badge badge-danger">{{ form.getErrors('confirm_password') }}</span>
+                            <div class="form-errors">
+                                <span class="badge badge-danger">{{ form.errors('confirm_password') }}</span>
                             </div>
                         {% endif %}
-                    </div>
-                    <div class="input-group mb-3">
-                        <div class="input-group-prepend">
-                            <div class="input-group-text">
-                                <input type="checkbox" name="newsletter" value="1" id="newsletter"
-                                {% if request.hasPost('newsletter') %}
-                                    checked
-                                {% endif %}
-                                >
-                            </div>
-                        </div>
-                        <label for="newsletter" class="form-control">J'accepte de recevoir par email des Newsletters de la part de Genarkys</label>
                     </div>
                     <div class="input-group mb-3">
                         <div class="input-group-prepend">
@@ -98,7 +74,7 @@
                         <label for="cgu" class="form-control">J'accepte les conditions générales d'utilisation</label>
                         {% if form.hasError('cgu') %}
                             <div class="col-12">
-                                <span class="badge badge-danger">{{ form.getErrors('cgu') }}</span>
+                                <span class="badge badge-danger">{{ form.errors('cgu') }}</span>
                             </div>
                         {% endif %}
                     </div>

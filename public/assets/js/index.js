@@ -16,6 +16,27 @@ $(document).ready(function() {
         });
     });
 
+    /* replace footer */
+    
+    $(function() {
+        var body = document.body,
+            html = document.documentElement;
+        var wh = window.innerHeight;
+
+        var height = Math.max( body.scrollHeight, body.offsetHeight, 
+                       html.clientHeight, html.scrollHeight, html.offsetHeight );
+
+        console.log('container'+$('.container-fluid').height());
+
+        if (wh == height) {
+            console.log("add fix");
+            $("footer").addClass('footer-fix');
+        }
+        $('footer').animate({
+            'opacity': 1
+        }, 750);
+    });
+
     /* Delete image */
     $('.delete-image').on('click', function() {
         let key = $(this).attr('data-key');

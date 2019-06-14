@@ -1,28 +1,62 @@
-{% macro view(post) %}
-    <div class="col-lg-5 col-md-5 col-10 mx-auto my-2">
+{% macro view(post, activeOption = false, authentification = null) %}
+    <div class="col-lg-5 col-md-5 col-10 mx-auto my-2 bg-primary p-3 post-container">
         <div class="row">
+            <h3 class="col-12 link-title">
+                <a href="/post/view?id={{ post.id }}">
+                    {{ post.getTitle() }}
+                </a>
+            </h3>
             {% set class_row = "col-12" %}
             {% if post.hasImage %}
-                {% set class_row = "col-xl-6 col-lg-6 col-md-6 col-12" %}
-                <div class="col-xl-6 col-lg-6 col-md-6 col-12">
+                {% set class_row = "col-12" %}
+                <div class="col-12">
                     <img src="/docs/img/{{ post.image }}" alt="{{ post.postImageAlt }}" class="img-fluid">
                 </div>
             {% endif %}
-            <div class="{{ class_row }} bg-info p-3">
-                <h3>
-                    <a href="/post/view?id={{ post.id }}">
-                        {{ post.getTitle() }}
-                    </a>
-                </h3>
-                <p>
+            <div class="{{ class_row }}">
+                <p class="m-0 p-0 text-white">
                     {{ post.chapo|raw }}
                 </p>
             </div>
-            <div class="post-footer">
-                <span class="badge badge-primary p-2" data-toggle="tooltip" data>
-                    <i class="fas fa-user-circle mr-2"></i>
-                    {{ post.user.firstName ~ ' ' ~ post.user.name }}
-                </span>
+            <div class="post-footer col-12 my-2">
+                {% if activeOption %}
+                    {% if authentification.hasRole('ROLE_SUPER_ADMIN') %}
+                        <div class="col-12 mt-2">
+                            <a href="/post/delete?id={{ post.getId() }}" class="btn btn-danger btn-sm" data-toggle="tooltip" title="Supprimer ce post ?">
+                                <i class="fas fa-trash"></i>
+                            </a>
+                            <a href="/post/update?id={{ post.getId() }}" class="btn btn-info btn-sm" data-toggle="tooltip" title="Modifier ce post ?">
+                                <i class="fas fa-pen"></i>
+                            </a>
+                        </div>
+                    {% else %}
+                        <span class="btn btn-secondary" data-toggle="tooltip" title="Date de création">
+                            <i class="fas fa-calendar mr-2"></i>
+                            {{ post.createdAt|date("d/m/y") }}
+                        </span>
+                        {% if post.updatedAt is not empty %}
+                            <span class="btn btn-secondary" data-toggle="tooltip" title="Dernière mise à jour">
+                                <i class="fas fa-calendar-alt mr-2"></i>
+                                {{ post.updatedAt|date("d/m/y") }}
+                            </span>
+                        {% endif %}
+                    {% endif %}
+                {% else %}
+                    <a href="/user/profil?id={{ post.user.id }}" class="btn btn-secondary" data-toggle="tooltip" title="Auteur">
+                        <i class="fas fa-user-circle mr-2"></i>
+                        {{ post.user.firstName ~ ' ' ~ post.user.name }}
+                    </a>
+                    <span class="btn btn-secondary" data-toggle="tooltip" title="Date de création">
+                        <i class="fas fa-calendar mr-2"></i>
+                        {{ post.createdAt|date("d/m/y") }}
+                    </span>
+                    {% if post.updatedAt is not empty %}
+                        <span class="btn btn-secondary" data-toggle="tooltip" title="Dernière mise à jour">
+                            <i class="fas fa-calendar-alt mr-2"></i>
+                            {{ post.updatedAt|date("d/m/y") }}
+                        </span>
+                    {% endif %}
+                {% endif %}
             </div>
         </div>
     </div>
