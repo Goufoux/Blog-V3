@@ -21,46 +21,4 @@
             </div>
         {% endif %}
     </section>
-    <section>
-        <h2>Contacter nous !</h2>
-        <form action="/contact" method="POST" id="contact">
-            <div class="form-row">
-                <div class="input-group mb-3 col-12">
-                    <div class="input-group-prepend">
-                        <label class="input-group-text" for="name">Nom et prénom</label>
-                    </div>
-                    <input type="text" name="name" id="name" class="form-control" value="{{ datas['name']|default('') }}">
-                    {% if form.errors('name') is not empty %}
-                        <div class="form-errors">
-                            <span class="badge badge-danger">{{ form.errors('name') }}</span>
-                        </div>
-                    {% endif %}
-                </div>
-                <div class="input-group mb-3 col-12">
-                    <div class="input-group-prepend">
-                        <label for="email" class="input-group-text">Email</label>
-                    </div>
-                    <input type="email" name="email" id="email" class="form-control" value="{{ datas['email']|default('') }}">
-                    {% if form.errors('email') is not empty %}
-                        <div class="form-errors">
-                            <span class="badge badge-danger">{{ form.errors('email') }}</span>
-                        </div>
-                    {% endif %}
-                </div>
-                <div class="form-group mb-3 col-12">
-                    {% set textarea = datas['message']|default('') %}
-                    <label for="message">Message</label>
-                    <textarea name="message" id="message" class="form-control">{{ textarea }}</textarea>
-                    {% if form.errors('message') is not empty %}
-                        <div class="form-errors">
-                            <span class="badge badge-danger">{{ form.errors('message') }}</span>
-                        </div>
-                    {% endif %}
-                </div>
-                <div class="form-group col-12 text-right">
-                    <input type="submit" value="Envoyer" class="btn btn-success">
-                </div>
-            </div>
-        </form>
-    </section>
 {% endblock %}

@@ -3,3 +3,25 @@
     width: 100%;
     height: 100%;
 }
+
+/** Footer **/
+footer {
+    width: 100%;
+    max-width: 100%;
+}
+
+footer .social-link i {
+    animation-duration: 3s;
+    animation-name: roule;
+    margin-left: 10px;
+}
+
+@keyframes roule  {
+    from {
+        margin-left: 20%;
+        transform: rotate(360deg);
+    } to {
+        margin-left: 10px;
+        transform: rotate(0deg);
+    }
+}

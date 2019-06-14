@@ -1,10 +1,18 @@
 /** General **/
 
 html {
-  height: 100%;
+  min-height: 100%;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  /* border: solid red; */
 }
 body {
-  height: 100%;
+  min-height: 100%;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  /* border: solid; */
 }
 .close {
   transition: all .3s !important; }
