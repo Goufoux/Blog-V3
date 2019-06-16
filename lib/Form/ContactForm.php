@@ -8,9 +8,9 @@ class ContactForm extends Form
 {
     public function verif(array $datas)
     {
-        $name = isset($datas['name']);
-        $email = isset($datas['email']);
-        $message = isset($datas['message']);
+        $name = isset($datas['contact_name']);
+        $email = isset($datas['contact_email']);
+        $message = isset($datas['contact_message']);
 
         if (!$name) {
             $this->addErrors('name', 'Champs requis');

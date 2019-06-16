@@ -27,6 +27,14 @@ a, a:hover {
   text-decoration: none !important;
 }
 
+a.dropdown-item i {
+  color: black;
+}
+
+.bg-primary p {
+  color: white !important;
+}
+
 a i {
   color: white;
 }

@@ -37,7 +37,7 @@
                                 <label for="content">Commentaire</label>
                                 <textarea name="content" id="content" placeholder="Votre commentaire..." class="form-control" required></textarea>
                                 {% if form.hasError('content') %}
-                                    <div>
+                                    <div class="form-errors">
                                         <span class="badge badge-danger">{{ form.errors('content') }}</span>
                                     </div>
                                 {% endif %}

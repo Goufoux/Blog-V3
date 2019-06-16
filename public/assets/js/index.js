@@ -26,10 +26,7 @@ $(document).ready(function() {
         var height = Math.max( body.scrollHeight, body.offsetHeight, 
                        html.clientHeight, html.scrollHeight, html.offsetHeight );
 
-        console.log('container'+$('.container-fluid').height());
-
         if (wh == height) {
-            console.log("add fix");
             $("footer").addClass('footer-fix');
         }
         $('footer').animate({

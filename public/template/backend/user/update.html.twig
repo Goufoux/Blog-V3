@@ -9,7 +9,7 @@
                 {{ user.name ~ " " ~ user.firstName }}
             </h1>
         </div>
-        <form action="#" method="POST" class="col-10 mx-auto bg-secondary text-white p-3">
+        <form action="#" method="POST" class="col-10 mx-auto bg-primary rounded text-white p-3">
             <div class="form-row">
                 <div class="form-group col-4">
                     <label for="name">Nom</label>
@@ -48,17 +48,17 @@
                         {% endif %}
                     </label>
                     {% if roles is not empty %}
-                    {% for role in roles %}
-                    {% set hasRole = false %}
-                        {% for uRole in userRole %}
-                            {% if hasRole == false %}
-                                {% set hasRole = (uRole.role == role.id) ? true : false %}
-                            {% endif %}
-                        {% endfor %}
-                    <div class="input-group">
-                        <div class="input-group-prepend">
-                            <div class="input-group-text">
-                                <input type="checkbox" name="role_{{ role.id }}" value="{{ role.id }}" id="role_{{ role.id }}" {{ request.hasPost('role_' ~ role.id) ? 'checked' : (hasRole == true ? 'checked') }}>
+                        {% for role in roles %}
+                        {% set hasRole = false %}
+                            {% for uRole in userRoles %}
+                                {% if not hasRole %}
+                                    {% set hasRole = (uRole.role == role.id) ? true : false %}
+                                {% endif %}
+                            {% endfor %}
+                            <div class="input-group">
+                                <div class="input-group-prepend">
+                                    <div class="input-group-text">
+                                        <input type="checkbox" name="role_{{ role.id }}" value="{{ role.id }}" id="role_{{ role.id }}" {{ request.hasPost('role_' ~ role.id) ? 'checked' : (hasRole == true ? 'checked') }}>
                                     </div>
                                 </div>
                                 <label for="role_{{ role.id }}" class="form-control">{{ role.name }}</label>
