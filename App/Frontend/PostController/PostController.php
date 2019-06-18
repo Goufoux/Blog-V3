@@ -35,7 +35,7 @@ class PostController extends AbstractController
             if ($form->isValid()) {
                 if (!empty($_FILES)) {
                     $fileManagement = new FileManagement;
-                    $fileName = uniqid(); 
+                    $fileName = uniqid();
                     if ($fileManagement->uploadFile($_FILES['image'], $fileName, 'img')) {
                         $datas['image'] = $fileManagement->getFilename();
                     } else {
@@ -153,7 +153,6 @@ class PostController extends AbstractController
                 $this->notifications->default('500', $this->manager->getError(), 'danger', $this->isDev());
             }
             $this->notifications->addDanger('Formulaire invalide');
-
         }
 
         return $this->render([

@@ -41,6 +41,41 @@ class FileManagement
         return true;
     }
 
+    public function controlType($type)
+    {
+        if (!in_array($type, self::TYPE)) {
+            $this->setError("Le type de fichier {".$type."} n'est pas pris en charge.");
+            return false;
+        }
+        return true;
+    }
+
+    public function controlExtension($ext, $type)
+    {
+        switch ($type)
+        {
+            case 'img':
+                if (!in_array($ext, self::IMG_EXT)) {
+                    $this->setError("Extension de l'image non prise en charge {".$ext."}<br/>Extension autorisée : " . implode('<br />', self::IMG_EXT));
+                    return false;
+                }
+                break;
+            default:
+                $this->setError("Le type de fichier n'est pas défini.");
+                return false;
+        }
+        return true;
+    }
+
+    public function controlSize($size)
+    {
+        if ($size > self::MAX_SIZE) {
+            $this->setError('Le fichier est trop volumineux. Il doit être inférieur à 2Mo.');
+            return false;
+        }
+        return true;
+    }
+
     public function uploadFile($file, $name, $type)
     {
         if (!$this->dirExist(self::PATH)) {
@@ -53,8 +88,7 @@ class FileManagement
         }
 
         
-        if (!in_array($type, self::TYPE)) {
-            $this->setError("Le type de fichier {".$type."} n'est pas pris en charge.");
+        if (!$this->controlType($type)) {
             return false;
         }
         
@@ -66,8 +100,7 @@ class FileManagement
                 break;
         }
 
-        if ($file['size'] > self::MAX_SIZE) {
-            $this->setError("Le fichier est trop volumineux, il doit être inférieur à 2Mo.");
+        if (!$this->controlSize($file['size'])) {
             return false;
         }
 
@@ -77,9 +110,7 @@ class FileManagement
                 if (!$ext) {
                     return false;
                 }
-                if (!in_array($ext, self::IMG_EXT)) {
-                    $ext_autorise = implode(", ", self::IMG_EXT);
-                    $this->setError("Extension de l'image non prise en charge {".$ext."}<br/>Extension autorisée : " . $ext_autorise);
+                if (!$this->controlExtension($ext, $type)) {
                     return false;
                 }
                 break;
@@ -125,9 +156,8 @@ class FileManagement
             if (!mkdir($dir, 0777)) {
                 $this->setError("Impossible de créé le dossier cible {".$dir."}");
                 return false;
-            } else {
-                return true;
             }
+            return true;
         }
         return true;
     }

@@ -22,23 +22,23 @@ class Application extends Core
         $response = new Response;
 
         if ($routeur->getRoute()->getModule() === 'Backend' && !$this->authentification()->isAuthentificated()) {
-            $response->connect();
-            return;
+            if (!$this->authentification()->isAuthentificated()) {
+                $response->connect();
+                return;
+            }
+
+            if (!($this->authentification()->hasRole('ROLE_SUPER_ADMIN') || $this->authentification()->hasRole('ROLE_ADMIN') || $this->authentification()->hasRole('ROLE_MODERATEUR'))) {
+                $response->disconnect();
+                return;
+            }
         }
-        
-        if ($routeur->getRoute()->getModule() === 'Backend' && !($this->authentification()->hasRole('ROLE_SUPER_ADMIN')
-                                                                || $this->authentification()->hasRole('ROLE_ADMIN')
-                                                                || $this->authentification()->hasRole('ROLE_MODERATEUR'))) {
-            $response->disconnect();
-            return;
+
+        if (!$routeur->match()) {
+            $response->redirectTo('/');
         }
-        
-        if ($routeur->match()) {
-            $page = new Page();
-            $page->setController($routeur->getControllerClass());
-            $page->generatePage($this, $routeur->getControllerMethod(), $routeur);
-        } else {
-            echo 'routeur don\'t match()';
-        }
+
+        $page = new Page();
+        $page->setController($routeur->getControllerClass());
+        $page->generatePage($this, $routeur->getControllerMethod(), $routeur);
     }
 }

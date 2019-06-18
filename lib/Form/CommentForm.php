@@ -6,20 +6,16 @@ use Core\Form;
 
 class CommentForm extends Form
 {
-    public function verif(array $datas)
+    const data = [
+        'content' => [
+            'required' => true,
+            'length' => [10, 150]
+        ]
+    ];
+
+    public function verif(array $data)
     {
-        $comment = isset($datas['content']);
-
-        if (!$comment) {
-            $this->addErrors('content', 'Veuillez laisser un commentaire.');
-        }
-
-        if ($comment) {
-            $comment = (strlen($datas['content']) > 10 && $datas['content'] <= 150) ? true : false;
-
-            if (!$comment) {
-                $this->addErrors('content', 'Votre commentaire doit être compris entre 10 et 150 caractères.');
-            }
-        }
+        $this->requiredControl(self::data, $data);
+        $this->launch(self::data, $data);
     }    
 }

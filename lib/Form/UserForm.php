@@ -7,49 +7,44 @@ use Entity\User;
 
 class UserForm extends Form
 {
-    public function verif(array $datas, bool $new = false)
+    const data = [
+        'name' => [
+            'required' => true,
+            'length' => [3, 15],
+            'text' => 'default'
+        ],
+        'first_name' => [
+            'required' => true,
+            'length' => [3, 20],
+            'text' => 'default'
+        ],
+        'email' => [
+            'required' => true,
+            'email' => null
+        ]
+    ];
+
+    public function verif(array $data, bool $new = false)
     {
-        $name = isset($datas['name']);
-        $first_name = isset($datas['first_name']);
-        $email = isset($datas['email']);
-        $role = false;
-
-        if (!$name) {
-            $this->addErrors("name", "Champs invalide");
-        }
-
-        if (!$first_name) {
-            $this->addErrors("first_name", "Champs invalide");
-        }
-
-        if (!$email) {
-            $this->addErrors("email", "Champs invalide");
-        }
-
-        foreach ($datas as $key => $val) {
-            if (preg_match("#role_#", $key)) {
-                $role = true;
-                break;
-            }
-        }
-
-        if (!$role) {
-            $this->addErrors("role", "Attribuer au moins un rôle");
-        }
-
         if ($new) {
-            $password = (isset($datas['password'])) ? true : false;
-            if (!$password) {
-                $this->addErrors("password", "Champs invalide");
-            }
+            $array['password'] = [
+                'required' => true,
+                'text' => 'password',
+                'length' => [8, 15]
+            ];
+            $this->requiredControl($array, $data);
+            $this->launch($array, $data);
         }
+        
+        $this->requiredControl(self::data, $data);
+        $this->launch(self::data, $data);
     }
 
-    public function profilVerif(array $datas)
+    public function profilVerif(array $data)
     {
-        $name = isset($datas['name']);
-        $first_name = isset($datas['first_name']);
-        $email = isset($datas['email']);
+        $name = isset($$data['name']);
+        $first_name = isset($$data['first_name']);
+        $email = isset($$data['email']);
 
         if (!$name) {
             $this->addErrors("name", "Champs invalide");
@@ -64,16 +59,16 @@ class UserForm extends Form
         }
     }
 
-    public function updatePass(array $datas, User $user)
+    public function updatePass(array $data, User $user)
     {
-        $password = isset($datas['password']);
-        $new_password = isset($datas['new_password']);
-        $confirm_password = isset($datas['confirm_password']);
+        $password = isset($$data['password']);
+        $new_password = isset($$data['new_password']);
+        $confirm_password = isset($$data['confirm_password']);
 
         if (!$password) {
             $this->addErrors("password", "Champs obligatoire");
         }
-        if (!password_verify($datas['password'], $user->getPassword())) {
+        if (!password_verify($$data['password'], $user->getPassword())) {
             $password = false;
         }
         if (!$password) {
@@ -89,7 +84,7 @@ class UserForm extends Form
         }
 
         if ($confirm_password && $new_password) {
-            if ($datas['confirm_password'] !== $datas['new_password']) {
+            if ($$data['confirm_password'] !== $$data['new_password']) {
                 $this->addErrors("confirm_password", "Le mot de passe ne correspond pas");
             }
         }

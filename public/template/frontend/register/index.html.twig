@@ -10,7 +10,7 @@
                         <div class="input-group-prepend">
                             <label for="name" class="input-group-text">Nom</label>
                         </div>
-                        <input type="text" name="name" placeholder="Nom" id="name" class="form-control" required value="{{ request.post('name')|default('') }}">
+                        <input type="text" name="name" placeholder="Nom" id="name" class="form-control" value="{{ request.post('name')|default('') }}" required>
                         {% if form.hasError('name') %}
                             <div class="form-errors">
                                 <span class="badge badge-danger">{{ form.errors('name') }}</span>
@@ -21,7 +21,7 @@
                         <div class="input-group-prepend">
                             <label for="first_name" class="input-group-text">Prénom</label>
                         </div>
-                        <input type="text" name="first_name" placeholder="Prénom" id="first_name" class="form-control" required value="{{ request.post('first_name')|default('') }}">
+                        <input type="text" name="first_name" placeholder="Prénom" id="first_name" class="form-control" value="{{ request.post('first_name')|default('') }}" required>
                         {% if form.hasError('first_name') %}
                             <div class="form-errors">
                                 <span class="badge badge-danger">{{ form.errors('first_name') }}</span>
@@ -32,7 +32,7 @@
                         <div class="input-group-prepend">
                             <label for="email" class="input-group-text"><i class="fas fa-at"></i></label>
                         </div>
-                        <input type="email" name="email" placeholder="Email" id="email" class="form-control" autocomplete="off" required value="{{ request.post('email')|default('') }}">
+                        <input type="email" name="email" placeholder="Email" id="email" class="form-control" autocomplete="off" value="{{ request.post('email')|default('') }}" required>
                         {% if form.hasError('email') %}
                             <div class="form-errors">
                                 <span class="badge badge-danger">{{ form.errors('email') }}</span>
@@ -73,7 +73,7 @@
                         </div>
                         <label for="cgu" class="form-control">J'accepte les conditions générales d'utilisation</label>
                         {% if form.hasError('cgu') %}
-                            <div class="col-12">
+                            <div class="form-errors">
                                 <span class="badge badge-danger">{{ form.errors('cgu') }}</span>
                             </div>
                         {% endif %}

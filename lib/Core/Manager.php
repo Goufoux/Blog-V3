@@ -57,7 +57,7 @@ abstract class Manager
                     $sql .= ' LIMIT '. $flag;
                     break;
                 default:
-                    $this->setError("Flag : " . $key . " not defined.");
+                    $this->setError("Flag : $key not defined.");
                     return false;
                     break;
             }

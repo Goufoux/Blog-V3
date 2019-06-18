@@ -6,45 +6,39 @@ use Core\Form;
 
 class RegisterForm extends Form
 {
-    public function verif(array $datas)
+    const data = [
+        'name' => [
+            'required' => true,
+            'length' => [3, 15],
+            'text' => 'default'
+        ],
+        'first_name' => [
+            'required' => true,
+            'length' => [3, 20],
+            'text' => 'default'
+        ],
+        'email' => [
+            'required' => true,
+            'email' => null
+        ],
+        'password' => [
+            'required' => true,
+            'length' => [8, 15],
+            'text' => 'password',
+            'translate' => 'Mot de passe'
+        ],
+        'confirm_password' => [
+            'required' => true,
+            'equals' => 'password'
+        ],
+        'cgu' => [
+            'required' => true
+        ]
+    ];
+
+    public function verif(array $data)
     {
-        $name = isset($datas['name']) ? true : false;
-        $first_name = isset($datas['first_name']) ? true : false;
-        $email = isset($datas['email']) ? true : false;
-        $password = isset($datas['password']) ? true : false;
-        $confirm_password = isset($datas['confirm_password']) ? true : false;
-        $cgu = isset($datas['cgu']) ? true : false;
-        
-        if (!$name) {
-            $this->addErrors("name", "Champs obligatoire");
-        }
-
-        if (!$first_name) {
-            $this->addErrors("first_name", "Champs obligatoire");
-        }
-
-        if (!$email) {
-            $this->addErrors("email", "Champs obligatoire");
-        } else {
-            if (!$this->isEmail($datas['email'])) {
-                $this->addErrors("email", "Cette adresse email ne semble pas valide.");
-            }
-        }
-
-        if (!$password) {
-            $this->addErrors("password", "Champs obligatoire");
-        }
-
-        if (!$confirm_password) {
-            $this->addErrors("confirm_password", "Champs obligatoire");
-        } else {
-            if ($datas['confirm_password'] != $datas['password']) {
-                $this->addErrors("confirm_password", "Le mot de passe ne correspond pas");
-            }
-        }
-
-        if (!$cgu) {
-            $this->addErrors("cgu", "Veuillez accepter nos conditions générales d'utilisation pour vous inscrire.");
-        }
+        $this->requiredControl(self::data, $data);
+        $this->launch(self::data, $data);
     }
 }
