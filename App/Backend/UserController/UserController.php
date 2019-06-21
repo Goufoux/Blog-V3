@@ -4,6 +4,7 @@ namespace App\Backend\UserController;
 
 use Core\AbstractController;
 use Form\UserForm;
+use Entity\User;
 
 class UserController extends AbstractController
 {
@@ -33,44 +34,25 @@ class UserController extends AbstractController
         $form = new UserForm;
 
         if ($this->request->hasPost()) {
-            $datas = $this->request->getAllPost();
-            $form->verif($datas, true);
-            if ($form->isValid()) {
-                $roles = [];
-                foreach ($datas as $key => $val) {
-                    if (preg_match("#role_#", $key)) {
-                        $roles[] = $val;
-                        unset($datas[$key]);
-                    }
-                }
+            $data = $this->request->getAllPost();
 
-                if ($this->manager->add("user", $datas)) {
-                    $this->notifications->addSuccess("Utilisateur créé");
-                    $userId = $this->manager->getLastInsertId();
-                    foreach ($roles as $key => $roleId) {
-                        $role = $this->manager->findBy("role", "id", $roleId, true, true);
-                        if (!$role) {
-                            $this->notifications->addWarning("Rôle non trouvé.");
-                            continue;
-                        }
-                        $roleData = [
-                            'role' => $role->getId(),
-                            'user' => $userId
-                        ];
-                        if ($this->manager->add("userRole", $roleData)) {
-                            $this->notifications->addSuccess("Rôle ajouté");
-                        } else {
-                            $this->notifications->default("500", $this->manager->getError(), "danger", true);
-                        }
-                    }
-                    $this->response->referer();
-                }
-
-                $this->notifications->default("500", $this->manager->getError(), "danger", true);
-            } else {
-                $this->notifications->addDanger("Le formulaire n'est pas valide.");
+            if (!$this->checkForm($data, $form, 'add')) {
+                goto out;
             }
+
+            $tempData = $data;
+            $data = $this->clearDataOfRole($data);
+            if ($this->manager->add("user", $data)) {
+                $this->notifications->addSuccess("Utilisateur créé");
+                $userId = $this->manager->getLastInsertId();
+                $this->addRoles($tempData, $userId, true);
+                return $this->response->referer();
+            }
+
+            $this->notifications->default("500", $this->manager->getError(), "danger", true);
         }
+
+        out:
 
         return $this->render([
             'roles' => $roles,
@@ -85,12 +67,7 @@ class UserController extends AbstractController
             $this->response->referer();
         }
 
-        $userId = $this->request->getData('id');
-
-        if (!$userId) {
-            $this->notifications->default("500", "Aucun identifiant fourni", "danger", true);
-            $this->response->referer();
-        }
+        $userId = $this->get('id');
 
         $userManager = $this->manager->getManagerOf("User");
         $user = $userManager->findById($userId);
@@ -103,52 +80,29 @@ class UserController extends AbstractController
         $roles = $this->manager->fetchAll("role");
 
         $userRoles = $this->manager->findBy('userRole', 'user', $userId);
-
+        
         $form = new UserForm;
 
         if ($this->request->hasPost()) {
-            $datas = $this->request->getAllPost();
-            $form->verif($datas);
-            if ($form->isValid()) {
-                $roles = [];
-                foreach ($datas as $key => $val) {
-                    if (preg_match("#role_#", $key)) {
-                        $roles[] = $val;
-                        unset($datas[$key]);
-                    }
-                }
-                $datas['id'] = $userId;
-
-                foreach ($roles as $key => $roleId) {
-                    $role = $this->manager->findBy("role", "id", $roleId, true, true);
-                    if (!$role) {
-                        $this->notifications->addWarning("Rôle non trouvé.");
-                        continue;
-                    }
-                    if ($this->app->authentification()->hasRole($role->getName())) {
-                        continue;
-                    }
-                    $roleData = [
-                        'role' => $role->getId(),
-                        'user' => $userId
-                    ];
-                    if ($this->manager->add("userRole", $roleData)) {
-                        $this->notifications->addSuccess("Rôle ajouté");
-                    } else {
-                        $this->notifications->default("500", $this->manager->getError(), "danger", true);
-                    }
-                }
-
-                if ($this->manager->update("user", $datas)) {
-                    $this->notifications->addSuccess("Utilisateur mis à jour");
-                    $this->response->referer();
-                }
-
-                $this->notifications->default("500", $this->manager->getError(), "danger", true);
-            } else {
-                $this->notifications->addDanger("Le formulaire n'est pas valide.");
+            $data = $this->request->getAllPost();
+            
+            if (!$this->checkForm($data, $form, 'update')) {
+                goto out;
             }
+            $this->addRoles($data, $user->getId());
+            $data = $this->clearDataOfRole($data);
+
+            $data['id'] = $userId;
+
+            if ($this->manager->update("user", $data)) {
+                $this->notifications->addSuccess("Utilisateur mis à jour");
+                return $this->response->referer();
+            }
+
+            $this->notifications->default("500", $this->manager->getError(), "danger", true);
         }
+
+        out:
 
         return $this->render([
             'user' => $user,
@@ -159,6 +113,111 @@ class UserController extends AbstractController
         ]);
     }
 
+    public function clearDataOfRole(array $data)
+    {
+        foreach ($data as $key => $value) {
+            if (preg_match("#role#", $key)) {
+                unset($data[$key]);
+            }
+        }
+
+        return $data;
+    }
+
+    public function addRoles(array $data, int $userId, bool $isNew = false)
+    {
+        $roles = $this->returnRole($data);
+        if (empty($roles)) {
+            $userRoles = $this->getUserRoles($userId);
+            foreach ($userRoles as $key => $role) {
+                $this->removeRole($role->getRole(), $userId);
+            }
+        }
+
+        foreach ($roles as $key => $roleId) {
+            $role = $this->manager->findBy("role", "id", $roleId, true, true);
+            if (!$role) {
+                $this->notifications->addWarning("Rôle non trouvé.");
+                continue;
+            }
+
+            if (!$isNew) {
+                if ($userRoles = $this->manager->findBy('userRole', 'user', $userId)) {
+                    foreach ($userRoles as $key => $userRole) {
+                        /* exist role */
+                        if ($userRole->getRole() == $roleId) {
+                            continue 2;
+                        }
+                        
+                        /* role to remove */
+                        if (!in_array($userRole->getRole(), $roles)) {
+                            $this->removeRole($userRole->getRole(), $userId);
+                        }
+                    }
+                }
+            }
+
+            
+            $roleData = [
+                'role' => $role->getId(),
+                'user' => $userId
+            ];
+            
+            if ($this->manager->add("userRole", $roleData)) {
+                $this->notifications->addSuccess("Rôle ajouté");
+            } else {
+                $this->notifications->default("500", $this->manager->getError(), "danger", true);
+            }
+        }
+    }
+
+    private function getUserRoles(int $userId)
+    {
+        return $this->manager->findBy('userRole', 'user', $userId);
+    }
+
+    public function removeRole(int $roleId, int $userId)
+    {
+        $userRoleManager = $this->manager->getManagerOf('userRole');
+
+        if ($userRoleManager == null) {
+            $this->notifications->addWarning('Impossible d\'instancier');
+            return;
+        }
+        if ($userRoleManager->removeRoleOfUser($roleId, $userId)) {
+            $this->notifications->addSuccess('Rôle supprimé');
+
+            return true;
+        }
+
+        $this->notifications->default('500', $userRoleManager->getError(), 'danger', $this->isDev());
+
+        return false;
+    }
+
+    public function returnRole(array $data)
+    {
+        $roles = [];
+        foreach ($data as $key => $val) {
+            if (preg_match("#role_#", $key)) {
+                $roles[] = $val;
+            }
+        }
+
+        return $roles;
+    }
+
+    public function checkForm(array $data, UserForm $userForm, string $type)
+    {
+        $check = ($type == 'add') ? $userForm->verif($data, true) : $userForm->verif($data);
+
+        if (!$userForm->isValid()) {
+            return false;
+        }
+
+        return true;
+    }
+
     public function view()
     {
         if (!$this->app->authentification()->hasRole('ROLE_SUPER_ADMIN') && !$this->app->authentification()->hasRole('ROLE_ADMIN')) {
@@ -166,12 +225,7 @@ class UserController extends AbstractController
             $this->response->referer();
         }
         
-        $userId = $this->request->getData('id');
-
-        if (!$userId) {
-            $this->notifications->default("500", "Aucun identifiant fourni", "danger", true);
-            $this->response->referer();
-        }
+        $userId = $this->get('id');
 
         $userManager = $this->manager->getManagerOf("User");
         $user = $userManager->findById($userId);
@@ -202,12 +256,7 @@ class UserController extends AbstractController
             $this->response->referer();
         }
         
-        $userId = $this->request->getData('id');
-
-        if (!$userId) {
-            $this->notifications->default("500", "Aucun identifiant fourni", "danger", true);
-            $this->response->referer();
-        }
+        $userId = $this->get('id');
 
         if ($this->manager->remove("user", "id", $userId)) {
             $this->notifications->addSuccess("Utilisateur supprimé");

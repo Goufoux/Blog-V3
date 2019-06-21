@@ -36,7 +36,7 @@ class UserManager extends Manager
     public function findById(int $id)
     {
         $req = $this->bdd->prepare('SELECT user.*, userRole.* FROM user
-                                    INNER JOIN userRole ON userRole.userRole_user = user.user_id
+                                    LEFT JOIN userRole ON userRole.userRole_user = user.user_id
                                     WHERE user_id = :id');
         $req->setFetchMode(\PDO::FETCH_CLASS | \PDO::FETCH_PROPS_LATE, '\Entity\\User');
         $req->bindValue(':id', $id ,\PDO::PARAM_INT);

@@ -132,16 +132,12 @@ class ConnectController extends AbstractController
 
     public function verifToken()
     {
-        $token = $this->request->getData('token');
-
-        if (!$token) {
-            $this->notifications->addDanger('Le lien est incorrect.');
-            $this->response->redirectTo('/');
-        }
+        $token = $this->get('token');
 
         $user = $this->manager->findBy('user', 'token', $token, true, true);
 
         if (!$user) {
+            $this->notifications->addWarning('Token invalide.');
             $this->response->redirectTo('/');
         }
 

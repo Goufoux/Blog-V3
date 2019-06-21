@@ -9,6 +9,7 @@ class UserRole extends Entity
     private $id;
     private $user;
     private $role;
+    private $createdAt;
 
     /**
      * Get the value of id
@@ -66,6 +67,26 @@ class UserRole extends Entity
     public function setRole($role)
     {
         $this->role = $role;
+
+        return $this;
+    }
+
+    /**
+     * Get the value of createdAt
+     */ 
+    public function getCreatedAt()
+    {
+        return $this->createdAt;
+    }
+
+    /**
+     * Set the value of createdAt
+     *
+     * @return  self
+     */ 
+    public function setCreatedAt($createdAt)
+    {
+        $this->createdAt = $createdAt;
 
         return $this;
     }

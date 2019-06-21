@@ -67,7 +67,6 @@ a i {
 }
 .form-errors .badge {
   padding: 10px;
-  font-variant: small-caps;
   font-size: 1rem;
   text-shadow: 1px 2px 3px black;
 }
@@ -84,10 +83,6 @@ a i {
     font-size: 12px;
     padding: 5px;
   }
-}
-
-.input-group {
-  /* height: 100%; */
 }
 
 @keyframes show  {
