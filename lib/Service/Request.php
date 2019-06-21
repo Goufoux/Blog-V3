@@ -40,18 +40,10 @@ class Request
     public function hasData($key = false): bool
     {
         if ($key !== false) {
-            if (isset($_GET[$key])) {
-                return true;
-            } else {
-                return false;
-            }
+            return isset($_GET[$key]);
         }
 
-        if (empty($_GET)) {
-            return false;
-        } else {
-            return true;
-        }
+        return !empty($_GET);
     }
 
     public function getAllData(bool $setEmpty = true, array $ignore = [])
@@ -63,10 +55,8 @@ class Request
         $array = array();
 
         foreach ($_GET as $key => $value) {
-            if ($setEmpty) {
-                if (empty($value)) {
-                    continue;
-                }
+            if ($setEmpty && empty($value)) {
+                continue;
             }
             if (!empty($ignore)) {
                 $isIgnored = false;
@@ -119,9 +109,8 @@ class Request
         if ($key != null) {
             if (!isset($_GET[$key]) || empty($_GET[$key])) {
                 return null;
-            } else {
-                return htmlspecialchars($_GET[$key]);
             }
+            return htmlspecialchars($_GET[$key]);
         }
 
         return $_GET;
@@ -130,18 +119,10 @@ class Request
     public function hasPost($key = false)
     {
         if ($key !== false) {
-            if (isset($_POST[$key])) {
-                return true;
-            } else {
-                return false;
-            }
+            return isset($_POST[$key]);
         }
 
-        if (empty($_POST)) {
-            return false;
-        } else {
-            return true;
-        }
+        return !empty($_POST);
     }
 
     public function getPost(string $key = null)
@@ -153,9 +134,8 @@ class Request
         if ($key != null) {
             if (!isset($_POST[$key]) || empty($_POST[$key])) {
                 return null;
-            } else {
-                return htmlspecialchars($_POST[$key]);
             }
+            return htmlspecialchars($_POST[$key]);
         }
 
         return $_POST;

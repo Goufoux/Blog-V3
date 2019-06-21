@@ -1,1 +1,25 @@
-{% include "frontend/base.html.twig" %}
+{% extends "frontend/base.html.twig" %}
+{% import "macro/post.macro.html.twig" as post_macro %}
+
+{% block body %}
+    <blockquote class="blockquote text-center my-3">
+        <p>
+            Passionné par la programmation, je suis entrepreneur dans la création de site web et le développement d'application web, <br />
+            je suis à la recherche constante de nouveaux défis et de nouveaux collaborateurs, contacter moi pour vos projets web<br />
+        </p>
+    </blockquote>
+    <section>
+        <h1>Les derniers posts</h1>
+        {% if posts is not empty %}
+        <div class="row">
+            {% for post in posts %}
+                {{ post_macro.view(post) }}
+            {% endfor %}
+        </div>
+        {% else %}
+            <div class="alert alert-info" role="alert">
+                <strong>Aucun post pour le moment !</strong>
+            </div>
+        {% endif %}
+    </section>
+{% endblock %}

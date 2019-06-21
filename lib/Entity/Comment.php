@@ -4,12 +4,13 @@ namespace Entity;
 
 use Core\Entity;
 
-class UserRole extends Entity
+class Comment extends Entity
 {
     private $id;
-    private $user;
-    private $role;
     private $createdAt;
+    private $user;
+    private $content;
+    private $state;
 
     /**
      * Get the value of id
@@ -27,6 +28,26 @@ class UserRole extends Entity
     public function setId($id)
     {
         $this->id = $id;
+
+        return $this;
+    }
+
+    /**
+     * Get the value of createdAt
+     */ 
+    public function getCreatedAt()
+    {
+        return $this->createdAt;
+    }
+
+    /**
+     * Set the value of createdAt
+     *
+     * @return  self
+     */ 
+    public function setCreatedAt($createdAt)
+    {
+        $this->createdAt = $createdAt;
 
         return $this;
     }
@@ -52,41 +73,41 @@ class UserRole extends Entity
     }
 
     /**
-     * Get the value of role
+     * Get the value of content
      */ 
-    public function getRole()
+    public function getContent()
     {
-        return $this->role;
+        return htmlspecialchars_decode($this->content);
     }
 
     /**
-     * Set the value of role
+     * Set the value of content
      *
      * @return  self
      */ 
-    public function setRole($role)
+    public function setContent($content)
     {
-        $this->role = $role;
+        $this->content = $content;
 
         return $this;
     }
 
     /**
-     * Get the value of createdAt
+     * Get the value of state
      */ 
-    public function getCreatedAt()
+    public function getState()
     {
-        return $this->createdAt;
+        return $this->state;
     }
 
     /**
-     * Set the value of createdAt
+     * Set the value of state
      *
      * @return  self
      */ 
-    public function setCreatedAt($createdAt)
+    public function setState($state)
     {
-        $this->createdAt = $createdAt;
+        $this->state = $state;
 
         return $this;
     }

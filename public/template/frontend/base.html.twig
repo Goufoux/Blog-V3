@@ -2,6 +2,7 @@
 <html lang="fr">
     <head>
         <title>{{ title ?: 'Genarkys' }}</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
         <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.2/css/all.css" integrity="sha384-oS3vJWv+0UjzBfQzYUhtDYW+Pj2yciDJxpsK1OYPAYjqT085Qq/1cq5FLXAZQ7Ay" crossorigin="anonymous">
         <link rel="stylesheet" href="/public/assets/css/sandstone.theme.min.css">
         <link rel="stylesheet" href="/public/assets/css/index.css">
@@ -22,7 +23,7 @@
             <div class="collapse navbar-collapse" id="collapsibleNavId">
                 <ul class="navbar-nav mr-auto mt-2 mt-lg-0">
                     {% if app.authentification.isAuthentificated() %}
-                        {% if app.authentification.hasRole('ROLE_SUPER_ADMIN') %}
+                        {% if app.authentification.hasRole('ROLE_SUPER_ADMIN') or app.authentification.hasRole('ROLE_ADMIN') or app.authentification.hasRole('ROLE_MODERATEUR') %}
                             <li class="nav-item">
                                 <a href="/admin/" class="nav-link">Backend</a>
                             </li>
@@ -68,10 +69,72 @@
                 </ul>
             </div>
         </nav>
-        <div class="container">
-            {% block body %}
-            {% endblock %}
+        <div class="container-fluid">
+            {% block body %}{% endblock %}
         </div>
+        <footer class="bg-primary mt-2">
+            <div class="row m-0">
+                <div class="col-xl-6 col-sm-12 my-2">
+                    <h2 class="text-white">Réseaux sociaux</h2>
+                    <div class="social-link">
+                        <a href="https://github.com/Goufoux" target="_blank" rel="noopener noreferrer">
+                            <i class="fab fa-github fa-4x ico" data-toggle="tooltip" title="Découvrez mes projets sur Github"></i>
+                        </a>
+                        <a href="https://www.facebook.com/genarkyscompany/" target="_blank" rel="noopener noreferrer">
+                            <i class="fab fa-facebook fa-4x ico ico-info" data-toggle="tooltip" title="Abonnez vous à ma page Facebook !"></i>
+                        </a>
+                        <a href="http://" target="_blank" rel="noopener noreferrer">
+                            <i class="fab fa-linkedin-in fa-4x ico" data-toggle="tooltip" title="Mon profil Linkedin"></i>
+                        </a>
+                        <a href="http://blog-genarkys.fr/docs/cv.pdf" target="_blank" rel="noopener noreferrer">
+                            <i class="fa fa-file-pdf fa-4x ico" data-toggle="tooltip" title="Mon CV"></i>
+                        </a>
+                    </div>
+                </div>
+                <div class="col-xl-6 col-sm-12 my-2">
+                    <h2 class="text-white">Contacter moi !</h2>
+                    <form action="/contact" method="POST" id="contact">
+                        <div class="form-row text-white">
+                            <div class="input-group mb-3 col-xl-6 col-md-12">
+                                <div class="input-group-prepend">
+                                    <label class="input-group-text" for="contact_name">Nom et prénom</label>
+                                </div>
+                                <input type="text" name="contact_name" id="contact_name" placeholder="Votre nom et/ou prénom" minlength="3" required class="form-control" value="{{ datas['contact_name']|default('') }}">
+                                {% if form.errors('contact_name') is not empty %}
+                                    <div class="form-errors">
+                                        <span class="badge badge-danger">{{ form.errors('contact_name') }}</span>
+                                    </div>
+                                {% endif %}
+                            </div>
+                            <div class="input-group mb-3  col-xl-6 col-md-12">
+                                <div class="input-group-prepend">
+                                    <label for="contact_email" class="input-group-text">Email</label>
+                                </div>
+                                <input type="email" name="contact_email" id="contact_email" placeholder="Votre adresse email" required class="form-control" value="{{ datas['contact_email']|default('') }}">
+                                {% if form.errors('contact_email') is not empty %}
+                                    <div class="form-errors">
+                                        <span class="badge badge-danger">{{ form.errors('contact_email') }}</span>
+                                    </div>
+                                {% endif %}
+                            </div>
+                            <div class="form-group mb-3 col-12">
+                                {% set textarea = datas['contact_message']|default('') %}
+                                <label for="message">Message</label>
+                                <textarea name="contact_message" placeholder="Votre message" minlength="15" required id="contact_message" class="form-control">{{ textarea }}</textarea>
+                                {% if form.errors('contact_message') is not empty %}
+                                    <div class="form-errors">
+                                        <span class="badge badge-danger">{{ form.errors('contact_message') }}</span>
+                                    </div>
+                                {% endif %}
+                            </div>
+                            <div class="form-group col-12 text-right">
+                                <input type="submit" value="Envoyer" class="btn btn-success">
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </footer>
         {% include "modules/notifications.html.twig" %}
     </body>
 </html>

@@ -55,6 +55,16 @@ abstract class AbstractController
         $data['request'] = $this->request;
         $data['base_url'] = $this->base_link;
 
+        if (!empty($_SESSION['datas'])) {
+            $data['datas'] = $_SESSION['datas'];
+            unset($_SESSION['datas']);
+        }
+
+        if (!empty($_SESSION['form'])) {
+            $data['form'] = $_SESSION['form'];
+            unset($_SESSION['form']);
+        }
+
         return $this->twig->render($this->getPath(), $data);
     }
 
@@ -118,5 +128,34 @@ abstract class AbstractController
     public function isDev()
     {
         return ($this->app->config()->isDev() === true);
+    }
+
+    public function getAll(string $data = '', string $method)
+    {
+        return $this->get($data, $method, true);
+    }
+
+    public function get(string $data = '', string $method = 'GET', bool $all = false, bool $autoRedirect = true)
+    {
+        switch ($method) {
+            case 'GET':
+                $result = $all ? $this->request->getAllData() : $this->request->getData($data);
+                break;
+            case 'POST':
+                $result = $all ? $this->request->getAllPost() : $this->request->getPost($data);
+                break;
+        }
+        
+        if ($autoRedirect && ($result === false || $result === null || empty($result))) {
+            if ($this->isDev()) {
+                $this->notifications->addWarning("$data n'a pas été trouvé. Méthode $method");
+            } else {
+                $this->notifications->addDanger("Une erreur est survenue.");
+            }
+
+            $this->response->referer();
+        }
+
+        return $result;
     }
 }

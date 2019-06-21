@@ -96,7 +96,6 @@ class Managers extends Manager
      * @param string $data
      * @param boolean $autoPrefix
      * @param string $by
-     * @return void
      */
     public function findBy($table = '', string $by = '', $data = '', bool $autoPrefix = true, bool $oneResult = false, array $flags = array())
     {

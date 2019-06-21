@@ -4,9 +4,9 @@
 {% block body %}
     <div class="container">
         <div class="row">
-            <h1 class="col-12">Mes posts</h1>
+            <h1 class="col-12">Liste des posts</h1>
             {% for post in posts %}
-                {{ post_macro.view(post) }}                                
+                {{ post_macro.view(post) }}                                        
             {% endfor %}
         </div>
     </div>

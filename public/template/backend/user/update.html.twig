@@ -9,31 +9,31 @@
                 {{ user.name ~ " " ~ user.firstName }}
             </h1>
         </div>
-        <form action="#" method="POST" class="col-10 mx-auto bg-secondary text-white p-3">
+        <form action="#" method="POST" class="col-10 mx-auto bg-primary rounded text-white p-3">
             <div class="form-row">
                 <div class="form-group col-4">
                     <label for="name">Nom</label>
                     <input type="text" name="name" placeholder="Nom" id="name" class="form-control" value="{{ request.post('name')|default(user.name) }}">
                     {% if form.hasError('name') %}
-                        <div class="col-12">
+                        <div class="form-errors">
                             <span class="badge badge-danger">{{ form.errors('name') }}</span>
                         </div>
                     {% endif %}
                 </div>
                 <div class="form-group col-4">
                     <label for="first_name">Prénom</label>
-                    <input type="text" name="first_name" placeholder="Prénom" id="first_name" class="form-control" value="{{ request.post('name')|default(user.firstName) }}">
+                    <input type="text" name="first_name" placeholder="Prénom" id="first_name" class="form-control" value="{{ request.post('firstName')|default(user.firstName) }}">
                     {% if form.hasError('first_name') %}
-                        <div class="col-12">
+                        <div class="form-errors">
                             <span class="badge badge-danger">{{ form.errors('first_name') }}</span>
                         </div>
                     {% endif %}
                 </div>
                 <div class="form-group col-4">
                     <label for="email">Email</label>
-                    <input type="email" name="email" placeholder="Email" id="email" class="form-control" value="{{ request.post('name')|default(user.email) }}">
+                    <input type="email" name="email" placeholder="Email" id="email" class="form-control" value="{{ request.post('email')|default(user.email) }}">
                     {% if form.hasError('email') %}
-                        <div class="col-12">
+                        <div class="form-errors">
                             <span class="badge badge-danger">{{ form.errors('email') }}</span>
                         </div>
                     {% endif %}
@@ -42,15 +42,23 @@
                     <label>
                         Attribution des rôles
                         {% if form.hasError('role') %}
+                        <div class="form-errors">
                             <span class="badge badge-danger">{{ form.errors('role') }}</span>
+                        </div>
                         {% endif %}
                     </label>
                     {% if roles is not empty %}
-                    {% for role in roles %}
-                    <div class="input-group">
-                        <div class="input-group-prepend">
-                            <div class="input-group-text">
-                                <input type="checkbox" name="role_{{ role.id }}" value="{{ role.id }}" id="role_{{ role.id }}" {{ request.hasPost('role_' ~ role.id) ? 'checked' : (app.user.hasRole(role.name) ? 'checked') }}>
+                        {% for role in roles %}
+                        {% set hasRole = false %}
+                            {% for uRole in userRoles %}
+                                {% if not hasRole %}
+                                    {% set hasRole = (uRole.role == role.id) ? true : false %}
+                                {% endif %}
+                            {% endfor %}
+                            <div class="input-group">
+                                <div class="input-group-prepend">
+                                    <div class="input-group-text">
+                                        <input type="checkbox" name="role_{{ role.id }}" value="{{ role.id }}" id="role_{{ role.id }}" {{ request.hasPost('role_' ~ role.id) ? 'checked' : (hasRole == true ? 'checked') }}>
                                     </div>
                                 </div>
                                 <label for="role_{{ role.id }}" class="form-control">{{ role.name }}</label>

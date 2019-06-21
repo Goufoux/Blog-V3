@@ -7,91 +7,63 @@ use Entity\User;
 
 class UserForm extends Form
 {
-    public function verif(array $datas, bool $new = false)
+    const data = [
+        'name' => [
+            'required' => true,
+            'length' => [3, 15],
+            'text' => 'default'
+        ],
+        'first_name' => [
+            'required' => true,
+            'length' => [3, 20],
+            'text' => 'default'
+        ],
+        'email' => [
+            'required' => true,
+            'email' => null
+        ]
+    ];
+
+    public function verif(array $data, bool $new = false)
     {
-        $name = isset($datas['name']);
-        $first_name = isset($datas['first_name']);
-        $email = isset($datas['email']);
-        $role = false;
-
-        if (!$name) {
-            $this->addErrors("name", "Champs invalide");
-        }
-
-        if (!$first_name) {
-            $this->addErrors("first_name", "Champs invalide");
-        }
-
-        if (!$email) {
-            $this->addErrors("email", "Champs invalide");
-        }
-
-        foreach ($datas as $key => $val) {
-            if (preg_match("#role_#", $key)) {
-                $role = true;
-                break;
-            }
-        }
-
-        if (!$role) {
-            $this->addErrors("role", "Attribuer au moins un rôle");
-        }
-
         if ($new) {
-            $password = (isset($datas['password'])) ? true : false;
-            if (!$password) {
-                $this->addErrors("password", "Champs invalide");
-            }
+            $array['password'] = [
+                'required' => true,
+                'text' => 'password',
+                'length' => [8, 15]
+            ];
+            $this->requiredControl($array, $data);
+            $this->launch($array, $data);
         }
+        
+        $this->requiredControl(self::data, $data);
+        $this->launch(self::data, $data);
     }
 
-    public function profilVerif(array $datas)
+    public function updatePass(array $data, User $user)
     {
-        $name = isset($datas['name']);
-        $first_name = isset($datas['first_name']);
-        $email = isset($datas['email']);
+        $array = [
+            'password' => [
+                'required' => true,
+            ],
+            'new_password' => [
+                'required' => true,
+                'text' => 'password',
+                'length' => [8, 15],
+                'translate' => 'Nouveau mot de passe'
+            ],
+            'confirm_password' => [
+                'required' => true,
+                'equals' => 'new_password'
+            ]
+        ];
 
-        if (!$name) {
-            $this->addErrors("name", "Champs invalide");
-        }
+        $this->requiredControl($array, $data);
+        $this->launch($array, $data);
 
-        if (!$first_name) {
-            $this->addErrors("first_name", "Champs invalide");
+        if (!password_verify($data['password'], $user->getPassword())) {
+            $this->addErrors('password', 'Le mot de passe est incorrect.');
         }
-
-        if (!$email) {
-            $this->addErrors("email", "Champs invalide");
-        }
-    }
-
-    public function updatePass(array $datas, User $user)
-    {
-        $password = isset($datas['password']);
-        $new_password = isset($datas['new_password']);
-        $confirm_password = isset($datas['confirm_password']);
-
-        if (!$password) {
-            $this->addErrors("password", "Champs obligatoire");
-        }
-        if (!password_verify($datas['password'], $user->getPassword())) {
-            $password = false;
-        }
-        if (!$password) {
-            $this->addErrors("password", "Mot de passe invalid");
-        }
-
-        if (!$new_password) {
-            $this->addErrors("new_password", "Champs obligatoire");
-        }
-
-        if (!$confirm_password) {
-            $this->addErrors("confirm_password", "Champs obligatoire");
-        }
-
-        if ($confirm_password && $new_password) {
-            if ($datas['confirm_password'] !== $datas['new_password']) {
-                $this->addErrors("confirm_password", "Le mot de passe ne correspond pas");
-            }
-        }
+        
     }
 }

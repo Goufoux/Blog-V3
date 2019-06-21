@@ -50,7 +50,7 @@ class Logger
 
     public function loadLogger()
     {
-        $logsDir = __DIR__.'/../../logs/';
+        $logsDir = __DIR__.'/../../GenarkysLogs/';
         $logsfile = $logsDir.'logs.txt';
         if (!is_dir($logsDir)) {
             if (!mkdir($logsDir)) {
