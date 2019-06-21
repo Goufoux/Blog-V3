@@ -13,7 +13,7 @@
                     </div>
                     <input placeholder="Nouveau mot de passe" type="password" aria-describedby="label-password" required class="form-control" name="password" id="password" required value="{{ request.post('email')|default('') }}">
                     {% if form.hasError('password') %}
-                    <div class="col-12">
+                    <div class="form-errors">
                         <span class="badge badge-danger">{{ form.errors('password') }}</span>
                     </div>    
                     {% endif %}
@@ -26,7 +26,7 @@
                     </div>
                     <input type="password" placeholder="Confirmation du mot de passe" name="confirm_password" aria-describedby="label-confirm-password" required id="confirm_password" class="form-control">
                     {% if form.hasError('confirm_password') %}
-                    <div class="col-12">
+                    <div class="form-errors">
                         <span class="badge badge-danger">{{ form.errors('confirm_password') }}</span>
                     </div>    
                     {% endif %}

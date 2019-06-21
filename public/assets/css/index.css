@@ -54,6 +54,7 @@ a i {
 
 /** Notifications **/
 #container-notifications {
+  z-index: 500;
   position: fixed;
   bottom: 0;
   right: 0; }
@@ -76,6 +77,17 @@ a i {
   margin-right: 5px;
   animation-duration: 3s;
   animation-name: show;
+}
+
+@media all and (max-width: 500px) {
+  .form-errors .badge {
+    font-size: 12px;
+    padding: 5px;
+  }
+}
+
+.input-group {
+  /* height: 100%; */
 }
 
 @keyframes show  {

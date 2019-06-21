@@ -4,17 +4,13 @@ namespace App\Frontend\UserController;
 
 use Core\AbstractController;
 use Form\UserForm;
+use Entity\User;
 
 class UserController extends AbstractController
 {
     public function profil()
     {
-        $userId = $this->request->getData('id');
-
-        if (!$userId) {
-            $this->notifications->default('500', 'Aucun identifiant fourni', 'danger', true);
-            $this->response->referer();
-        }
+        $userId = $this->get('id');
 
         $userManager = $this->manager->getManagerOf('User');
         $user = $userManager->findById($userId);
@@ -25,11 +21,6 @@ class UserController extends AbstractController
         }
 
         $posts = $this->manager->findBy('post', 'user', $userId);
-
-        if (!$user) {
-            $this->notifications->addWarning('Utilisateur non trouvé');
-            $this->response->referer();
-        }
 
         return $this->render([
             'user' => $user,
@@ -45,12 +36,7 @@ class UserController extends AbstractController
             $this->response->redirectTo('/');
         }
 
-        $userId = $this->request->getData('id');
-
-        if (!$userId) {
-            $this->notifications->default('500', 'Aucun identifiant fourni', 'danger', true);
-            $this->response->referer();
-        }
+        $userId = $this->get('id');
 
         $userManager = $this->manager->getManagerOf('User');
         $user = $userManager->findById($userId);
@@ -63,41 +49,11 @@ class UserController extends AbstractController
         $form = new UserForm();
 
         if ($this->request->hasPost()) {
-            $datas = $this->request->getAllPost();
-            $type = $this->request->getData('type');
+            $data = $this->request->getAllPost();
+            $type = $this->get('type');
 
-            if ($type == 'user_data') {
-                $form->profilVerif($datas);
-                if ($form->isValid()) {
-                    $datas['id'] = $userId;
-                    if ($this->manager->update('user', $datas)) {
-                        $this->notifications->addSuccess('Données mise à jour');
-                        $this->response->redirectTo('/user/profil?id='.$userId);
-                    } else {
-                        $this->notifications->default('500', $this->manager->getError(), 'danger', false);
-                    }
-                } else {
-                    $this->notifications->addDanger('Formulaire invalid');
-                }
-            } else if ($type == 'user_pass') {
-                $datas = $this->request->getAllPost();
-                $form->updatePass($datas, $user);
-                if ($form->isValid()) {
-                    $datas = [
-                        'id' => $userId,
-                        'password' => $datas['new_password']
-                    ];
-                    if ($this->manager->update('user', $datas)) {
-                        $this->notifications->addSuccess('Données de connexion mise à jour');
-                        $this->response->redirectTo('/user/profil?id='.$userId);
-                    } else {
-                        $this->notifications->default('500', $this->manager->getError(), 'danger', true);
-                    }
-                } else {
-                    $this->notifications->addDanger('Formulaire invalid');
-                }
-            } else {
-                $this->notifications->addDanger('Une erreur est survenue.');
+            if ($this->checkForm($type, $data, $user, $form)) {
+                $this->notifications->addSuccess('Données mis à jour.');
                 $this->response->referer();
             }
         }
@@ -106,5 +62,29 @@ class UserController extends AbstractController
             'user' => $user,
             'form' => $form
         ]);
+    }
+
+    private function checkForm(string $type, $data, User $user, UserForm $userForm)
+    {
+        $check = ($type == 'user_data') ? $userForm->verif($data) : $userForm->updatePass($data, $user);
+        
+        if (!$userForm->isValid()) {
+            $this->notifications->addDanger('Formulaire invalide.');
+            
+            return false;
+        }
+
+        $data['id'] = $user->getId();
+        if ($type == 'user_pass') {
+            $data['password'] = $data['new_password'];
+        }
+
+        if (!$this->manager->update('user', $data)) {
+            $this->notifications->default('500', $this->manager->getError(), 'danger', $this->isDev());
+            
+            return false;
+        }
+
+        return true;
     }
 }

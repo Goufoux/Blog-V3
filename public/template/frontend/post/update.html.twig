@@ -1,100 +1,100 @@
 {% extends "frontend/base.html.twig" %}
 
 {% block body %}
-    <div class="container">
         <div class="row">
             <h1 class="col-12 mt-3">Mise à jour Post #{{ post.id }}</h1>
-            <form action="#" method="POST" class="col-10 mx-auto" enctype="multipart/form-data">
-                <div class="form-row">
-                    <div class="input-group mb-3 col-6">
-                        <div class="input-group-prepend">
-                            <label for="title" class="input-group-text">Titre</label>
+            <section class="col-12 p-5 bg-primary text-white">
+                <form action="#" method="POST" enctype="multipart/form-data">
+                    <div class="form-row">
+                        <div class="input-group mb-3 col-lg-6 col-md-12">
+                            <div class="input-group-prepend">
+                                <label for="title" class="input-group-text">Titre</label>
+                            </div>
+                            <input type="text" name="title" placeholder="Titre" required id="title" class="form-control" value="{{ request.post('title')|default(post.title) }}">
+                            {% if form.hasError('title') %}
+                                <div class="form-errors">
+                                    <span class="badge badge-danger">{{ form.errors('title') }}</span>
+                                </div>
+                            {% endif %}
                         </div>
-                        <input type="text" name="title" placeholder="Titre" required id="title" class="form-control" value="{{ request.post('title')|default(post.title) }}">
-                        {% if form.hasError('title') %}
-                            <div class="col-12">
-                                <span class="badge badge-danger">{{ form.errors('title') }}</span>
+                        <div class="input-group mb-3 col-lg-6 col-md-12">
+                            <div class="input-group-prepend">
+                                <label for="seo_title" class="input-group-text">SEO Titre</label>
                             </div>
-                        {% endif %}
-                    </div>
-                    <div class="input-group mb-3 col-6">
-                        <div class="input-group-prepend">
-                            <label for="seo_title" class="input-group-text">SEO Titre</label>
+                            <input type="text" name="seo_title" placeholder="Titre pour le référencement" id="seo_title" class="form-control" value="{{ request.post('seo_title')|default(post.seoTitle) }}">
+                            {% if form.hasError('seo_title') %}
+                                <div class="form-errors">
+                                    <span class="badge badge-danger">{{ form.errors('seo_title') }}</span>
+                                </div>
+                            {% endif %}
                         </div>
-                        <input type="text" name="seo_title" placeholder="Titre pour le référencement" id="seo_title" class="form-control" value="{{ request.post('seo_title')|default(post.seoTitle) }}">
-                        {% if form.hasError('seo_title') %}
-                            <div class="col-12">
-                                <span class="badge badge-danger">{{ form.errors('seo_title') }}</span>
-                            </div>
-                        {% endif %}
-                    </div>
-                    <div class="form-group col-6">
-                        <label for="chapo">Chapô</label>
-                        {% set chapo = request.post('chapo')|default(post.chapo) %}
-                        <textarea name="chapo" id="chapo" cols="30" rows="10" class="tinymce form-control">{{ chapo }}</textarea>
-                        {% if form.hasError('chapo') %}
-                            <div class="col-12">
-                                <span class="badge badge-danger">{{ form.errors('chapo') }}</span>
-                            </div>
-                        {% endif %}
-                    </div>
-                    <div class="form-group col-6">
-                        <label for="seo_description">SEO Description</label>
-                        {% set seo_description = request.post('seo_description')|default(post.seoDescription) %}
-                        <textarea name="seo_description" id="seo_description" cols="30" rows="10" class="form-control">{{ seo_description }}</textarea>
-                        {% if form.hasError('seo_description') %}
-                            <div class="col-12">
-                                <span class="badge badge-danger">{{ form.errors('seo_description') }}</span>
-                            </div>
-                        {% endif %}
-                    </div>
-                    <div class="form-group col-12">
-                        <label for="content">Contenu</label>
-                        {% set content = request.post('content')|default(post.content) %}
-                        <textarea name="content" id="content" cols="30" rows="10" class="tinymce form-control">{{ content }}</textarea>
-                        {% if form.hasError('content') %}
-                            <div class="col-12">
-                                <span class="badge badge-danger">{{ form.errors('content') }}</span>
-                            </div>
-                        {% endif %}
-                    </div>
-                    <div class="input-group mb-3">
-                        <div class="input-group-prepend">
-                            <label for="image" id="imageUpload" class="input-group-text">Image mise en avant</label>
+                        <div class="form-group col-lg-6 col-md-12">
+                            <label for="chapo">Chapô</label>
+                            {% set chapo = request.post('chapo')|default(post.chapo) %}
+                            <textarea name="chapo" id="chapo" cols="30" rows="10" class="tinymce form-control">{{ chapo|raw }}</textarea>
+                            {% if form.hasError('chapo') %}
+                                <div class="form-errors">
+                                    <span class="badge badge-danger">{{ form.errors('chapo') }}</span>
+                                </div>
+                            {% endif %}
                         </div>
-                        <div class="custom-file">
-                            <input type="file" name="image" aria-describedby="imageUpload" id="image" class="custom-file-input">
-                            <label class="custom-file-label" for="image">Choisir l'image</label>
+                        <div class="form-group col-lg-6 col-md-12">
+                            <label for="seo_description">SEO Description</label>
+                            {% set seo_description = request.post('seo_description')|default(post.seoDescription) %}
+                            <textarea name="seo_description" id="seo_description" cols="30" rows="10" class="form-control">{{ seo_description }}</textarea>
+                            {% if form.hasError('seo_description') %}
+                                <div class="form-errors">
+                                    <span class="badge badge-danger">{{ form.errors('seo_description') }}</span>
+                                </div>
+                            {% endif %}
                         </div>
-                        {% if form.hasError('image') %}
-                            <div class="col-12">
-                                <span class="badge badge-danger">{{ form.errors('image') }}</span>
+                        <div class="form-group col-12">
+                            <label for="content">Contenu</label>
+                            {% set content = request.post('content')|default(post.content) %}
+                            <textarea name="content" id="content" cols="30" rows="10" class="tinymce form-control">{{ content|raw }}</textarea>
+                            {% if form.hasError('content') %}
+                                <div class="form-errors">
+                                    <span class="badge badge-danger">{{ form.errors('content') }}</span>
+                                </div>
+                            {% endif %}
+                        </div>
+                        <div class="input-group mb-3">
+                            <div class="input-group-prepend">
+                                <label for="image" id="imageUpload" class="input-group-text">Image mise en avant</label>
+                            </div>
+                            <div class="custom-file">
+                                <input type="file" name="image" aria-describedby="imageUpload" id="image" class="custom-file-input">
+                                <label class="custom-file-label" for="image">Choisir l'image</label>
+                            </div>
+                            {% if form.hasError('image') %}
+                                <div class="form-errors">
+                                    <span class="badge badge-danger">{{ form.errors('image') }}</span>
+                                </div>
+                            {% endif %}
+                        </div>
+                        {% if post.hasImage %}
+                            <div class="col-12 my-2 previsualisation-image">
+                                <img src="/docs/img/{{ post.image }}" alt="{{ post.imageAlt }}" class="img-fluid w-25 delete-image" data-key="{{ post.id }}">                            
                             </div>
                         {% endif %}
-                    </div>
-                    {% if post.hasImage %}
-                        <div class="col-12 previsualisation-image">
-                            <img src="/docs/img/{{ post.image }}" alt="{{ post.imageAlt }}" class="img-fluid w-25 delete-image" data-key="{{ post.id }}">                            
-                        </div>
-                    {% endif %}
-                    <div class="input-group mb-3">
-                        <div class="input-group-prepend">
-                            <label for="image_alt" class="input-group-text">Balise alt Image</label>
-                        </div>
-                        <input type="text" name="image_alt" placeholder="Balise alt de l'image" id="image_alt" class="form-control" value="{{ request.post('image_alt')|default(post.imageAlt) }}">
-                        {% if form.hasError('image_alt') %}
-                            <div class="col-12">
-                                <span class="badge badge-danger">{{ form.errors('image_alt') }}</span>
+                        <div class="input-group mb-3">
+                            <div class="input-group-prepend">
+                                <label for="image_alt" class="input-group-text">Balise alt Image</label>
                             </div>
-                        {% endif %}
+                            <input type="text" name="image_alt" placeholder="Balise alt de l'image" id="image_alt" class="form-control" value="{{ request.post('image_alt')|default(post.imageAlt) }}">
+                            {% if form.hasError('image_alt') %}
+                                <div class="form-errors">
+                                    <span class="badge badge-danger">{{ form.errors('image_alt') }}</span>
+                                </div>
+                            {% endif %}
+                        </div>
+                        <div class="form-group col-12 text-right">
+                            <input type="submit" value="Valider" class="btn btn-success">
+                        </div>
                     </div>
-                    <div class="form-group col-12 text-right">
-                        <input type="submit" value="Valider" class="btn btn-success">
-                    </div>
-                </div>
-            </form>
+                </form>
+            </section>
         </div>
-    </div>
     <script src="https://cdn.tiny.cloud/1/1giqj8okesu2dnmay8m1frsfe60d2f96w3vuajrrv21ikkx2/tinymce/5/tinymce.min.js"></script>
     <script>
         tinymce.init({

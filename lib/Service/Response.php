@@ -47,6 +47,7 @@ class Response
         $referer = $request->getHttpReferer();
         if ($referer == null) {
             header('Location: /');
+            exit;
         }
         header('Location: '.$referer.$args);
         exit;

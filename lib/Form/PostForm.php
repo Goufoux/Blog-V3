@@ -29,7 +29,7 @@ class PostForm extends Form
         ]
     ];
 
-    public function verifAdd(array $data)
+    public function verif(array $data)
     {
         $this->requiredControl(self::data, $data);
         $this->launch(self::data, $data);

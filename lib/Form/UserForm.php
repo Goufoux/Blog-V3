@@ -40,53 +40,30 @@ class UserForm extends Form
         $this->launch(self::data, $data);
     }
 
-    public function profilVerif(array $data)
-    {
-        $name = isset($$data['name']);
-        $first_name = isset($$data['first_name']);
-        $email = isset($$data['email']);
-
-        if (!$name) {
-            $this->addErrors("name", "Champs invalide");
-        }
-
-        if (!$first_name) {
-            $this->addErrors("first_name", "Champs invalide");
-        }
-
-        if (!$email) {
-            $this->addErrors("email", "Champs invalide");
-        }
-    }
-
     public function updatePass(array $data, User $user)
     {
-        $password = isset($$data['password']);
-        $new_password = isset($$data['new_password']);
-        $confirm_password = isset($$data['confirm_password']);
+        $array = [
+            'password' => [
+                'required' => true,
+            ],
+            'new_password' => [
+                'required' => true,
+                'text' => 'password',
+                'length' => [8, 15],
+                'translate' => 'Nouveau mot de passe'
+            ],
+            'confirm_password' => [
+                'required' => true,
+                'equals' => 'new_password'
+            ]
+        ];
 
-        if (!$password) {
-            $this->addErrors("password", "Champs obligatoire");
-        }
-        if (!password_verify($$data['password'], $user->getPassword())) {
-            $password = false;
-        }
-        if (!$password) {
-            $this->addErrors("password", "Mot de passe invalid");
-        }
+        $this->requiredControl($array, $data);
+        $this->launch($array, $data);
 
-        if (!$new_password) {
-            $this->addErrors("new_password", "Champs obligatoire");
+        if (!password_verify($data['password'], $user->getPassword())) {
+            $this->addErrors('password', 'Le mot de passe est incorrect.');
         }
-
-        if (!$confirm_password) {
-            $this->addErrors("confirm_password", "Champs obligatoire");
-        }
-
-        if ($confirm_password && $new_password) {
-            if ($$data['confirm_password'] !== $$data['new_password']) {
-                $this->addErrors("confirm_password", "Le mot de passe ne correspond pas");
-            }
-        }
+        
     }
 }
