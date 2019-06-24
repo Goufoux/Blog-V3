@@ -8,11 +8,6 @@ namespace Service;
 
 class Request
 {
-    protected $redirect_status;
-    protected $host;
-    protected $connection;
-    protected $cache_control;
-    protected $user_agent;
     protected $server_name;
     protected $server_addr;
     protected $server_port;
@@ -23,11 +18,6 @@ class Request
 
     public function __construct()
     {
-        $this->setRedirectStatus();
-        $this->setHost();
-        $this->setConnection();
-        $this->setCacheControl();
-        $this->setUserAgent();
         $this->setServerName();
         $this->setServerAddr();
         $this->setServerPort();
@@ -58,17 +48,8 @@ class Request
             if ($setEmpty && empty($value)) {
                 continue;
             }
-            if (!empty($ignore)) {
-                $isIgnored = false;
-                foreach ($ignore as $name) {
-                    if ($name == $key) {
-                        $isIgnored = true;
-                        continue;
-                    }
-                }
-                if ($isIgnored) {
-                    continue;
-                }
+            if (!empty($ignore) && in_array($key, $ignore)) {
+                continue;
             }
             $array[$key] = htmlspecialchars($value);
         }
@@ -85,10 +66,8 @@ class Request
         $array = array();
 
         foreach ($_POST as $key => $value) {
-            if ($setEmpty) {
-                if (empty($value)) {
-                    continue;
-                }
+            if ($setEmpty && empty($value)) {
+                continue;
             }
             if (is_array($value)) {
                 $array[$key] = $value;
@@ -143,31 +122,6 @@ class Request
 
     /* Getters */
 
-    public function getRedirectStatus()
-    {
-        return $this->redirect_status;
-    }
-
-    public function getHost()
-    {
-        return $this->host;
-    }
-
-    public function getConnection()
-    {
-        return $this->connection;
-    }
-
-    public function getCacheControl()
-    {
-        return $this->cache_control;
-    }
-
-    public function getUserAgent()
-    {
-        return $this->user_agent;
-    }
-
     public function getServerName()
     {
         return $this->server_name;
@@ -204,32 +158,6 @@ class Request
     }
 
     /* Setters */
-
-    public function setRedirectStatus()
-    {
-        $this->redirect_status = $_SERVER['REDIRECT_STATUS'] ?? null;
-        return $this;
-    }
-
-    public function setHost()
-    {
-        $this->host = $_SERVER['HTTP_HOST'] ?? null;
-    }
-
-    public function setConnection()
-    {
-        $this->connection = $_SERVER['HTTP_CONNECTION'] ?? null;
-    }
-
-    public function setCacheControl()
-    {
-        $this->cache_control = $_SERVER['HTTP_CACHE_CONTROL'] ?? null;
-    }
-
-    public function setUserAgent()
-    {
-        $this->user_agent = $_SERVER['HTTP_USER_AGENT'] ?? null;
-    }
 
     public function setServerName()
     {

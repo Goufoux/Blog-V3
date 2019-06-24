@@ -75,7 +75,6 @@ class PostController extends AbstractController
             if ($this->checkForm($data, $form) === false) {
                 goto out;
             }
-
             if ($image = $this->fileGestion($_FILES, $form)) {
                 $data['image'] = $image;
             }

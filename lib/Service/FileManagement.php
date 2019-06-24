@@ -50,21 +50,24 @@ class FileManagement
         return true;
     }
 
-    public function controlExtension($ext, $type)
+    public function controlExtension($file, $type)
     {
-        switch ($type)
-        {
+        $ext = $this->getExtension($file['type']);
+        switch ($type) {
             case 'img':
-                if (!in_array($ext, self::IMG_EXT)) {
+                if (!$ext || !in_array($ext, self::IMG_EXT)) {
                     $this->setError("Extension de l'image non prise en charge {".$ext."}<br/>Extension autorisée : " . implode('<br />', self::IMG_EXT));
+                 
                     return false;
                 }
                 break;
             default:
-                $this->setError("Le type de fichier n'est pas défini.");
+                $this->setError('Le type de fichier n\'est pas défini.');
+                
                 return false;
         }
-        return true;
+
+        return $ext;
     }
 
     public function controlSize($size)
@@ -83,43 +86,22 @@ class FileManagement
         }
 
         if (empty($file) || !is_array($file)) {
-            $this->setError("Aucun fichier ou fichier invalide.");
+            $this->setError('Aucun fichier ou fichier invalide.');
             return false;
         }
 
         
-        if (!$this->controlType($type)) {
+        if (!$this->controlType($type) || $this->findError($file['error']) || !$this->controlSize($file['size'])) {
+            return false;
+        }
+
+
+        if (!$extension = $this->controlExtension($file, $type)) {
             return false;
         }
         
-        switch ($file['error']) {
-            case 4:
-                $this->setError("Aucun fichier");
-                return false;
-            default:
-                break;
-        }
 
-        if (!$this->controlSize($file['size'])) {
-            return false;
-        }
-
-        switch ($type) {
-            case 'img':
-                $ext = $this->getExtension($file['type']);
-                if (!$ext) {
-                    return false;
-                }
-                if (!$this->controlExtension($ext, $type)) {
-                    return false;
-                }
-                break;
-            default:
-                $this->setError("Le type de fichier n'est pas défini.");
-                return false;
-        }
-
-        $this->setFilename($name.'.'.$ext);
+        $this->setFilename($name.'.'.$extension);
         $dir = self::PATH."/".$type."/";
         
         if (!$this->dirExist($dir)) {
@@ -127,23 +109,42 @@ class FileManagement
         }
 
         if (!move_uploaded_file($file['tmp_name'], $dir.$this->getFilename())) {
-            $this->setError("Impossible de télécharger le fichier");
+            $this->setError('Impossible de télécharger le fichier');
             return false;
         }
         return true;
     }
 
+    public function findError($error)
+    {
+        switch ($error) {
+            case 4:
+                $this->setError('Aucun fichier');
+                return true;
+            default:
+                return false;
+        }
+    }
+
+    /**
+     * return extension of type
+     *
+     * @param string $type
+     * @return bool|string
+     */
     public function getExtension(string $type)
     {
-        if (!preg_match("#/#", $type)) {
-            $this->setError("Impossible de récupérer l'extension.");
+        if (!preg_match('#/#', $type)) {
+            $this->setError('Impossible de récupérer l\'extension.');
+            
             return false;
         }
         
-        $temp = explode("/", $type);
+        $temp = explode('/', $type);
 
         if (empty($temp[1]) || !isset($temp[1])) {
-            $this->setError("Format d'extension non reconnu.");
+            $this->setError('Format d\'extension non reconnu.');
+            
             return false;
         }
 
@@ -155,10 +156,11 @@ class FileManagement
         if (!is_dir($dir)) {
             if (!mkdir($dir, 0777)) {
                 $this->setError("Impossible de créé le dossier cible {".$dir."}");
-                return false;
             }
-            return true;
+
+            return false;
         }
+
         return true;
     }
 
