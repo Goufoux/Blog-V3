@@ -26,48 +26,147 @@ class Managers extends Manager
                     throw new \Exception("Impossible d'instancier la classe " . $manager);
                 }
             } catch (\Exception $e) {
-                $notif = Notifications::getInstance();
-                $notif->addWarning($e->getMessage());
-                $response = new Response;
-                $response->referer();
+                $this->notifications->default('500', $e->getMessage(), 'danger', $this->isDev());
+                $this->response->referer();
                 exit;
             }
+
             return $this->managers[$module];
         }
     }
 
-    public function fetchAll(string $table, array $flags = [])
+    public function prepareRequest(string $table, array $flags)
     {
         $entity = "\Entity\\".ucfirst($table);
-        $response = new Response;
-        $notif = new Notifications;
-
-        if (!class_exists($entity)) {
-            $notif->addDanger("Entité non trouvée : " . $entity);
-            $response->referer();
+        
+        if (!$this->checkEntity($entity)) {
+            return false;
         }
 
-        $sql = 'SELECT * FROM ' . $table;
-        
+        $sql = "SELECT $table.* FROM $table";
+
         if (!empty($flags)) {
-            foreach ($flags as $key => $flag) {
-                switch ($key) {
-                    case 'WHERE':
-                        $sql .= ' WHERE ' . $flag;
-                            break;
-                    case 'ORDER BY':
-                        $sql .= ' ORDER BY ' . $flag;
-                            break;
-                    case 'LIMIT':
-                        if (!is_int($flag)) {
-                            break;
-                        }
-                        $sql .= ' LIMIT ' . $flag;
-                            break;
-                    default:
-                        break;
-                }
+            $sql = $this->transformFlags($table, $flags);
+        }
+
+        return ['request' => $sql, 'entity' => $entity];
+    }
+
+    public function transformFlags(string $table, array $flags)
+    {
+        $data = [
+            'table' => [],
+            'request' => []
+        ];
+
+        foreach ($flags as $key => $flag) {
+            switch ($key) {
+                case 'INNER JOIN':
+                    $data['request']['INNER JOIN'][] = "{$flag['table']} ON {$flag['table']}.{$flag['table']}_{$flag['firstTag']} = {$flag['sndTable']}.{$flag['sndTable']}_{$flag['sndTag']}";
+                    $data['table'][] = [$flag['table'],$flag['sndTable']];
+                    break;
+                case 'WHERE':
+                    $data['request']['WHERE'][] = "AND {$flag['table']}.{$flag['tag']}";
+                    break;
+                case 'LIMIT':
+                    $data['request']['LIMIT'][] = "AND {$flag['table']}.{$flag['tag']}";
+                    break;
+                default:
+                    return false;
             }
+        }
+
+        $data['table'] = $this->analyseTableData($table, $data['table']);
+        $data['request'] = $this->analyseTableRequest($data['request']);
+        
+        $final = $data['table'] . $data['request'];
+
+        return $final;
+    }
+
+    private function analyseTableRequest(array $flags)
+    {
+        $final = [];
+
+        foreach ($flags as $key => $value) {
+            foreach ($value as $k => $v) {
+                $final[] = " $key $v";
+            }
+        }
+
+        $final = implode(', ', $final);
+        
+        return $final;
+    }
+
+    private function analyseTableData(string $primaryTable, array $secondaryTable)
+    {
+        $sql = "SELECT $primaryTable.*";
+
+        $temp = [];
+
+        foreach ($secondaryTable as $value) {
+            $temp[] = $this->deleteSameTable($primaryTable, $value);
+        }
+
+        $final = '';
+
+        foreach ($temp as $key => $value) {
+            foreach ($value as $k => $v) {
+                $v = $v.'.*';
+                $value[$k] = $v;
+            }
+            $final .= implode(', ', $value);            
+        }
+
+        $sql .= ", $final FROM $primaryTable";
+
+        return $sql;
+    }
+
+    private function deleteSameTable(string $origin, array $array)
+    {
+        foreach ($array as $key => $value) {
+            if ($value == $origin) {
+                unset($array[$key]);
+            }
+        }
+
+        return array_values($array);
+    }
+
+    public function checkEntity($entity)
+    {
+        if (!class_exists($entity)) {
+            $this->notifications->default('500', "$entity non trouvée.", 'danger', $this->isDev());    
+            
+            return false;
+        }
+
+        return true;
+    }
+
+    public function whereCondition(string $table, array $conditions)
+    {
+        $final = [];
+
+        foreach ($conditions as $key => $condition) {
+            $final[] = $table.'_'.$condition;
+        }
+
+        $final = implode(', AND', $final);
+
+        return "WHERE $final";
+    }
+
+    public function fetchAll(string $table, array $flags = [])
+    {
+        $data = $this->prepareRequest($table, $flags);
+        $sql = $data['request'];
+        $entity = $data['entity'];
+        
+        if ($sql === false) {
+            return $this->response->referer();
         }
         
         try {
@@ -84,9 +183,15 @@ class Managers extends Manager
     
             return $res;
         } catch (\PDOException $e) {
-            $notif->addDanger($e->getMessage());
+            $this->notifications->default('500', $e->getMessage(), 'danger', $this->isDev());
+            
             return false;
         }
+    }
+
+    public function findOneBy(string $table, array $where, array $flags = [])
+    {
+        return $this->findBy($table, $where, $flags, true);
     }
 
     /**
@@ -97,41 +202,20 @@ class Managers extends Manager
      * @param boolean $autoPrefix
      * @param string $by
      */
-    public function findBy($table = '', string $by = '', $data = '', bool $autoPrefix = true, bool $oneResult = false, array $flags = array())
+    public function findBy(string $table, array $where, array $flags = [], bool $oneResult = false)
     {
-        $entity = "\Entity\\".ucfirst($table);
-
-        if (empty($table) || empty($data)) {
-            return null;
-        }
         
-        $prefix = '';
-        if ($autoPrefix) {
-            $prefix = $table.'_';
-        }
-
-        $sql = 'SELECT * FROM ' . $table . ' WHERE ' . $prefix.$by . ' = :' . $prefix.$by;
-        if (!empty($flags)) {
-            foreach ($flags as $key => $flag) {
-                switch ($key) {
-                    case 'WHERE':
-                        $sql .= ' AND ' . $flag;
-                            break;
-                    case 'LIMIT':
-                        if (!is_int($flag)) {
-                            break;
-                        }
-                        $sql .= ' LIMIT ' . $flag;
-                        break;
-                    default:
-                        break;
-                }
-            }
-        }
-
+        $whereCondition = $this->whereCondition($table, $where);
+        $data = $this->prepareRequest($table, $flags);
+        $sql = $data['request'].' '.$whereCondition;
+        // var_dump($sql);
+        $entity = $data['entity'];
+        // var_dump($sql, $entity);
+        // return $data;
+        // exit;
+// 
         $req = $this->bdd->prepare($sql);
         $req->setFetchMode(\PDO::FETCH_CLASS | \PDO::FETCH_PROPS_LATE, $entity);
-        $req->bindValue(':'.$prefix.$by, $data);
         try {
             $req->execute();
             if (!$this->successRequest($req)) {

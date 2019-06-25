@@ -104,10 +104,9 @@ abstract class AbstractController
                 $view = explode("?", $view);
                 $request[count($request)-1] = $view[0];
                 $temp = implode('/', $request);
+                $path = $temp.'.html.twig';
                 if ($route->getIndexAccess()) {
                     $path = $temp.'/index.html.twig';
-                } else {
-                    $path = $temp.'.html.twig';
                 }
             }
         }
@@ -147,11 +146,7 @@ abstract class AbstractController
         }
         
         if ($autoRedirect && ($result === false || $result === null || empty($result))) {
-            if ($this->isDev()) {
-                $this->notifications->addWarning("$data n'a pas été trouvé. Méthode $method");
-            } else {
-                $this->notifications->addDanger("Une erreur est survenue.");
-            }
+            $this->notifications->default('500', "$data n'a pas été trouvé. Méthode $method", 'danger', $this->isDev());
 
             $this->response->referer();
         }

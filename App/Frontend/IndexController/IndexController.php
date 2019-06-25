@@ -10,8 +10,19 @@ class IndexController extends AbstractController
 {
     public function index()
     {
-        $postManager = $this->manager->getManagerOf('Post');
-        $posts = $postManager->fetchAll(['LIMIT' => 4]);
+        $flags = [
+            'INNER JOIN' => [
+                'table' => 'user',
+                'sndTable' => 'post',
+                'firstTag' => 'id',
+                'sndTag' => 'user'
+            ]
+        ];
+
+        $posts = $this->manager->fetchAll('post', $flags);
+
+        // $postManager = $this->manager->getManagerOf('Post');
+        // $posts = $postManager->fetchAll(['LIMIT' => 4]);
 
         return $this->render([
             'posts' => $posts

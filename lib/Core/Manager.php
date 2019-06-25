@@ -6,15 +6,35 @@
 
 namespace Core;
 
+use Module\Notifications;
+use Service\Response;
+use Service\Request;
+
 abstract class Manager
 {
     protected $bdd;
+    protected $notifications;
     protected $error;
+    protected $response;
+    protected $request;
 
     public function __construct($bdd)
     {
         $this->bdd = $bdd;
+        $this->notifications = Notifications::getInstance();
+        $this->response = new Response();
+        $this->request = new Request();
     }
+
+    public function isDev()
+    {
+        if ($this->request->getServerAddr() == '::1') {
+            return true;
+        }
+        
+        return false;
+    }
+
 
     public function successRequest($request)
     {

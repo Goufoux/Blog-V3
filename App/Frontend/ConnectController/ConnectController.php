@@ -14,23 +14,28 @@ class ConnectController extends AbstractController
     public function index()
     {
         $form = new ConnectForm;
-        if ($this->request->hasPost()) {
-            $data = $this->request->getAllPost();
-            $form->verif($data);
-
-            if (!$form->isValid()) {
-                $this->notifications->addDanger('Formulaire invalide.');
-                goto out;
-            }
-
-            $userManager = $this->manager->getManagerOf("user");
-            if ($user = $userManager->connect($data['email'], $data['password'])) {
-                $_SESSION['user'] = $user;
-                $this->notifications->addSuccess("Bonjour " . $user->getFirstName());
-                return $this->response->redirectTo('/');
-            }
-            $this->notifications->addDanger('Identifiant incorrect');
+        
+        if (!$this->request->hasPost()) {
+            goto out;
         }
+        
+        $data = $this->request->getAllPost();
+        $form->verif($data);
+
+        if (!$form->isValid()) {
+            $this->notifications->addDanger('Formulaire invalide.');
+            goto out;
+        }
+
+        $userManager = $this->manager->getManagerOf("user");
+        if ($user = $userManager->connect($data['email'], $data['password'])) {
+            $_SESSION['user'] = $user;
+            $this->notifications->addSuccess("Bonjour " . $user->getFirstName());
+            
+            return $this->response->redirectTo('/');
+        }
+        
+        $this->notifications->addDanger('Identifiant incorrect');
 
         out:
 
@@ -44,33 +49,36 @@ class ConnectController extends AbstractController
         $form = new ForgotPasswordForm();
 
         if ($this->request->hasPost()) {
-            $data = $this->request->getAllPost();
-            $form->verif($data);
+            goto out;
+        }
 
-            if (!$form->isValid()) {
-                $this->notifications->addDanger('Formulaire invalide.');
-                goto out;
-            }
-            $user = $this->manager->findBy('user', 'email', $data['email'], true, true);
+        $data = $this->request->getAllPost();
+        $form->verif($data);
 
-            if (empty($user) || $user == false || $user == null) {
-                $this->notifications->addDanger('Aucun utilisateur avec cette email.');
-                goto out;
-            }
+        if (!$form->isValid()) {
+            $this->notifications->addDanger('Formulaire invalide.');
+            goto out;
+        }
+        
+        $user = $this->manager->findBy('user', 'email', $data['email'], true, true);
 
-            $data = $this->generateForgotPasswordData($user);
+        if (empty($user) || $user == false || $user == null) {
+            $this->notifications->addDanger('Aucun utilisateur avec cette email.');
+            goto out;
+        }
 
-            if (!$this->manager->update('user', $data)) {
-                $this->notifications->default('500', $this->manager->getError(), 'danger', $this->isDev());
-                return $this->response->referer();
-            }
-            $mail = new Mail;
-            $content = $mail->templateForgotPassword($user, $data['token']);
-            $mail->send($user->getEmail(), 'Réinitialisation du mot de passe', $content);
-            $this->notifications->addInfo('Vérifier votre boîte mail.');
-    
+        $data = $this->generateForgotPasswordData($user);
+
+        if (!$this->manager->update('user', $data)) {
+            $this->notifications->default('500', $this->manager->getError(), 'danger', $this->isDev());
             return $this->response->referer();
         }
+        $mail = new Mail;
+        $content = $mail->templateForgotPassword($user, $data['token']);
+        $mail->send($user->getEmail(), 'Réinitialisation du mot de passe', $content);
+        $this->notifications->addInfo('Vérifier votre boîte mail.');
+
+        return $this->response->referer();
 
         out:
 
@@ -100,28 +108,31 @@ class ConnectController extends AbstractController
 
         $form = new ResetPasswordForm();
 
-        if ($this->request->hasPost()) {
-            $data = $this->request->getAllPost();
-            $form->verif($data);
-
-            if (!$form->isValid()) {
-                $this->notifications->addDanger('Formulaire invalide.');
-                goto out;
-            }
-
-            $data = [
-                'token' => NULL,
-                'password' => $data['password'],
-                'id' => $_SESSION['resetPassword']->getId()
-            ];
-            if ($this->manager->update('user', $data)) {
-                $this->notifications->addSuccess('Données de connexion mis à jour');
-                unset($_SESSION['resetPassword']);
-                
-                return $this->response->redirectTo('/');
-            }
-            $this->notifications->default('500', $this->manager->getError(), 'danger', $this->isDev());
+        if (!$this->request->hasPost()) {
+            goto out;
         }
+        $data = $this->request->getAllPost();
+        $form->verif($data);
+
+        if (!$form->isValid()) {
+            $this->notifications->addDanger('Formulaire invalide.');
+            goto out;
+        }
+
+        $data = [
+            'token' => NULL,
+            'password' => $data['password'],
+            'id' => $_SESSION['resetPassword']->getId()
+        ];
+
+        if ($this->manager->update('user', $data)) {
+            $this->notifications->addSuccess('Données de connexion mis à jour');
+            unset($_SESSION['resetPassword']);
+            
+            return $this->response->redirectTo('/');
+        }
+
+        $this->notifications->default('500', $this->manager->getError(), 'danger', $this->isDev());
 
         out:
 

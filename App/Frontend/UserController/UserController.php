@@ -20,8 +20,8 @@ class UserController extends AbstractController
             $this->response->referer();
         }
 
-        $posts = $this->manager->findBy('post', 'user', $userId);
-
+        $posts = $this->manager->findBy('post', ['WHERE' => "user = $userId"]);
+    
         return $this->render([
             'user' => $user,
             'current' => 'profil',
