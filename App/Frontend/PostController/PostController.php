@@ -142,14 +142,14 @@ class PostController extends AbstractController
             ]
         ];
 
-        $comments = $this->manager->findBy('comment', ['WHERE' => "post = $postId"], $commentFlags);
+        $comments = $this->manager->findBy('comment', ['WHERE' => "post = $postId AND comment_state = 1"], $commentFlags);
 
         $form = new CommentForm();
 
         if ($this->request->hasPost() && $this->app->authentification()->isAuthentificated()) {
             $data = $this->request->getAllPost();
             
-            if ($this->checkCommentForm($data, $form)) {
+            if (!$this->checkCommentForm($data, $form)) {
                 goto out;
             }
 

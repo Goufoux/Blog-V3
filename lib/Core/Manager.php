@@ -62,26 +62,52 @@ abstract class Manager
         return $this->bdd->lastInsertId();
     }
 
-    public function flagsToSql(array $flags)
+    public function executeRequest($req)
     {
-        $sql = '';
-        foreach ($flags as $key => $flag) {
-            switch ($key) {
-                case 'WHERE':
-                    $sql .= $flag;
-                    break;
-                case 'ORDER BY':
-                    $sql .= ' ORDER BY ' . $flag;
-                    break;
-                case 'LIMIT':
-                    $sql .= ' LIMIT '. $flag;
-                    break;
-                default:
-                    $this->setError("Flag : $key not defined.");
-                    return false;
-                    break;
+        try {
+            $req->execute();
+            if (!$this->successRequest($req)) {
+                throw new \PDOException($this->errorCode($req));
             }
+            return true;
+        } catch (\PDOException $e) {
+            $this->setError($e->getMessage());
+            return false;
         }
-        return $sql;
+    }
+
+    public function fetchAllRequest(string $sql, string $table, string $entity)
+    {
+        return $this->fetchRequest($sql, $table, $entity, true);
+    }
+
+    public function fetchRequest(string $sql, string $table, string $entity, $all = false)
+    {
+        try {
+            $req = $this->bdd->prepare($sql);
+            $req->setFetchMode(\PDO::FETCH_CLASS | \PDO::FETCH_PROPS_LATE, '\Entity\\'.ucfirst($table));
+            $req->execute();
+            if (!$this->successRequest($req)) {
+                throw new \PDOException($this->errorCode($req));
+            }
+               
+            if ($all) {
+                $res = $req->fetchAll();
+                foreach ($res as $key => $data) {
+                    $res[$key] = new $entity($data, true);
+                }
+
+                return $res;
+            }
+
+            $res = $req->fetch();
+            $res = new $entity($res, true);
+            
+            return $res;
+        } catch (\PDOException $e) {
+            $this->notifications->default('500', $e->getMessage(), 'danger', $this->isDev());
+            
+            return false;
+        }
     }
 }

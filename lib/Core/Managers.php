@@ -169,24 +169,7 @@ class Managers extends Manager
             return $this->response->referer();
         }
         
-        try {
-            $req = $this->bdd->prepare($sql);
-            $req->setFetchMode(\PDO::FETCH_CLASS | \PDO::FETCH_PROPS_LATE, '\Entity\\'.ucfirst($table));
-            $req->execute();
-            if (!$this->successRequest($req)) {
-                throw new \PDOException($this->errorCode($req));
-            }
-            $res = $req->fetchAll();
-            foreach ($res as $key => $data) {
-                $res[$key] = new $entity($data, true);
-            }
-    
-            return $res;
-        } catch (\PDOException $e) {
-            $this->notifications->default('500', $e->getMessage(), 'danger', $this->isDev());
-            
-            return false;
-        }
+        return $this->fetchAllRequest($sql, $table, $entity);
     }
 
     public function findOneBy(string $table, array $where, array $flags = [])
@@ -208,42 +191,13 @@ class Managers extends Manager
         $whereCondition = $this->whereCondition($table, $where);
         $data = $this->prepareRequest($table, $flags);
         $sql = $data['request'].' '.$whereCondition;
-        // var_dump($sql);
         $entity = $data['entity'];
-        // var_dump($sql, $entity);
-        // return $data;
-        // exit;
-// 
-        $req = $this->bdd->prepare($sql);
-        $req->setFetchMode(\PDO::FETCH_CLASS | \PDO::FETCH_PROPS_LATE, $entity);
-        try {
-            $req->execute();
-            if (!$this->successRequest($req)) {
-                throw new \PDOException($this->errorCode($req));
-            }
-            
-            if ($oneResult) {
-                $res = $req->fetch();
 
-                if (!$res) {
-                    return array();
-                }
-
-                $res = new $entity($res, true);
-            } else {
-                $res = $req->fetchAll();
-                
-                foreach ($res as $key => $value) {
-                    $res[$key] = new $entity($value, true);
-                }
-            }
-
-
-            return $res;
-        } catch (\PDOException $e) {
-            $this->setError($e->getMessage());
-            return false;
+        if ($oneResult) {
+            return $this->fetchRequest($sql, $table, $entity);
         }
+
+        return $this->fetchAllRequest($sql, $table, $entity);
     }
 
     private function prepareUpdateRequest(array $keys)
@@ -262,18 +216,15 @@ class Managers extends Manager
 
     public function update(string $table, array $data, bool $autoPrefix = true)
     {
-        if (empty($table) || empty($data)) {
-            return null;
-        }
-
-        $id = $data['id'] ?? false;
-        $now = new \DateTime();
-        $data['updated_at'] = $now->format('Y-m-d H:i:s');
-
-        if (!$id) {
+        if (!isset($data['id'])) {
             $this->setError("No key defined for update row");
             return false;
         }
+
+        $id = $data['id'];
+
+        $now = new \DateTime();
+        $data['updated_at'] = $now->format('Y-m-d H:i:s');
 
         unset($data['id']);
 
@@ -330,14 +281,6 @@ class Managers extends Manager
 
     public function add(string $table, array $data, $tablePrefixe = true)
     {
-        if (empty($table)) {
-            return false;
-        }
-
-        if (empty($data)) {
-            return null;
-        }
-
         $now = new \DateTime();
         $data['created_at'] = $now->format('Y-m-d H:i:s');
         
@@ -356,16 +299,8 @@ class Managers extends Manager
         for ($i = 0; $i < count($dataForRequest['BIND_VALUE']); $i++) {
             $req->bindValue(':'.$dataForRequest['BIND_KEY'][$i], $dataForRequest['BIND_VALUE'][$i]);
         }
-        try {
-            $req->execute();
-            if (!$this->successRequest($req)) {
-                throw new \PDOException($this->errorCode($req));
-            }
-            return true;
-        } catch (\PDOException $e) {
-            $this->setError($e->getMessage());
-            return false;
-        }
+        
+        return $this->executeRequest($req);
     }
 
     public function remove(string $table, string $column = 'id', $value, $autoPrefix = true)
