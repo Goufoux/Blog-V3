@@ -8,8 +8,16 @@ class CommentController extends AbstractController
 {
     public function index()
     {
-        $commentManager = $this->manager->getManagerOf('comment');
-        $comments = $commentManager->findByState();
+        $commentsFlags = [
+            'INNER JOIN' => [
+                'table' => 'user',
+                'sndTable' => 'comment',
+                'firstTag' => 'id',
+                'sndTag' => 'user' 
+            ]
+        ];
+
+        $comments = $this->manager->findBy('comment', ['WHERE' => 'state = 0'] , $commentsFlags);
 
         return $this->render([
             'title' => 'Gestion des commentaires',
@@ -21,18 +29,21 @@ class CommentController extends AbstractController
     {
         $commentId = $this->get('id');
 
-        if ($this->app->authentification()->hasRole('ROLE_SUPER_ADMIN') || $this->app->authentification()->hasRole('ROLE_ADMIN') ||$this->app->authentification()->hasRole('ROLE_MODERATEUR')) {
-            $datas = [
-                'id' => $commentId,
-                'state' => 1
-            ];
-            if ($this->manager->update('comment', $datas)) {
-                $this->notifications->addSuccess('Commentaire validé.');
-            } else {
-                $this->notifications->default('500', $this->manager->getError(), 'danger', $this->isDev());
-            }
-        } else {
+        
+        if (!$this->app->authentification()->hasRole('ROLE_SUPER_ADMIN') && !$this->app->authentification()->hasRole('ROLE_ADMIN') && !$this->app->authentification()->hasRole('ROLE_MODERATEUR')) {
             $this->notifications->addWarning('Vous n\'avez pas l\'autorisation.');
+            $this->response->referer();        
+        }
+        
+        $datas = [
+            'id' => $commentId,
+            'state' => 1
+        ];
+
+        if ($this->manager->update('comment', $datas)) {
+            $this->notifications->addSuccess('Commentaire validé.');
+        } else {
+            $this->notifications->default('500', $this->manager->getError(), 'danger', $this->isDev());
         }
 
         $this->response->referer();

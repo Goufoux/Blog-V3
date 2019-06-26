@@ -36,8 +36,16 @@ class Authentification
 
     public function setRoles()
     {
-        $userRoleManager = $this->manager->getManagerOf("UserRole");
-        $roles = $userRoleManager->findByUser($this->user->getId());
+        $flags = [
+            'INNER JOIN' => [
+                'table' => 'role',
+                'sndTable' => 'userRole',
+                'firstTag' => 'id',
+                'sndTag' => 'role'
+            ]
+        ];
+        
+        $roles = $this->manager->findBy('userRole', ['WHERE' => "user = {$this->user->getId()}"], $flags);
 
         foreach ($roles as $role) {
             $this->roles[$role->getRole()->getName()] = [

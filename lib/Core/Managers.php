@@ -246,18 +246,25 @@ class Managers extends Manager
         }
     }
 
+    private function prepareUpdateRequest(array $keys)
+    {
+        $request = [];
+
+        for ($i = 0; $i < count($keys); $i++) {
+            $request[] = $keys[$i] . ' = :' . $keys[$i];
+        }
+
+        $request = implode(', ', $request);
+
+        return $request;
+
+    }
+
     public function update(string $table, array $data, bool $autoPrefix = true)
     {
         if (empty($table) || empty($data)) {
             return null;
         }
-        $prefix = '';
-        if ($autoPrefix) {
-            $prefix = $table.'_';
-        }
-
-        $tempKey = array();
-        $tempValues = array();
 
         $id = $data['id'] ?? false;
         $now = new \DateTime();
@@ -270,24 +277,13 @@ class Managers extends Manager
 
         unset($data['id']);
 
-        foreach ($data as $key => $value) {
-            $tempKey[] = $prefix.$key;
-            if ($key === 'password') {
-                $value = password_hash($value, PASSWORD_BCRYPT);
-            }
-            $tempValues[] = $value;
-        }
+        $dataForRequest = $this->prepareUpdateValues($data, $table);
 
-        $str = array();
+        $request = $this->prepareUpdateRequest($dataForRequest['KEY']);
 
-        for ($i = 0; $i < count($tempKey); $i++) {
-            $str []= $tempKey[$i] . ' = :' . $tempKey[$i];
-        }
-
-        $str = implode(', ', $str);
-        $req = $this->bdd->prepare('UPDATE ' . $table . ' SET ' . $str . ' WHERE ' . $table.'_id = :id');
-        for ($i = 0; $i < count($tempKey); $i++) {
-            $req->bindValue(':'.$tempKey[$i], $tempValues[$i]);
+        $req = $this->bdd->prepare('UPDATE ' . $table . ' SET ' . $request . ' WHERE ' . $table.'_id = :id');
+        for ($i = 0; $i < count($dataForRequest['KEY']); $i++) {
+            $req->bindValue(':'.$dataForRequest['KEY'][$i], $dataForRequest['VALUE'][$i]);
         }
         $req->bindValue(':id', $id);
         try {
@@ -302,6 +298,36 @@ class Managers extends Manager
         }
     }
 
+    public function prepareUpdateValues(array $data, string $table)
+    {
+        $final = [];
+        foreach ($data as $key => $value) {
+            $final['KEY'][] = $table.'_'.$key;
+            if ($key === 'password') {
+                $value = password_hash($value, PASSWORD_BCRYPT);
+            }
+            $final['VALUE'][] = $value;
+        }
+
+        return $final;
+    }
+
+    public function prepareAddValues(array $data, string $table)
+    {
+        $final = [];
+        foreach ($data as $key => $value) {
+            if ($key === 'password') {
+                $value = password_hash($value, PASSWORD_BCRYPT);
+            }
+            $final['INSERT'][] = $table.'_'.$key;
+            $final['VALUES'][]= ':'.$key;
+            $final['BIND_KEY'][]= $key;
+            $final['BIND_VALUE'][]= $value;
+        }
+
+        return $final;
+    }
+
     public function add(string $table, array $data, $tablePrefixe = true)
     {
         if (empty($table)) {
@@ -312,41 +338,23 @@ class Managers extends Manager
             return null;
         }
 
-        $prefix = '';
-        if ($tablePrefixe) {
-            $prefix = $table.'_';
-        }
-
         $now = new \DateTime();
         $data['created_at'] = $now->format('Y-m-d H:i:s');
-
-        $insert = array();
-        $values = array();
-        $bindKey = array();
-        $bindValue = array();
         
-        foreach ($data as $key => $value) {
-            if ($key === 'password') {
-                $value = password_hash($value, PASSWORD_BCRYPT);
-            }
-            $insert []= $prefix.$key;
-            $values []= ':'.$key;
-            $bindKey[]= $key;
-            $bindValue []= $value;
-        }
+        $dataForRequest = $this->prepareAddValues($data, $table);
 
-        $SQLinsert = implode(', ', $insert);
-        $values = implode(', ', $values);
+        $SQLinsert = implode(', ', $dataForRequest['INSERT']);
+        $values = implode(', ', $dataForRequest['VALUES']);
 
         $sql = 'INSERT INTO ' . $table . '('.$SQLinsert.') VALUES('.$values.')';
         
         $req = $this->bdd->prepare($sql);
-        if (count($bindValue) <= 0) {
+        if (count($dataForRequest['BIND_VALUE']) <= 0) {
             return null;
         }
 
-        for ($i = 0; $i < count($bindValue); $i++) {
-            $req->bindValue(':'.$bindKey[$i], $bindValue[$i]);
+        for ($i = 0; $i < count($dataForRequest['BIND_VALUE']); $i++) {
+            $req->bindValue(':'.$dataForRequest['BIND_KEY'][$i], $dataForRequest['BIND_VALUE'][$i]);
         }
         try {
             $req->execute();

@@ -59,8 +59,7 @@ class PostController extends AbstractController
     {
         $postId = $this->get('id');
 
-        $postManager = $this->manager->getManagerOf('Post');
-        $post = $postManager->findById($postId);
+        $post = $this->manager->findOneBy('post', ['WHERE' => "id = $postId"]);
 
         if (!$post) {
             $this->notifications->addWarning('Post non trouvé.');
@@ -97,8 +96,16 @@ class PostController extends AbstractController
 
     public function list()
     {
-        $postManager = $this->manager->getManagerOf('post');
-        $posts = $postManager->findByUser($this->app->user()->getId());
+        $postFlags = [
+            'INNER JOIN' => [
+                'table' => 'user',
+                'sndTable' => 'post',
+                'firstTag' => 'id',
+                'sndTag' => 'user'
+            ]
+        ];
+
+        $posts = $this->manager->findBy('post', ['WHERE' => "user = {$this->app->user()->getId()}"], $postFlags);
 
         return $this->render([
             'title' => 'Mes posts',
@@ -117,7 +124,7 @@ class PostController extends AbstractController
                 'firstTag' => 'id',
                 'sndTag' => 'user'
             ]
-            ];
+        ];
 
         $post = $this->manager->findOneBy('post', ['WHERE' => "id = $postId"], $postFlags);
 
@@ -128,14 +135,14 @@ class PostController extends AbstractController
 
         $commentFlags = [
             'INNER JOIN' => [
-                'table' => 'comment',
-                'sndTable' => 'post',
-                'firstTag' => 'post',
-                'sndTag' => 'id'
+                'table' => 'user',
+                'sndTable' => 'comment',
+                'firstTag' => 'id',
+                'sndTag' => 'user'
             ]
         ];
 
-        $comments = $this->manager->findBy('comment', ['WHERE' => "post = $postId"]);
+        $comments = $this->manager->findBy('comment', ['WHERE' => "post = $postId"], $commentFlags);
 
         $form = new CommentForm();
 

@@ -12,8 +12,7 @@ class UserController extends AbstractController
     {
         $userId = $this->get('id');
 
-        $userManager = $this->manager->getManagerOf('User');
-        $user = $userManager->findById($userId);
+        $user = $this->manager->findOneBy('user', ['WHERE' => "id = $userId"]);
 
         if (!$user) {
             $this->notifications->addWarning('L\'utilisateur n\'a pas été trouvé.');

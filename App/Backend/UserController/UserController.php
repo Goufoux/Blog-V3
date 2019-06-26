@@ -68,9 +68,7 @@ class UserController extends AbstractController
         }
 
         $userId = $this->get('id');
-
-        $userManager = $this->manager->getManagerOf('User');
-        $user = $userManager->findById($userId);
+        $user = $this->manager->findOneBy('user', ['WHERE' => "id = $userId"]);
 
         if (!$user) {
             $this->notifications->addWarning('Utilisateur non trouvé');
@@ -79,7 +77,7 @@ class UserController extends AbstractController
 
         $roles = $this->manager->fetchAll('role');
 
-        $userRoles = $this->manager->findBy('userRole', 'user', $userId);
+        $userRoles = $this->manager->findBy('userRole', ['WHERE' => "user = $userId"]);
         
         $form = new UserForm;
 
@@ -99,7 +97,7 @@ class UserController extends AbstractController
                 return $this->response->referer();
             }
 
-            $this->notifications->default('500', $this->manager->getError(), 'danger', true);
+            $this->notifications->default('500', $this->manager->getError(), 'danger', $this->isDev());
         }
 
         out:
@@ -127,6 +125,7 @@ class UserController extends AbstractController
     public function addRoles(array $data, int $userId, bool $isNew = false)
     {
         $roles = $this->returnRole($data);
+
         if (empty($roles)) {
             $userRoles = $this->getUserRoles($userId);
             foreach ($userRoles as $key => $role) {
@@ -135,32 +134,31 @@ class UserController extends AbstractController
         }
 
         foreach ($roles as $key => $roleId) {
-            $role = $this->manager->findBy('role', 'id', $roleId, true, true);
+            $role = $this->manager->findOneBy('role', ['WHERE' => "id = $roleId"]);
             if (!$role) {
                 $this->notifications->addWarning('Rôle non trouvé.');
                 continue;
             }
-
-            if (!$isNew && !$this->checkForRolesUpdate($userId, $roleId, $roles)) {
-               continue;
+            
+            if (!$isNew && $this->checkForRolesUpdate($userId, $roleId, $roles)) {
+                continue;
             }
 
-            
             $roleData = [
                 'role' => $role->getId(),
                 'user' => $userId
             ];
-            
-            if ($this->manager->add('userRole', $roleData)) {
-                $this->notifications->addSuccess('Rôle ajouté');
+
+            if (!$this->manager->add('userRole', $roleData)) {
+                $this->notifications->default('500', $this->manager->getError(), 'danger', $this->isDev());
             }
-            $this->notifications->default('500', $this->manager->getError(), 'danger', true);
+            $this->notifications->addSuccess('Rôle ajouté');
         }
     }
 
     public function checkForRolesUpdate(int $userId, int $roleId, array $roles)
     {
-        if ($userRoles = $this->manager->findBy('userRole', 'user', $userId)) {
+        if ($userRoles = $this->manager->findBy('userRole', ['WHERE' => "user = $userId"])) {
             foreach ($userRoles as $key => $userRole) {
                 /* exist role */
                 if ($userRole->getRole() == $roleId) {
@@ -179,7 +177,7 @@ class UserController extends AbstractController
 
     private function getUserRoles(int $userId)
     {
-        return $this->manager->findBy('userRole', 'user', $userId);
+        return $this->manager->findBy('userRole', ['WHERE' => "user = $userId"]);
     }
 
     public function removeRole(int $roleId, int $userId)
@@ -233,18 +231,25 @@ class UserController extends AbstractController
         
         $userId = $this->get('id');
 
-        $userManager = $this->manager->getManagerOf('User');
-        $user = $userManager->findById($userId);
+        $user = $this->manager->findOneBy('user', ['WHERE' => "id = $userId"]);
 
         if (!$user) {
             $this->notifications->addWarning('Utilisateur non trouvé');
             $this->response->referer();
         }
 
-        $userRoleManager = $this->manager->getManagerOf('userRole');
-        $userRoles = $userRoleManager->findByUser($userId);
+        $userRolesFlags = [
+            'INNER JOIN' => [
+                'table' => 'role',
+                'sndTable' => 'userRole',
+                'firstTag' => 'id',
+                'sndTag' => 'role'
+            ]
+        ];
 
-        $posts = $this->manager->findBy('post', 'user', $userId);
+        $userRoles = $this->manager->findBy('userRole', ['WHERE' => "user = $userId"], $userRolesFlags);
+
+        $posts = $this->manager->findBy('post', ['WHERE' => "user = $userId"]);
 
         return $this->render([
             'user' => $user,
