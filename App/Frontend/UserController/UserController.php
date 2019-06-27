@@ -36,9 +36,7 @@ class UserController extends AbstractController
         }
 
         $userId = $this->get('id');
-
-        $userManager = $this->manager->getManagerOf('User');
-        $user = $userManager->findById($userId);
+        $user = $this->manager->findOneBy('user', ['WHERE' => "id = $userId"]);
 
         if (!$user) {
             $this->notifications->addWarning('Utilisateur non trouvé');
@@ -76,6 +74,7 @@ class UserController extends AbstractController
         $data['id'] = $user->getId();
         if ($type == 'user_pass') {
             $data['password'] = $data['new_password'];
+            unset($data['new_password'], $data['confirm_password']);
         }
 
         if (!$this->manager->update('user', $data)) {

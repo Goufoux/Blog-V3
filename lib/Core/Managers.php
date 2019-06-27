@@ -19,9 +19,6 @@ class Managers extends Manager
         if (!isset($this->managers[$module])) {
             $manager = 'Manager\\'.$module.'Manager';
             try {
-                if (!class_exists($manager)) {
-                    throw new \Exception("Le manager {".$manager."} n'existe pas");
-                }
                 if (!$this->managers[$module] = new $manager($this->bdd)) {
                     throw new \Exception("Impossible d'instancier la classe " . $manager);
                 }
