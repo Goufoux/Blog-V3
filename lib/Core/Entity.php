@@ -22,26 +22,30 @@ abstract class Entity implements \ArrayAccess
         }
     }
 
-    private function rewriteData($data)
+    private function getReflectionClass($data)
+    {
+        $reflectionClass = new \ReflectionClass($data);
+        if (!$reflectionClass) {
+            $this->returnError('Impossible d\'instancier la réflection de classe.');
+        }
+        return $reflectionClass;
+    }
+
+    private function returnError($error)
     {
         $notif = Notifications::getInstance();
         $reponse = new Response;
-        $reflectionClass = new \ReflectionClass($data);
-        if (!$reflectionClass) {
-            $notif->addDanger("Impossible d'instancier la réflection de classe.");
-            $reponse->referer();
-        }
-        
-        $className = explode('Entity\\', $reflectionClass->getName())[1];
-        
-        /* Attribut de l'entité principale */
-        $class_attribut = array();
-        /* Attribut des classes mappées */
-        $class_assoc_attribut = array();
-        /* Nom des classes mappées */
-        $class_assoc = array();
-        /* Classe finale */
-        $ready_assoc = array();
+
+        $notif->addDanger($error);
+
+        return $reponse->referer();
+    }
+
+    private function getAssociationClass($data, $className)
+    {
+        $class_assoc = [];
+        $class_attribut = [];
+        $class_assoc_attribut = [];
 
         foreach ($data as $key => $value) {
             $className[0] = strtolower($className[0]);
@@ -72,14 +76,24 @@ abstract class Entity implements \ArrayAccess
                 $class_assoc_attribut[$tmpClassAssocName][$singleKey] = $value;
             }
         }
-        /* Parcours des entités mappés */
+
+        $final = [
+            'classAssoc' => $class_assoc,
+            'classAssocAttribut' => $class_assoc_attribut,
+            'classAttribut' => $class_attribut
+        ];
+        
+        return $final; 
+    }
+
+    private function entityMapping($class_assoc, $class_assoc_attribut)
+    {
+        $ready_assoc = [];
 
         foreach ($class_assoc as $key => $assoc) {
             $class = 'Entity\\'.ucfirst($assoc);
             if (!class_exists($class)) {
-                $notif->addDanger("La classe " . ucfirst($class) . " n\'a pas été trouvée pour l'association d'entitée.");
-                $reponse->referer();
-                exit;
+                $this->returnError("La classe n'existe pas : $class");
             }
 
             foreach ($ready_assoc as $rClass => $value) {
@@ -99,18 +113,39 @@ abstract class Entity implements \ArrayAccess
                                             $sClass->$method(new $class($class_assoc_attribut[$assoc]));
                                         }
                                     } else {
-                                        $notif->addWarning("Méthode d'une entité non trouvée : " . $t);
+                                        $this->returnError("Méthode d'une entité non trouvée : " . $t);
                                     }
                                 }
                             }
                         }
                     } else {
-                        $notif->addWarning("Méthode d'une entité non trouvée : " . $t);
+                        $this->returnError("Méthode d'une entité non trouvée : " . $t);
                     }
                 }
             }
             $ready_assoc[$assoc] = new $class($class_assoc_attribut[$assoc]);
         }
+
+        return $ready_assoc;
+    }
+
+    private function rewriteData($data)
+    {
+        $reflectionClass = $this->getReflectionClass($data);
+        
+        $className = explode('Entity\\', $reflectionClass->getName())[1];
+        
+        $loadAssociationClass = $this->getAssociationClass($data, $className); 
+
+        /* Attribut de l'entité principale */
+        $class_attribut = $loadAssociationClass['classAttribut'];
+        /* Attribut des classes mappées */
+        $class_assoc_attribut = $loadAssociationClass['classAssocAttribut'];
+        /* Nom des classes mappées */
+        $class_assoc = $loadAssociationClass['classAssoc'];
+        /* Classe finale */
+        $ready_assoc = $this->entityMapping($class_assoc, $class_assoc_attribut);
+
 
         foreach ($ready_assoc as $n => $v) {
             $class_attribut[$n] = $v;

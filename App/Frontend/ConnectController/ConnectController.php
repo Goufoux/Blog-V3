@@ -48,7 +48,7 @@ class ConnectController extends AbstractController
     {
         $form = new ForgotPasswordForm();
 
-        if ($this->request->hasPost()) {
+        if (!$this->request->hasPost()) {
             goto out;
         }
 
@@ -60,7 +60,7 @@ class ConnectController extends AbstractController
             goto out;
         }
         
-        $user = $this->manager->findBy('user', 'email', $data['email'], true, true);
+        $user = $this->manager->findOneBy('user', ['WHERE' => "email = \"{$data['email']}\""]);
 
         if (empty($user) || $user == false || $user == null) {
             $this->notifications->addDanger('Aucun utilisateur avec cette email.');
@@ -133,7 +133,7 @@ class ConnectController extends AbstractController
         }
 
         $this->notifications->default('500', $this->manager->getError(), 'danger', $this->isDev());
-
+        
         out:
 
         return $this->render([
@@ -145,8 +145,8 @@ class ConnectController extends AbstractController
     {
         $token = $this->get('token');
 
-        $user = $this->manager->findBy('user', 'token', $token, true, true);
-
+        $user = $this->manager->findOneBy('user', ['WHERE' => "token = \"$token\""]);
+        
         if (!$user) {
             $this->notifications->addWarning('Token invalide.');
             $this->response->redirectTo('/');

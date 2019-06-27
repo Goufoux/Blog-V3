@@ -101,6 +101,11 @@ abstract class Manager
             }
 
             $res = $req->fetch();
+            
+            if ($res === false) {
+                return false;
+            }
+
             $res = new $entity($res, true);
             
             return $res;

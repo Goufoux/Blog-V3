@@ -21,9 +21,6 @@ class IndexController extends AbstractController
 
         $posts = $this->manager->fetchAll('post', $flags);
 
-        // $postManager = $this->manager->getManagerOf('Post');
-        // $posts = $postManager->fetchAll(['LIMIT' => 4]);
-
         return $this->render([
             'posts' => $posts
         ]);

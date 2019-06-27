@@ -11,7 +11,7 @@ class RegisterController extends AbstractController
     {
         $form = new RegisterForm;
 
-        if ($this->request->hasPost()) {
+        if (!$this->request->hasPost()) {
             goto out;
         }
         $datas = $this->request->getAllPost();
