@@ -41,6 +41,19 @@ abstract class Entity implements \ArrayAccess
         return $reponse->referer();
     }
 
+    private function createSingleKey($singleKey)
+    {
+        if (preg_match("#_#", $singleKey)) {
+            $compositionSingleKey = explode('_', $singleKey);
+            for ($i = 1; $i < count($compositionSingleKey); $i++) {
+                $compositionSingleKey[$i] = ucfirst($compositionSingleKey[$i]);
+            }
+            $singleKey = implode('', $compositionSingleKey);
+        }
+
+        return $singleKey;
+    }
+
     private function getAssociationClass($data, $className)
     {
         $class_assoc = [];
@@ -50,14 +63,7 @@ abstract class Entity implements \ArrayAccess
         foreach ($data as $key => $value) {
             $className[0] = strtolower($className[0]);
             if (preg_match("#^".$className."_#", $key)) {
-                $singleKey = explode($className.'_', $key)[1];
-                if (preg_match("#_#", $singleKey)) {
-                    $compositionSingleKey = explode('_', $singleKey);
-                    for ($i = 1; $i < count($compositionSingleKey); $i++) {
-                        $compositionSingleKey[$i] = ucfirst($compositionSingleKey[$i]);
-                    }
-                    $singleKey = implode('', $compositionSingleKey);
-                }
+                $singleKey = $this->createSingleKey(explode($className.'_', $key)[1]);
                 $class_attribut[$singleKey] = $value;
             } else {
                 $tmpClassAssocName = explode("_", $key);
@@ -65,14 +71,7 @@ abstract class Entity implements \ArrayAccess
                 if (!in_array($tmpClassAssocName, $class_assoc)) {
                     $class_assoc[] = $tmpClassAssocName;
                 }
-                $singleKey = explode($tmpClassAssocName.'_', $key)[1];
-                if (preg_match("#_#", $singleKey)) {
-                    $compositionSingleKey = explode('_', $singleKey);
-                    for ($i = 1; $i < count($compositionSingleKey); $i++) {
-                        $compositionSingleKey[$i] = ucfirst($compositionSingleKey[$i]);
-                    }
-                    $singleKey = implode('', $compositionSingleKey);
-                }
+                $singleKey = $this->createSingleKey(explode($tmpClassAssocName.'_', $key)[1]);
                 $class_assoc_attribut[$tmpClassAssocName][$singleKey] = $value;
             }
         }
