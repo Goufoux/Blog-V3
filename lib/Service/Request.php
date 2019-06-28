@@ -36,11 +36,7 @@ class Request
 
     public function getAllData(bool $setEmpty = true, array $ignore = [])
     {
-        if (!$this->hasData()) {
-            return null;
-        }
-
-        $array = array();
+        $array = [];
 
         foreach ($_GET as $key => $value) {
             if ($setEmpty && empty($value)) {
@@ -57,11 +53,7 @@ class Request
 
     public function getAllPost($setEmpty = true)
     {
-        if (!$this->hasPost()) {
-            return null;
-        }
-
-        $array = array();
+        $array = [];
 
         foreach ($_POST as $key => $value) {
             if ($setEmpty && empty($value)) {
@@ -79,10 +71,6 @@ class Request
 
     public function getData(string $key = null)
     {
-        if (!$this->hasData()) {
-            return null;
-        }
-
         if ($key != null) {
             if (!isset($_GET[$key]) || empty($_GET[$key])) {
                 return null;
@@ -104,10 +92,6 @@ class Request
 
     public function getPost(string $key = null)
     {
-        if (!$this->hasPost()) {
-            return null;
-        }
-
         if ($key != null) {
             if (!isset($_POST[$key]) || empty($_POST[$key])) {
                 return null;
