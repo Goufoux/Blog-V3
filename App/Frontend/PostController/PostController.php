@@ -11,7 +11,20 @@ class PostController extends AbstractController
 {
     public function index()
     {
-        $posts = $this->manager->fetchAll('post');
+        $flags = [
+            'INNER JOIN' => [
+                'table' => 'user',
+                'sndTable' => 'post',
+                'firstTag' => 'id',
+                'sndTag' => 'user'
+            ],
+            'ORDER BY' => [
+                'table' => 'post',
+                'tag' => 'created_at',
+                'type' => 'DESC'
+            ]
+        ];
+        $posts = $this->manager->fetchAll('post', $flags);
 
         return $this->render([
             'title' => 'Liste des posts',
@@ -101,10 +114,20 @@ class PostController extends AbstractController
                 'sndTable' => 'post',
                 'firstTag' => 'id',
                 'sndTag' => 'user'
+            ],
+            'WHERE' => [
+                'table' => 'user',
+                'tag' => 'id',
+                'value' => $this->app->user()->getId()
+            ],
+            'ORDER BY' => [
+                'table' => 'post',
+                'tag' => 'created_at',
+                'type' => 'DESC'
             ]
         ];
 
-        $posts = $this->manager->findBy('post', ['WHERE' => "user = {$this->app->user()->getId()}"], $postFlags);
+        $posts = $this->manager->fetchAll('post', $postFlags);
 
         return $this->render([
             'title' => 'Mes posts',

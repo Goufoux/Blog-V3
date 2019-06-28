@@ -59,23 +59,28 @@ class Logger
             }
         }
         if (!file_exists($logsfile)) {
-            $handle = fopen($logsfile, 'w+');
-            if (!$handle) {
-                echo "impossible de créer le fichier de logs";
-                exit;
-            }
-            $str = "Old logs file not found but a new logs file was created at " . date('d-m-Y H:i:s') . self::SAUT;
-            fwrite($handle, $str);
-            fclose($handle);
-            return $this;
-        } else {
-            $handle = fopen($logsfile, 'a');
-            $str = "Application launch at " . date('d-m-Y H:i:s') . self::SAUT;
-            fwrite($handle, $str, strlen($str));
-            fclose($handle);
+            return $this->createFile($logsfile);
         }
+
+        $handle = fopen($logsfile, 'a');
+        $str = "Application launch at " . date('d-m-Y H:i:s') . self::SAUT;
+        fwrite($handle, $str, strlen($str));
+        fclose($handle);
         $this->successLoading = true;
         $this->file = $logsfile;
+        return $this;
+    }
+
+    private function createFile($logsfile)
+    {
+        $handle = fopen($logsfile, 'w+');
+        if (!$handle) {
+            echo "impossible de créer le fichier de logs";
+            exit;
+        }
+        $str = "Old logs file not found but a new logs file was created at " . date('d-m-Y H:i:s') . self::SAUT;
+        fwrite($handle, $str);
+        fclose($handle);
         return $this;
     }
 }

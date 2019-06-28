@@ -7,32 +7,6 @@ use Entity\User;
 
 class UserManager extends Manager
 {
-    public function fetchAll()
-    {
-        $req = $this->bdd->prepare('SELECT user.*, userRole.*, role.* FROM user
-                                    INNER JOIN userRole ON userRole.userRole_user = user.user_id
-                                    INNER JOIN role ON role.role_id = userRole.userRole_role');
-        $req->setFetchMode(\PDO::FETCH_CLASS | \PDO::FETCH_PROPS_LATE, '\Entity\\User');
-        try {
-            $req->execute();
-            
-            if (!$this->successRequest($req)) {
-                throw new \PDOException($this->errorCode($req));
-            }
-
-            $users = $req->fetchAll();
-
-            foreach ($users as $key => $user) {
-                $users[$key] = new User($user, true);
-            }
-            return $users;
-
-        } catch(\PDOException $e) {
-            $this->setError($e->getMessage());
-            return false;
-        }
-    }
-
     public function connect(string $email, string $password)
     {
         $req = $this->bdd->prepare('SELECT user.*, userRole.* FROM user

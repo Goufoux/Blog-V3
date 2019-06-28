@@ -63,10 +63,13 @@ class Managers extends Manager
                     $data['table'][] = [$flag['table'],$flag['sndTable']];
                     break;
                 case 'WHERE':
-                    $data['request']['WHERE'][] = "AND {$flag['table']}.{$flag['tag']}";
+                    $data['request']['WHERE'][] = "{$flag['table']}_{$flag['tag']} = {$flag['value']}";
                     break;
                 case 'LIMIT':
-                    $data['request']['LIMIT'][] = "AND {$flag['table']}.{$flag['tag']}";
+                    $data['request']['LIMIT'][] = "{$flag['value']}";
+                    break;
+                case 'ORDER BY':
+                    $data['request']['ORDER BY'][] = "{$flag['table']}_{$flag['tag']} {$flag['type']}";
                     break;
                 default:
                     return false;
@@ -91,7 +94,7 @@ class Managers extends Manager
             }
         }
 
-        $final = implode(', ', $final);
+        $final = implode(' ', $final);
         
         return $final;
     }

@@ -16,6 +16,14 @@ class IndexController extends AbstractController
                 'sndTable' => 'post',
                 'firstTag' => 'id',
                 'sndTag' => 'user'
+            ],
+            'ORDER BY' => [
+                'table' => 'post',
+                'tag' => 'created_at',
+                'type' => 'DESC'
+            ],
+            'LIMIT' => [
+                'value' => 4
             ]
         ];
 

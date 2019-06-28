@@ -36,27 +36,41 @@ class AjaxCore extends Core
             $instance = true;
         }
         $class = '\\Module\\'.ucfirst($this->action);
-        if (class_exists($class)) {
-            if ($instance) {
-                $class = new $class;
-                if ($autoLoad) {
-                    $this->content = $class->display();
-                    return;
-                }
-                $this->content = $class;
-                return;
-            }
-            $module = new $class($this->manager);
-            if ($autoLoad) {
-                $this->content = $module->getTemplate();
-                return;
-            }
-            $this->content = $module;
-            return;
-        } else {
+
+        if (!class_exists($class)) {
             $this->setError("Class $class not found.");
+
             return false;
         }
+
+        if ($instance) {
+            return $this->loadInstance($class, $autoLoad);
+        }
+
+        return $this->loadModule($class, $autoLoad);
+    }
+
+    private function loadModule($class, $autoLoad)
+    {
+        $module = new $class($this->manager);
+
+        if ($autoLoad) {
+            $this->content = $module->getTemplate();
+            return;
+        }
+        $this->content = $module;
+        return;
+    }
+
+    private function loadInstance($class, $autoLoad)
+    {
+        $class = new $class;
+        if ($autoLoad) {
+            $this->content = $class->display();
+            return;
+        }
+        $this->content = $class;
+        return;
     }
 
     public function getError()
