@@ -88,7 +88,6 @@ abstract class Manager
             $req->setFetchMode(\PDO::FETCH_CLASS | \PDO::FETCH_PROPS_LATE, '\Entity\\'.ucfirst($table));
             $req->execute();
             if (!$this->successRequest($req)) {
-                var_dump($req); exit;
                 throw new \PDOException($this->errorCode($req), $req);
             }
                
