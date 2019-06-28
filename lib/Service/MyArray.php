@@ -22,14 +22,13 @@ class MyArray
     public static function clearArray(array $array, string $sep = '', bool $strictMode = true, bool $reIndex = true) :array
     {
         foreach ($array as $key => $val) {
-            if ($strictMode) {
-                if ($val === $sep) {
-                    unset($array[$key]);
-                }
-            } else {
-                if ($val == $sep) {
-                    unset($array[$key]);
-                }
+            if ($strictMode && ($val === $sep)) {
+                unset($array[$key]);
+                continue;
+            }
+            
+            if ($val == $sep) {
+                unset($array[$key]);
             }
         }
 

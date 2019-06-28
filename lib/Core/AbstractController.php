@@ -113,11 +113,7 @@ abstract class AbstractController
         
         $logger = new Logger;
         if (!file_exists(__DIR__.'/../../public/template/'.$path)) {
-            if ($this->isDev()) {
-                $this->notifications->addDanger("Template not found : " . $path);
-            } else {
-                $this->notifications->addDanger("Une erreur est survenue, page non trouvée");
-            }
+            $this->notifications->default('500', "Template not found : " . $path, 'danger', $this->isDev());
             $logger->setLogs("Template not found:".$path);
             $this->response->referer();
         }
@@ -136,13 +132,10 @@ abstract class AbstractController
 
     public function get(string $data = '', string $method = 'GET', bool $all = false, bool $autoRedirect = true)
     {
-        switch ($method) {
-            case 'GET':
-                $result = $all ? $this->request->getAllData() : $this->request->getData($data);
-                break;
-            case 'POST':
-                $result = $all ? $this->request->getAllPost() : $this->request->getPost($data);
-                break;
+        $result = $all ? $this->request->getAllData() : $this->request->getData($data);
+
+        if ($method == 'POST') {
+            $result = $all ? $this->request->getAllPost() : $this->request->getPost($data);
         }
         
         if ($autoRedirect && ($result === false || $result === null || empty($result))) {

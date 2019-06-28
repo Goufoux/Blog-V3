@@ -77,24 +77,26 @@ class UserController extends AbstractController
         
         $form = new UserForm;
 
-        if ($this->request->hasPost()) {
-            $data = $this->request->getAllPost();
-            
-            if (!$this->checkForm($data, $form, 'update')) {
-                goto out;
-            }
-            $this->addRoles($data, $user->getId());
-            $data = $this->clearDataOfRole($data);
-
-            $data['id'] = $userId;
-
-            if ($this->manager->update('user', $data)) {
-                $this->notifications->addSuccess('Utilisateur mis à jour');
-                return $this->response->referer();
-            }
-
-            $this->notifications->default('500', $this->manager->getError(), 'danger', $this->isDev());
+        if (!$this->request->hasPost()) {
+            goto out;
         }
+        
+        $data = $this->request->getAllPost();
+        
+        if (!$this->checkForm($data, $form, 'update')) {
+            goto out;
+        }
+        $this->addRoles($data, $user->getId());
+        $data = $this->clearDataOfRole($data);
+
+        $data['id'] = $userId;
+
+        if ($this->manager->update('user', $data)) {
+            $this->notifications->addSuccess('Utilisateur mis à jour');
+            return $this->response->referer();
+        }
+
+        $this->notifications->default('500', $this->manager->getError(), 'danger', $this->isDev());
 
         out:
 
@@ -118,15 +120,20 @@ class UserController extends AbstractController
         return $data;
     }
 
+    private function deleteAllRoles(int $userId)
+    {
+        $userRoles = $this->getUserRoles($userId);
+        foreach ($userRoles as $key => $role) {
+            $this->removeRole($role->getRole(), $userId);
+        }
+    }
+
     public function addRoles(array $data, int $userId, bool $isNew = false)
     {
         $roles = $this->returnRole($data);
 
         if (empty($roles)) {
-            $userRoles = $this->getUserRoles($userId);
-            foreach ($userRoles as $key => $role) {
-                $this->removeRole($role->getRole(), $userId);
-            }
+            $this->deleteAllRoles($userId);
         }
 
         foreach ($roles as $key => $roleId) {
@@ -154,18 +161,18 @@ class UserController extends AbstractController
 
     public function checkForRolesUpdate(int $userId, int $roleId, array $roles)
     {
-        if ($userRoles = $this->manager->findBy('userRole', ['WHERE' => "user = $userId"])) {
-            foreach ($userRoles as $key => $userRole) {
-                /* exist role */
-                if ($userRole->getRole() == $roleId) {
-                    return true;
-                }
-                
-                /* role to remove */
-                if (!in_array($userRole->getRole(), $roles)) {
-                    $this->removeRole($userRole->getRole(), $userId);
-                    return true;
-                }
+        $userRoles = $this->manager->findBy('userRole', ['WHERE' => "user = $userId"]);
+        
+        foreach ($userRoles as $key => $userRole) {
+            /* exist role */
+            if ($userRole->getRole() == $roleId) {
+                return true;
+            }
+            
+            /* role to remove */
+            if (!in_array($userRole->getRole(), $roles)) {
+                $this->removeRole($userRole->getRole(), $userId);
+                return true;
             }
         }
         return false;

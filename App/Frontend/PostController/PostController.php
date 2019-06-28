@@ -41,24 +41,26 @@ class PostController extends AbstractController
 
         $form = new PostForm();
 
-        if ($this->request->hasPost()) {
-            $data = $this->request->getAllPost();
-            
-            if ($this->checkForm($data, $form) === false) {
-                goto out;
-            } 
-
-            if ($image = $this->fileGestion($_FILES, $form)) {
-                $data['image'] = $image;
-            }
-            $data['user'] = $this->app->user()->getId();
-            
-            if ($this->manager->add('post', $data)) {
-                $this->notifications->addSuccess('Post ajouté');
-                $this->response->referer();
-            }
-            $this->notifications->default('500', $this->manager->getError(), 'danger', true);
+        if (!$this->request->hasPost()) {
+            goto out;
         }
+        
+        $data = $this->request->getAllPost();
+        
+        if ($this->checkForm($data, $form) === false) {
+            goto out;
+        } 
+
+        if ($image = $this->fileGestion($_FILES, $form)) {
+            $data['image'] = $image;
+        }
+        $data['user'] = $this->app->user()->getId();
+        
+        if ($this->manager->add('post', $data)) {
+            $this->notifications->addSuccess('Post ajouté');
+            $this->response->referer();
+        }
+        $this->notifications->default('500', $this->manager->getError(), 'danger', true);
 
         out:
 
@@ -80,23 +82,25 @@ class PostController extends AbstractController
 
         $form = new PostForm();
 
-        if ($this->request->hasPost()) {
-            $data = $this->request->getAllPost();
-            
-            if ($this->checkForm($data, $form) === false) {
-                goto out;
-            }
-            if ($image = $this->fileGestion($_FILES, $form)) {
-                $data['image'] = $image;
-            }
-
-            $data['id'] = $postId;
-            if ($this->manager->update('post', $data)) {
-                $this->notifications->addSuccess('Post mis à jour');
-                $this->response->referer();
-            }
-            $this->notifications->default('500', $this->manager->getError(), 'danger', true);
+        if (!$this->request->hasPost()) {
+            goto out;
         }
+
+        $data = $this->request->getAllPost();
+        
+        if ($this->checkForm($data, $form) === false) {
+            goto out;
+        }
+        if ($image = $this->fileGestion($_FILES, $form)) {
+            $data['image'] = $image;
+        }
+
+        $data['id'] = $postId;
+        if ($this->manager->update('post', $data)) {
+            $this->notifications->addSuccess('Post mis à jour');
+            $this->response->referer();
+        }
+        $this->notifications->default('500', $this->manager->getError(), 'danger', true);
 
         out:
 

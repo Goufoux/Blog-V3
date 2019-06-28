@@ -21,16 +21,8 @@ class Application extends Core
         $routeur = new Routeur($this);
         $response = new Response;
 
-        if ($routeur->getRoute()->getModule() === 'Backend' && !$this->authentification()->isAuthentificated()) {
-            if (!$this->authentification()->isAuthentificated()) {
-                $response->connect();
-                return;
-            }
-
-            if (!($this->authentification()->hasRole('ROLE_SUPER_ADMIN') || $this->authentification()->hasRole('ROLE_ADMIN') || $this->authentification()->hasRole('ROLE_MODERATEUR'))) {
-                $response->disconnect();
-                return;
-            }
+        if ($routeur->getRoute()->getModule() === 'Backend') {
+            $this->AdminAccess($response);
         }
 
         if (!$routeur->match()) {
@@ -40,5 +32,16 @@ class Application extends Core
         $page = new Page();
         $page->setController($routeur->getControllerClass());
         $page->generatePage($this, $routeur->getControllerMethod(), $routeur);
+    }
+
+    private function AdminAccess(Response $response)
+    {
+        if (!$this->authentification()->isAuthentificated()) {
+            return $response->connect();
+        }
+
+        if (!($this->authentification()->hasRole('ROLE_SUPER_ADMIN') || $this->authentification()->hasRole('ROLE_ADMIN') || $this->authentification()->hasRole('ROLE_MODERATEUR'))) {
+            return $response->disconnect();
+        }
     }
 }

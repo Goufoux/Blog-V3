@@ -24,7 +24,6 @@ class Route
     public function __construct()
     {
         $request = new Request;
-        $temp = explode('/', $request->getRequestUri());
         $this->setRequest(MyArray::clearArray(MyArray::stringToArray($request->getRequestUri())));
         $this->setIndexAccess($request->getRequestUri());
         $this->run();
@@ -66,10 +65,7 @@ class Route
         $tempRequest = $this->getRequest();
         $view = end($tempRequest);
         $param = explode('?', $view);
-        $this->setView($param[0]);
-        if (!empty($param[1])) {
-            $this->setParam($param[1]);
-        }
+        $this->setView($param);
     }
 
     public function initializeRequest()
@@ -78,6 +74,9 @@ class Route
         $j = 1;
         $temp = explode('/', $request->getRequestUri());
         $tempCountRequest = count($temp);
+        $tempRequest = $this->getRequest();
+        $view = end($tempRequest);
+        $param = explode('?', $view);
         switch ($tempCountRequest) {
             case 1:
                 echo 'error';
@@ -85,42 +84,21 @@ class Route
             case 2:
                 $this->setController('IndexController');
                 $this->setControllerDir('IndexController\\');
-                $tempRequest = $this->getRequest();
-                $view = end($tempRequest);
-                $param = explode('?', $view);
-                $this->setView($param[0]);
-                if (!empty($param[1])) {
-                    $this->setParam($param[1]);
-                }
+                $this->setView($param);
                     break;
             case 3:
                 if ($this->getControllerPos()) {
                     $this->setController('IndexController');
                     $this->setControllerDir('IndexController\\');
-                    $tempRequest = $this->getRequest();
-                    $view = end($tempRequest);
-                    $view = explode('?', $view);
-                    $view = MyArray::clearArray($view, '');
+                    $this->setView($view);
                     if (preg_match("#=#", $view[0])) {
-                        $this->setView('index');
-                        $this->setParam($view[0]);
-                    } else {
-                        $this->setView($view[0]);
-                        if (!empty($view[1])) {
-                            $this->setParam($view[1]);
-                        }
+                        $this->setView(['index', $view[0]]);
                     }
-                } else {
-                    $this->setController(ucfirst($temp[1]).'Controller');
-                    $this->setControllerDir(ucfirst($temp[1]).'Controller\\');
-                    $tempRequest = $this->getRequest();
-                    $view = end($tempRequest);
-                    $param = explode('?', $view);
-                    $this->setView($param[0]);
-                    if (!empty($param[1])) {
-                        $this->setParam($param[1]);
-                    }
+                    break;
                 }
+                $this->setController(ucfirst($temp[1]).'Controller');
+                $this->setControllerDir(ucfirst($temp[1]).'Controller\\');
+                $this->setView($param);
                     break;
             default:
                 $controllerDir = '';
@@ -130,13 +108,7 @@ class Route
                 $this->setControllerDir($controllerDir);
                 $x = count($this->getRequest())-$j-1;
                 $this->setController(ucfirst($this->getRequest()[$x]).'Controller');
-                $tempRequest = $this->getRequest();
-                $view = end($tempRequest);
-                $param = explode('?', $view);
-                $this->setView($param[0]);
-                if (!empty($param[1])) {
-                    $this->setParam($param[1]);
-                }
+                $this->setView($param);
                     break;
         }
     }
@@ -211,9 +183,13 @@ class Route
         return $this->request;
     }
 
-    public function setView(string $view)
+    public function setView($str)
     {
-        $this->view = $view;
+        $this->view = is_array($str) ? $str[0] : $str;
+
+        if (isset($str[1])) {
+            $this->setParam($str[1]);
+        }
     }
 
     public function getView()

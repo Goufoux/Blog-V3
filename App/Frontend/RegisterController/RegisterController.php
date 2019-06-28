@@ -22,15 +22,12 @@ class RegisterController extends AbstractController
             goto out;
         }
 
-        $emailExist = $this->manager->findOneBy('user', ['WHERE' => "email = {$datas['email']}"]);
-
-        if ($emailExist) {
+        if ($emailExist = $this->manager->findOneBy('user', ['WHERE' => "email = {$datas['email']}"])) {
             $form->addErrors('email', 'Cette adresse email existe déjà.');
             goto out;
         }
 
         unset($datas['confirm_password'], $datas['cgu']);
-
 
         if ($this->manager->add("user", $datas)) {
             $this->addRoles(3, $this->manager->getLastInsertId());
