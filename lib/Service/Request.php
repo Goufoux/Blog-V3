@@ -12,7 +12,6 @@ class Request
     protected $server_addr;
     protected $server_port;
     protected $remote_addr;
-    protected $request_scheme;
     protected $request_uri;
     protected $http_referer;
 
@@ -22,7 +21,6 @@ class Request
         $this->setServerAddr();
         $this->setServerPort();
         $this->setRemoteAddr();
-        $this->setRequestcheme();
         $this->setRequestUri();
         $this->setHttpReferer();
     }
@@ -142,11 +140,6 @@ class Request
         return $this->remote_addr;
     }
 
-    public function getRequestScheme()
-    {
-        return $this->request_scheme;
-    }
-
     public function getRequestUri()
     {
         return $this->request_uri;
@@ -172,11 +165,6 @@ class Request
     public function setServerPort()
     {
         $this->server_port = $_SERVER['SERVER_PORT'] ?? null;
-    }
-
-    public function setRequestcheme()
-    {
-        $this->request_scheme = $_SERVER['REQUEST_SCHEME'] ?? null;
     }
 
     public function setRequestUri()

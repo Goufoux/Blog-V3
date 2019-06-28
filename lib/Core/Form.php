@@ -15,38 +15,43 @@ abstract class Form
         }
     }
 
+    public function controlData(string $key, string $value, array $waitingData, array $data)
+    {
+        foreach ($waitingData[$key] as $controlName => $required) {
+            switch ($controlName) {
+                case 'length':
+                    if (!$this->lengthControl($value, $required[0], $required[1])) {
+                        $this->addErrors($key, 'Le champ doit être compris entre ' . $required[0] . ' et ' . $required[1] . ' caractères.');
+                        continue 2;
+                    }
+                    break;
+                case 'text':
+                    if (!$this->isText($value, $required)) {
+                        $this->addErrors($key, 'Le champ ne peut être que composé que des caractères suivants : A-Z a-z 0-9.');
+                        continue 2;
+                    }
+                    break;
+                case 'email':
+                    if (!$this->isEmail($value)) {
+                        $this->addErrors($key, 'Cette adresse email ne semble pas valide.');
+                        continue 2;
+                    }
+                    break;
+                case 'equals':
+                    if (!$this->isEquals($value, $data[$required])) {
+                        $this->addErrors($key, 'Le champ doit être le même que ' . $waitingData[$required]['translate']);
+                        continue 2;
+                    }
+                    break;
+            }
+        }
+    }
+
     public function launch($waitingData, $data)
     {
         foreach ($data as $key => $value) {
             if (isset($waitingData[$key])) {
-                foreach ($waitingData[$key] as $controlName => $required) {
-                    switch ($controlName) {
-                        case 'length':
-                            if (!$this->lengthControl($value, $required[0], $required[1])) {
-                                $this->addErrors($key, 'Le champ doit être compris entre ' . $required[0] . ' et ' . $required[1] . ' caractères.');
-                                continue 2;
-                            }
-                            break;
-                        case 'text':
-                            if (!$this->isText($value, $required)) {
-                                $this->addErrors($key, 'Le champ ne peut être que composé que des caractères suivants : A-Z a-z 0-9.');
-                                continue 2;
-                            }
-                            break;
-                        case 'email':
-                            if (!$this->isEmail($value)) {
-                                $this->addErrors($key, 'Cette adresse email ne semble pas valide.');
-                                continue 2;
-                            }
-                            break;
-                        case 'equals':
-                            if (!$this->isEquals($value, $data[$required])) {
-                                $this->addErrors($key, 'Le champ doit être le même que ' . $waitingData[$required]['translate']);
-                                continue 2;
-                            }
-                            break;
-                    }
-                }
+                $this->controlData($key, $value, $waitingData, $data);
             }
         }
     }

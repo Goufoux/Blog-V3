@@ -11,8 +11,7 @@ class PostController extends AbstractController
 {
     public function index()
     {
-        $postManager = $this->manager->getManagerOf('Post');
-        $posts = $postManager->fetchAll();
+        $posts = $this->manager->fetchAll('post');
 
         return $this->render([
             'title' => 'Liste des posts',

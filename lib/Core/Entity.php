@@ -65,14 +65,15 @@ abstract class Entity implements \ArrayAccess
             if (preg_match("#^".$className."_#", $key)) {
                 $singleKey = $this->createSingleKey(explode($className.'_', $key)[1]);
                 $class_attribut[$singleKey] = $value;
-            } else {
-                $tmpClassAssocName = explode("_", $key)[0];
-                if (!in_array($tmpClassAssocName, $class_assoc)) {
-                    $class_assoc[] = $tmpClassAssocName;
-                }
-                $singleKey = $this->createSingleKey(explode($tmpClassAssocName.'_', $key)[1]);
-                $class_assoc_attribut[$tmpClassAssocName][$singleKey] = $value;
+                continue;
             }
+            
+            $tmpClassAssocName = explode("_", $key)[0];
+            if (!in_array($tmpClassAssocName, $class_assoc)) {
+                $class_assoc[] = $tmpClassAssocName;
+            }
+            $singleKey = $this->createSingleKey(explode($tmpClassAssocName.'_', $key)[1]);
+            $class_assoc_attribut[$tmpClassAssocName][$singleKey] = $value;
         }
 
         $final = [
@@ -94,35 +95,6 @@ abstract class Entity implements \ArrayAccess
                 $this->returnError("La classe n'existe pas : $class");
             }
 
-            foreach ($ready_assoc as $rClass => $value) {
-                if (preg_match("#".ucfirst($assoc)."#", ucfirst($rClass))) {
-                    $method = 'set'.ucfirst($assoc);
-                    if (is_callable($rClass, $method) === false) {
-                        continue;
-                    }
-
-                    if (!method_exists($ready_assoc[$rClass], $method)) {
-                        for ($i = 0; $i < count($class_assoc); $i++) {
-                            if (in_array($class_assoc[$i], [$rClass, ucfirst($assoc)])) {
-                                continue;
-                            }
-                            $t = 'get'.ucfirst($class_assoc[$i]);
-                            if (!method_exists($ready_assoc[$rClass], $t)) {
-                                $this->returnError("Méthode d'une entité non trouvée : " . $t);
-                            }
-                            
-                            $sClass = $ready_assoc[$rClass]->$t();
-                            if (method_exists($sClass, $method)) {
-                                $sClass->$method(new $class($class_assoc_attribut[$assoc]));
-                            }
-                        }
-                        continue;
-                    }
-
-                    $ready_assoc[$rClass]->$method(new $class($class_assoc_attribut[$assoc]));
-                    continue;
-                }
-            }
             $ready_assoc[$assoc] = new $class($class_assoc_attribut[$assoc]);
         }
 
