@@ -12,7 +12,7 @@ class PostForm extends Form
             'length' => [3, 20]
         ],
         'chapo' => [
-            'length' => [0, 50]
+            'length' => [0, 1000]
         ],
         'seo_title' => [
             'length' => [0, 85]
@@ -22,7 +22,7 @@ class PostForm extends Form
         ],
         'content' => [
             'required' => true,
-            'length' => [15, 200]
+            'length' => [15, 5000]
         ],
         'image_alt' => [
             'length' => [0, 15]
