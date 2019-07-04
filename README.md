@@ -2,7 +2,8 @@
 
 Blog Project from OpenClassrooms course
 
-# First 
+use composer install
+
 create dir config/ and this two files :
 - config.production.ini
 - config.developpement.ini
