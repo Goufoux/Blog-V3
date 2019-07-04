@@ -1,6 +1,12 @@
 # Blog-V3
-
 Blog Project from OpenClassrooms course
+
+# CodeClimate
+https://codeclimate.com/github/Goufoux/Blog-V3
+<a href="https://codeclimate.com/github/Goufoux/Blog-V3/maintainability"><img src="https://api.codeclimate.com/v1/badges/8b93d2eb6f0c4655c837/maintainability" /></a>
+
+# Install
+
 
 use composer install
 
