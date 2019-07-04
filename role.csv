@@ -1,0 +1,5 @@
+role_id,role_name,role_description,role_create,role_update,role_delete
+1,ROLE_SUPER_ADMIN,NULL,0,0,0
+2,ROLE_ADMIN,NULL,0,0,0
+3,ROLE_USER,NULL,0,0,0
+4,ROLE_MODERATEUR,NULL,0,0,0

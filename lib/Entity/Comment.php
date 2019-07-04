@@ -11,6 +11,7 @@ class Comment extends Entity
     private $user;
     private $content;
     private $state;
+    private $post;
 
     /**
      * Get the value of id
@@ -108,6 +109,26 @@ class Comment extends Entity
     public function setState($state)
     {
         $this->state = $state;
+
+        return $this;
+    }
+
+    /**
+     * Get the value of post
+     */ 
+    public function getPost()
+    {
+        return $this->post;
+    }
+
+    /**
+     * Set the value of post
+     *
+     * @return  self
+     */ 
+    public function setPost($post)
+    {
+        $this->post = $post;
 
         return $this;
     }
